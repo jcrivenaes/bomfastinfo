@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://bomfast.info/"
 title = "Bomfast Info"
 theme = "PaperMod"
 languageCode = "nb"
