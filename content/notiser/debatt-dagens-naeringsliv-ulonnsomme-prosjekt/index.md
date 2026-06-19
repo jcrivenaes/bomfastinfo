@@ -23,7 +23,7 @@ Torvik-utvalget ikke gir støtte til Hordfast, og peker på at null prissatt nyt
 kombinert med store negative konsekvenser for natur undergraver hele påstanden om
 lønnsomhet.
 
-Referatet nedenfor bygger på innleggene i debattrekken:
+Referatet bygger på innleggene i debattrekken:
 
 - ["La oss sløse bort 142 milliarder kroner, eller?", Erikstad (DN) (6. februar 2026)](https://www.dn.no/kommentar/nasjonal-transportplan/samferdsel/jens-stoltenberg/la-oss-slose-bort-142-milliarder-kroner-eller/2-1-1938666)
 
