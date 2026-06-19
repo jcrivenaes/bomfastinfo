@@ -1,63 +1,39 @@
 # Bomfast Info
 
-Hugo-basert nettsted som publiserer alternativ innsikt om Hordfast og E39. Bygget med
-[Hugo Extended](https://gohugo.io/) og temaet
+Kildekode for [bomfast.info](https://bomfast.info) — alternativ innsikt om Hordfast og
+E39.
+
+Bygget med [Hugo Extended](https://gohugo.io/) og temaet
 [PaperMod](https://github.com/adityatelange/hugo-PaperMod).
 
-## Oppsett
+## Komme i gang
 
-PaperMod er lagt inn som en Git-submodule. Klone repoet med:
+Klon repoet (PaperMod er en submodule):
 
 ```bash
 git clone --recurse-submodules <repo-url>
 ```
 
-Hvis du allerede har klonet uten `--recurse-submodules`:
+Allerede klonet uten flagget?
 
 ```bash
 git submodule update --init --recursive
 ```
 
-## Bygg lokalt
+## Bygg
 
-Krever Hugo Extended (se `netlify.toml` for versjon brukt i produksjon).
-
-```bash
-hugo server -D    # utviklingsserver på http://localhost:1313
-hugo --gc --minify    # produksjonsbygg til public/
-```
-
-## Tilpasninger
-
-Alle egne tilpasninger ligger utenfor temaet:
-
-- `layouts/` — overstyringer av PaperMod-templates (header, cover, schema-JSON, m.m.)
-- `layouts/shortcodes/` — egne shortcodes (`countup`, `figurecaption`, `mosaicgallery`,
-  `rodlistebar`, `rawhtml`)
-- `layouts/_markup/render-image.html` — bilderenderer med zoom-lenke og figcaption
-- `assets/css/extended/` — egen CSS som legges til etter PaperMods kjerne-CSS
-- `i18n/nb.yaml` — norske oversettelser
-- `content/` — innholdet (innsikt, notiser, naturen, tall, om, mer-lesestoff)
-
-Ikke modifiser filer inni `themes/PaperMod/` direkte — bruk overstyringer i `layouts/`.
-
-## Oppdatere PaperMod
+Krever Hugo Extended (versjonen som brukes i produksjon står i `netlify.toml`).
 
 ```bash
-cd themes/PaperMod
-git fetch
-git checkout <ny-tag-eller-commit>
-cd ../..
-git add themes/PaperMod
-git commit -m "Oppdater PaperMod til <versjon>"
+hugo server -D         # utviklingsserver: http://localhost:1313
+hugo --gc --minify     # produksjonsbygg til public/
 ```
 
 ## Deploy
 
-Deployes til Netlify fra `main`-branchen. Konfig i `netlify.toml`.
+Push til `main` → automatisk deploy på Netlify.
 
-## Slå på indeksering igjen for søkemotorer
+## Mer
 
-```bash
-rm layouts/_partials/extend_head.html layouts/robots.txt
-```
+Detaljer om mappestruktur, shortcodes, oppdatering av PaperMod, statistikk og
+prelaunch-modus: se [docs/utvikling.md](docs/utvikling.md).
