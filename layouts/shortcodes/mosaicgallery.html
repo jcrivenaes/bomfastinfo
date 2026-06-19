@@ -1,0 +1,67 @@
+{{- $img1 := .Get "img1" -}}
+{{- $img2 := .Get "img2" -}}
+{{- $img3 := .Get "img3" -}}
+{{- $img4 := .Get "img4" -}}
+{{- $img5 := .Get "img5" -}}
+
+{{- if and $img1 $img2 $img3 $img4 $img5 -}}
+<div class="mosaic-gallery">
+  <figure class="mosaic-gallery-item left-top">
+    <a class="bf-zoomable-link" href="{{ $img1 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img1 | safeURL }}" alt="{{ .Get "alt1" | default "Galleri bilde 1" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item left-bottom">
+    <a class="bf-zoomable-link" href="{{ $img2 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img2 | safeURL }}" alt="{{ .Get "alt2" | default "Galleri bilde 2" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item middle-top">
+    <a class="bf-zoomable-link" href="{{ $img3 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img3 | safeURL }}" alt="{{ .Get "alt3" | default "Galleri bilde 3" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item middle-bottom">
+    <a class="bf-zoomable-link" href="{{ $img4 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img4 | safeURL }}" alt="{{ .Get "alt4" | default "Galleri bilde 4" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item right-tall">
+    <a class="bf-zoomable-link" href="{{ $img5 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img5 | safeURL }}" alt="{{ .Get "alt5" | default "Galleri bilde 5" }}" loading="lazy">
+    </a>
+  </figure>
+</div>
+{{- else if and $img1 $img2 $img3 $img4 -}}
+<div class="mosaic-gallery mosaic-gallery-4">
+  <figure class="mosaic-gallery-item left-top">
+    <a class="bf-zoomable-link" href="{{ $img1 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img1 | safeURL }}" alt="{{ .Get "alt1" | default "Galleri bilde 1" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item left-bottom">
+    <a class="bf-zoomable-link" href="{{ $img2 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img2 | safeURL }}" alt="{{ .Get "alt2" | default "Galleri bilde 2" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item right-top">
+    <a class="bf-zoomable-link" href="{{ $img3 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img3 | safeURL }}" alt="{{ .Get "alt3" | default "Galleri bilde 3" }}" loading="lazy">
+    </a>
+  </figure>
+
+  <figure class="mosaic-gallery-item right-bottom">
+    <a class="bf-zoomable-link" href="{{ $img4 | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+      <img class="bf-zoomable-image" src="{{ $img4 | safeURL }}" alt="{{ .Get "alt4" | default "Galleri bilde 4" }}" loading="lazy">
+    </a>
+  </figure>
+</div>
+{{- else -}}
+  <p><em>mosaicgallery krever img1–img4 (eller img1–img5).</em></p>
+{{- end -}}

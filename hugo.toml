@@ -1,0 +1,79 @@
+baseURL = "/"
+title = "Bomfast Info"
+theme = "PaperMod"
+languageCode = "nb"
+defaultContentLanguage = "nb"
+enableRobotsTXT = true
+
+[params]
+description = "Alternativ innsikt om Hordfast og E39"
+author = "Bomfast-redaksjonen"
+mainSections = ["innsikt", "notiser"]
+ShowReadingTime = false
+ShowShareButtons = false
+ShowPostNavLinks = false
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowToc = true
+TocOpen = false
+hideMeta = true
+
+[params.homeInfoParams]
+Title = ""
+Content = """
+
+
+![Bomfast Info logo](images/bomfast-logo.svg) 
+
+**Alternativ innsikt om samferdselsprosjekter generelt, Hordfast spesielt.**
+"""
+
+[params.label]
+text = ""
+icon = "images/bomfast-icon.svg"
+iconHeight = 50
+
+[outputs]
+home = ["HTML", "RSS", "JSON"] # JSON nødvendig for søk
+
+[markup.goldmark.parser.attribute]
+block = true
+title = true
+
+[privacy.youTube]
+privacyEnhanced = true
+
+[[menus.main]]
+name = "Innsikt"
+url = "/innsikt/"
+weight = 1
+
+#[[menus.main]]
+#name = "Spørsmål & svar"
+#url = "/sporsmal-og-svar/"
+#weight = 2
+
+[[menus.main]]
+name = "Naturen"
+url = "/naturen/"
+weight = 3
+
+[[menus.main]]
+name = "Tall"
+url = "/tall/"
+weight = 4
+
+[[menus.main]]
+name = "Mer lesestoff"
+url = "/mer-lesestoff/"
+weight = 5
+
+[[menus.main]]
+name = "Om"
+url = "/om/"
+weight = 6
+
+[[menus.main]]
+name = "Kontakt"
+url = "/kontakt/"
+weight = 7

@@ -1,0 +1,64 @@
+{{- $centered := eq (lower (.Get "centered" | default "false")) "true" -}}
+{{- $size := .Get "size" | default "4em" -}}
+{{- $mb := .Get "mb" | default "" -}}
+{{- $styleParts := slice (printf "--bf-countup-size: %s" $size) -}}
+{{- if $mb -}}
+  {{- $styleParts = $styleParts | append (printf "--bf-countup-mb: %s" $mb) -}}
+{{- end -}}
+{{- $style := delimit $styleParts "; " -}}
+
+<span
+  id="countup-{{ .Get "id" }}"
+  class="bf-countup{{ if $centered }} bf-countup--centered{{ end }}{{ if $mb }} bf-countup--has-mb{{ end }}"
+  data-target="{{ .Get "value" }}"
+  data-prefix="{{ .Get "prefix" }}"
+  data-suffix="{{ .Get "suffix" }}"
+  data-duration="{{ .Get "duration" | default "2.5" }}"
+  style="{{ $style | safeCSS }}">
+  0
+</span>
+
+{{- if not (.Page.Scratch.Get "countup-loaded") }}
+{{- .Page.Scratch.Set "countup-loaded" true }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.min.js"></script>
+{{- end }}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const el = document.getElementById("countup-{{ .Get "id" }}");
+    if (!el) return;
+
+    const options = {
+      startVal: 0,
+      duration: parseFloat(el.dataset.duration),
+      prefix: el.dataset.prefix || "",
+      suffix: el.dataset.suffix || "",
+      separator: "\u00a0",
+      decimal: ",",
+      useGrouping: true
+    };
+
+    function startCounter() {
+      const counter = new countUp.CountUp(
+        el.id,
+        parseFloat(el.dataset.target),
+        options
+      );
+      counter.start();
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startCounter();
+            observer.unobserve(el);
+          }
+        });
+      });
+      observer.observe(el);
+    } else {
+      // Fallback for older browsers without IntersectionObserver.
+      startCounter();
+    }
+  });
+</script>

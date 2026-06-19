@@ -1,0 +1,38 @@
+{{- define "main" }}
+<article class="post-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content">
+    {{ .Content }}
+
+    <form name="kontakt" method="POST" action="/kontakt/takk/" data-netlify="true" netlify-honeypot="bot-field" class="kontakt-form">
+      <input type="hidden" name="form-name" value="kontakt">
+      <p class="hidden-honeypot">
+        <label>Ikke fyll ut: <input name="bot-field"></label>
+      </p>
+
+      <p>
+        <label for="navn">Navn</label>
+        <input id="navn" type="text" name="navn" required>
+      </p>
+
+      <p>
+        <label for="epost">E-post</label>
+        <input id="epost" type="email" name="epost" required>
+      </p>
+
+      <p>
+        <label for="melding">Melding</label>
+        <textarea id="melding" name="melding" rows="6" required></textarea>
+      </p>
+
+      <p>
+        <button type="submit">Send</button>
+      </p>
+    </form>
+  </div>
+</article>
+{{- end }}

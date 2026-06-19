@@ -1,0 +1,15 @@
+{{- $current := upper (.Get "current" | default "EN") -}}
+{{- $label := .Get "label" | default "Sterkt truet" -}}
+
+<div class="rodliste-wrap" aria-label="Rodlistekategori">
+  <div class="rodliste-codes" role="list" aria-label="Rodlistekoder">
+    {{- $codes := slice "CO" "CR" "EN" "VU" "NT" "DD" "LC" "NE" -}}
+    {{- range $code := $codes }}
+      <span
+        role="listitem"
+        class="rodliste-code rodliste-{{ lower $code }}{{ if eq $code $current }} is-current{{ end }}"
+      >{{ $code }}</span>
+    {{- end }}
+  </div>
+  <div class="rodliste-label">{{ $current }} {{ $label }}</div>
+</div>

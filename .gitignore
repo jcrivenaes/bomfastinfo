@@ -1,0 +1,11 @@
+# Hugo build output
+public/
+.hugo_build.lock
+
+# OS/editor files
+.DS_Store
+.idea/
+
+# VS Code: ignore local workspace settings, keep shared snippets
+.vscode/*
+!.vscode/markdown.code-snippets

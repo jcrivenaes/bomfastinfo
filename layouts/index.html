@@ -1,0 +1,65 @@
+{{- define "main" }}
+
+{{- $sections := site.Params.mainSections | default (slice "post") }}
+{{- $pages := where site.RegularPages "Type" "in" $sections }}
+{{- $featured := where $pages "Params.featured" true }}
+{{- $notiser := first 5 (where site.RegularPages "Type" "notiser") }}
+
+{{- if site.Params.homeInfoParams }}
+{{- partial "home_info.html" . }}
+{{- end }}
+
+<section class="migration-banner" aria-labelledby="migration-banner-title">
+  <div>
+    <h2 id="migration-banner-title">Bomfast Info i ny drakt</h2>
+    <p>Denne siden er flyttet over til en ny teknisk plattform og har fått ny layout. Innholdet er det samme, men enkelte detaljer kan fortsatt bli justert i en overgangsperiode.</p>
+  </div>
+</section>
+
+{{- if gt (len $notiser) 0 }}
+<section class="notiser-top">
+  <div class="notiser-top-header">
+    <h2>Nyheter og notiser</h2>
+    <p>Oppdateringer innen avisinnlegg, artikler og annet.</p>
+  </div>
+  <ul class="notiser-top-list">
+    {{- range $notiser }}
+    <li class="notis-item">
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <div class="notis-meta">
+        <time>{{ .Date | time.Format ":date_long" }}</time>
+        {{- with .Params.source }} · <span class="notis-source">{{ . }}</span>{{- end }}
+      </div>
+      {{- with .Params.summary }}
+      <p>{{ . | plainify | truncate 130 }}</p>
+      {{- end }}
+    </li>
+    {{- end }}
+  </ul>
+  <p class="notiser-top-more">Se alle <a href="/notiser/">nyheter/notiser her</a>.</p>
+</section>
+{{- end }}
+
+{{- if gt (len $featured) 0 }}
+<section class="featured-home">
+  <div class="featured-home-header">
+    <h2>Utvalgte innsiktsartikler</h2>
+  </div>
+  <div class="featured-home-grid">
+    {{- range first 3 $featured }}
+    <article class="featured-home-card">
+      <header>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      </header>
+      <p>{{ .Summary | plainify | htmlUnescape | strings.TrimSpace | truncate 180 }}</p>
+      <footer>
+        <time>Sist oppdatert {{ .Lastmod | time.Format ":date_long" }}</time>
+      </footer>
+    </article>
+    {{- end }}
+  </div>
+  <p class="featured-home-more">Se flere <a href="/innsikt/">Innsikt-artikler her</a>.</p>
+</section>
+{{- end }}
+
+{{- end }}

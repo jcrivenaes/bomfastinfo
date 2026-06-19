@@ -1,0 +1,35 @@
+.post-content .bf-zoomable-link,
+.entry-content .bf-zoomable-link {
+  display: inline-block;
+  position: relative;
+}
+
+.post-content .bf-zoomable-image,
+.entry-content .bf-zoomable-image {
+  cursor: zoom-in;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-content .bf-zoomable-link:hover .bf-zoomable-image,
+.entry-content .bf-zoomable-link:hover .bf-zoomable-image {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+}
+
+/* Front-page logo width is controlled by --bf-home-logo-width in home-featured.css. */
+.home-info .bf-figure {
+  width: min(var(--bf-home-logo-width, 900px), calc(100vw - 2rem));
+  max-width: none;
+  margin: 1rem auto 0;
+}
+
+.home-info .entry-content {
+  display: block;
+  overflow: visible;
+}
+
+.home-info .bf-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

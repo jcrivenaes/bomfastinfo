@@ -1,0 +1,23 @@
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" | default "" -}}
+{{- $caption := .Get "caption" | default "" -}}
+{{- $linkText := .Get "linkText" | default "" -}}
+{{- $linkUrl := .Get "linkUrl" | default "" -}}
+{{- $after := .Get "after" | default "" -}}
+{{- $hasInner := gt (len (trim .Inner " \n\t")) 0 -}}
+<figure class="bf-figure">
+  <a class="bf-zoomable-link" href="{{ $src | safeURL }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+    <img class="bf-zoomable-image" src="{{ $src | safeURL }}" alt="{{ $alt }}" loading="lazy">
+  </a>
+  {{- if $hasInner }}
+    <figcaption class="bf-figure-caption">{{ .Inner | markdownify }}</figcaption>
+  {{- else if or $caption $linkText $after }}
+    <figcaption class="bf-figure-caption">
+      {{- if and $linkText $linkUrl -}}
+        {{- if $caption -}}{{ $caption }} {{- end -}}<a href="{{ $linkUrl | safeURL }}">{{ $linkText }}</a>{{- if $after -}} {{ $after }}{{- end -}}
+      {{- else -}}
+        {{- $caption -}}
+      {{- end -}}
+    </figcaption>
+  {{- end }}
+</figure>

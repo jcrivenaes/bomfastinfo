@@ -1,0 +1,128 @@
+{{- $publisherType := (site.Params.schema.publisherType | default "Organization") | title -}}
+
+{{- if .IsHome -}}
+  {{- $sameAs := slice -}}
+  {{- if site.Params.schema.sameAs -}}
+    {{- range site.Params.schema.sameAs -}}
+      {{- $sameAs = $sameAs | append (trim . " ") -}}
+    {{- end -}}
+  {{- else if site.Params.SocialIcons -}}
+    {{- range site.Params.SocialIcons -}}
+      {{- $sameAs = $sameAs | append (trim .url " ") -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $org := dict
+    "@context" "https://schema.org"
+    "@type" $publisherType
+    "name" site.Title
+    "url" site.Home.Permalink
+    "description" (site.Params.description | default "" | plainify | truncate 180)
+    "sameAs" $sameAs
+  -}}
+  {{- if eq $publisherType "Person" -}}
+    {{- $org = merge $org (dict "image" ((site.Params.assets.favicon | default "favicon.ico") | absURL)) -}}
+  {{- else -}}
+    {{- $org = merge $org (dict "logo" ((site.Params.assets.favicon | default "favicon.ico") | absURL)) -}}
+  {{- end -}}
+<script type="application/ld+json">{{ $org | jsonify | safeJS }}</script>
+
+{{- else if or .IsPage .IsSection -}}
+  {{- $homeURL := printf "%s" site.Home.Permalink -}}
+  {{- $relative := replace .Parent.Permalink $homeURL "" -}}
+  {{- $langRelative := strings.TrimPrefix (printf "%s/" .Lang) $relative -}}
+  {{- $crumbs := split $langRelative "/" -}}
+  {{- $scratch := newScratch -}}
+  {{- $items := slice -}}
+
+  {{- range $index, $element := $crumbs -}}
+    {{- $scratch.Add "path" (printf "%s/" $element) -}}
+    {{- $bcPage := site.GetPage ($scratch.Get "path") -}}
+    {{- if and $bcPage (gt (len $element) 0) -}}
+      {{- $items = $items | append (dict
+        "@type" "ListItem"
+        "position" (add 1 $index)
+        "name" $bcPage.Name
+        "item" $bcPage.Permalink
+      ) -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $items = $items | append (dict
+    "@type" "ListItem"
+    "position" (len $crumbs)
+    "name" .Name
+    "item" .Permalink
+  ) -}}
+  {{- $breadcrumbs := dict
+    "@context" "https://schema.org"
+    "@type" "BreadcrumbList"
+    "itemListElement" $items
+  -}}
+<script type="application/ld+json">{{ $breadcrumbs | jsonify | safeJS }}</script>
+
+  {{- if .IsPage -}}
+    {{- $keywords := .Params.keywords | default .Params.tags | default (slice) -}}
+    {{- $description := .Description | default .Summary | default "" | plainify -}}
+    {{- $images := slice -}}
+    {{- if .Params.cover.image -}}
+      {{- if ne .Params.cover.relative true -}}
+        {{- $images = $images | append (.Params.cover.image | absURL) -}}
+      {{- else -}}
+        {{- $images = $images | append ((path.Join .RelPermalink .Params.cover.image) | absURL) -}}
+      {{- end -}}
+    {{- else -}}
+      {{- $pageImages := partial "templates/_funcs/get-page-images" . -}}
+      {{- with index $pageImages 0 -}}
+        {{- $images = $images | append .Permalink -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $authors := .Params.author | default site.Params.author -}}
+    {{- $authorValue := slice -}}
+    {{- with $authors -}}
+      {{- if or (eq (printf "%T" .) "[]string") (eq (printf "%T" .) "[]interface {}") -}}
+        {{- range . -}}
+          {{- $authorValue = $authorValue | append (dict "@type" "Person" "name" .) -}}
+        {{- end -}}
+      {{- else -}}
+        {{- $authorValue = dict "@type" "Person" "name" . -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- $publisher := dict
+      "@type" $publisherType
+      "name" site.Title
+      "logo" (dict
+        "@type" "ImageObject"
+        "url" ((site.Params.assets.favicon | default "favicon.ico") | absURL)
+      )
+    -}}
+    {{- $post := dict
+      "@context" "https://schema.org"
+      "@type" "BlogPosting"
+      "headline" (.Title | plainify)
+      "name" (.Title | plainify)
+      "description" $description
+      "articleBody" (.Content | htmlUnescape | plainify)
+      "wordCount" .WordCount
+      "inLanguage" (.Language.Lang | default "en-us")
+      "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")
+      "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+      "mainEntityOfPage" (dict
+        "@type" "WebPage"
+        "@id" .Permalink
+      )
+      "publisher" $publisher
+    -}}
+    {{- if gt (len $keywords) 0 -}}
+      {{- $post = merge $post (dict "keywords" $keywords) -}}
+    {{- end -}}
+    {{- if gt (len $images) 0 -}}
+      {{- $post = merge $post (dict "image" $images) -}}
+    {{- end -}}
+    {{- with $authorValue -}}
+      {{- $post = merge $post (dict "author" .) -}}
+    {{- end -}}
+<script type="application/ld+json">{{ $post | jsonify | safeJS }}</script>
+  {{- end -}}
+{{- end -}}

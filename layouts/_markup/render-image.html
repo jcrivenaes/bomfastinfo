@@ -1,0 +1,65 @@
+{{- $u := urls.Parse .Destination -}}
+{{- $src := $u.String -}}
+{{- $extraAttrs := dict -}}
+{{- $queryWidth := "" -}}
+{{- $queryHeight := "" -}}
+{{- with $u.Query.Get "w" -}}
+  {{- $queryWidth = . -}}
+{{- end -}}
+{{- with $u.Query.Get "h" -}}
+  {{- $queryHeight = . -}}
+{{- end -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path }}
+  {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
+    {{- $src = .RelPermalink -}}
+    {{- $cleanQuery := "" -}}
+    {{- range $k, $vs := $u.Query -}}
+      {{- if and (ne $k "w") (ne $k "h") -}}
+        {{- range $vs -}}
+          {{- $cleanQuery = printf "%s&%s=%s" $cleanQuery $k . -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $cleanQuery = strings.TrimPrefix "&" $cleanQuery -}}
+    {{- with $cleanQuery -}}
+      {{- $src = printf "%s?%s" $src . -}}
+    {{- end -}}
+    {{- with $u.Fragment -}}
+      {{- $src = printf "%s#%s" $src . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- with $queryWidth -}}
+  {{- $extraAttrs = merge $extraAttrs (dict "width" .) -}}
+{{- end -}}
+{{- with $queryHeight -}}
+  {{- $extraAttrs = merge $extraAttrs (dict "height" .) -}}
+{{- end -}}
+{{- $caption := .Title -}}
+{{- $titleAttr := $caption | plainify -}}
+{{- $attrs := merge .Attributes $extraAttrs (dict "alt" .Text "src" $src "title" $titleAttr "loading" "lazy" "class" "bf-zoomable-image") -}}
+{{- $isHome := and .Page .Page.IsHome -}}
+<figure class="bf-figure">
+  {{- if $isHome }}
+  <img
+    {{- range $k, $v := $attrs -}}
+      {{- if $v -}}
+        {{- printf " %s=%q" $k $v | safeHTMLAttr -}}
+      {{- end -}}
+    {{- end -}}>
+  {{- else }}
+  <a class="bf-zoomable-link" href="{{ $src }}" target="_blank" rel="noopener" aria-label="Aapne bilde i stor versjon">
+    <img
+      {{- range $k, $v := $attrs -}}
+        {{- if $v -}}
+          {{- printf " %s=%q" $k $v | safeHTMLAttr -}}
+        {{- end -}}
+      {{- end -}}>
+  </a>
+  {{- end }}
+  {{- with $caption }}
+    <figcaption class="bf-figure-caption">{{ . | markdownify }}</figcaption>
+  {{- end }}
+</figure>
+{{- /**/ -}}

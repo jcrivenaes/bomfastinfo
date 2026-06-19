@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 80.925347 80.925339"
+   width="80.925346"
+   height="80.925339"
+   version="1.1"
+   id="svg4732"
+   sodipodi:docname="bomfast-icon-more-frame.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:export-filename="bomfast-icon-more-frame.png"
+   inkscape:export-xdpi="593.13928"
+   inkscape:export-ydpi="593.13928"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4736" />
+  <sodipodi:namedview
+     id="namedview4734"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     showguides="true"
+     inkscape:zoom="6.0818182"
+     inkscape:cx="58.206278"
+     inkscape:cy="3.3707025"
+     inkscape:window-width="2560"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4732">
+    <sodipodi:guide
+       position="40.106818,89.196244"
+       orientation="1,0"
+       id="guide4738"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="43.251331,70.670658"
+       orientation="0,-1"
+       id="guide6246"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <ellipse
+     style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.07465;-inkscape-stroke:none;stop-color:#000000"
+     id="path10836"
+     cx="40.462673"
+     cy="40.462669"
+     rx="40.462673"
+     ry="40.462669" />
+  <!-- Perspektivvei — smalner mot toppen -->
+  <polygon
+     points="38,8 15,62 65,62 42,8 "
+     fill="#161614"
+     id="polygon4706"
+     style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#4d4d4d;fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+     transform="translate(0.1812558,0.4420031)" />
+  <line
+     x1="15.17984"
+     y1="62.44342"
+     x2="38.182671"
+     y2="8.7556009"
+     stroke="#3A3A2C"
+     stroke-width="0.997167"
+     id="line4708"
+     style="fill:#666666;stroke:#6f753f;stroke-linecap:round;stroke-opacity:1" />
+  <line
+     x1="65.182663"
+     y1="62.44342"
+     x2="42.17984"
+     y2="8.7550364"
+     stroke="#3A3A2C"
+     stroke-width="1"
+     id="line4710"
+     style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#666666;fill-opacity:1;stroke:#6f753f;stroke-width:0.997171;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1" />
+  <line
+     x1="40.137562"
+     y1="21.496178"
+     x2="40.137562"
+     y2="26.512518"
+     stroke="#3a3a28"
+     stroke-width="1"
+     stroke-linecap="round"
+     id="line4712"
+     style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:#666666;fill-opacity:1;stroke:#97a13a;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1" />
+  <line
+     x1="40.181255"
+     y1="30.442001"
+     x2="40.181255"
+     y2="41.442001"
+     stroke="#3a3a28"
+     stroke-width="1"
+     stroke-linecap="round"
+     id="line4714" />
+  <line
+     x1="40.181255"
+     y1="47.442001"
+     x2="40.181255"
+     y2="57.442001"
+     stroke="#3A3A28"
+     stroke-width="1"
+     stroke-linecap="round"
+     id="line4716"
+     style="font-variation-settings:normal;opacity:1;fill:#666666;fill-opacity:1;stroke:#97a13a;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1" />
+  <!-- Blad/øye — blokkerer veien -->
+  <path
+     d="m 10.181256,35.442003 q 30,-14 60,0 -30,14 -60,0 z"
+     fill="#488028"
+     id="path4718" />
+  <path
+     d="m 10.181256,35.442003 q 30,-14 60,0 -30,14 -60,0 z"
+     fill="none"
+     stroke="#1A3A0A"
+     stroke-width="0.9"
+     id="path4720"
+     style="stroke:#3c3c3c;stroke-opacity:1" />
+  <line
+     x1="10.181255"
+     y1="35.442001"
+     x2="70.181259"
+     y2="35.442001"
+     stroke="#264C10"
+     stroke-width="0.8"
+     id="line4722"
+     style="stroke:#3c3c3c;stroke-opacity:1" />
+  <!-- Skillelinje -->
+  <!-- BOMFAST -->
+  <!-- .info — litt lavere baseline, grønn -->
+  <!-- Tagline — ingen strek, bare luft -->
+  <line
+     x1="40.178959"
+     y1="11.870648"
+     x2="40.178959"
+     y2="15.347408"
+     stroke="#3a3a28"
+     stroke-width="0.832518"
+     stroke-linecap="round"
+     id="line4740"
+     inkscape:highlight-color="#dee86c"
+     style="font-variation-settings:normal;opacity:1;fill:#666666;fill-opacity:1;stroke:#97a13a;stroke-width:0.7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1" />
+  <text
+     x="17.511206"
+     y="69.330406"
+     font-family="Georgia, 'Times New Roman', serif"
+     font-size="36"
+     font-weight="bold"
+     letter-spacing="-0.5"
+     fill="#E4DCC8"
+     id="text4726"
+     style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:8.46317px;font-family:'IBM Plex Sans';-inkscape-font-specification:'IBM Plex Sans, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:-0.117544;fill:#4d4d4d;fill-opacity:1;stroke-width:0.235088">BOMFAST</text>
+  <text
+     x="54.94199"
+     y="69.411026"
+     font-family="Georgia, 'Times New Roman', serif"
+     font-size="22px"
+     font-weight="bold"
+     fill="#6abe2c"
+     id="text4728"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.72945px;font-family:'IBM Plex Sans';-inkscape-font-specification:'IBM Plex Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#488028;fill-opacity:1;stroke-width:0.169521">.info</text>
+</svg>

@@ -1,0 +1,42 @@
+{{- if not .Params.hidePublicationNote -}}
+{{- $authors := .Params.author | default .Params.authors | default site.Params.author -}}
+{{- $authorList := slice -}}
+{{- if $authors -}}
+  {{- if reflect.IsSlice $authors -}}
+    {{- $authorList = $authors -}}
+  {{- else -}}
+    {{- $authorList = slice $authors -}}
+  {{- end -}}
+{{- end -}}
+{{- if or .Date .Params.lastmodNotes (gt (len $authorList) 0) }}
+<div class="publication-note">
+  {{- if gt (len $authorList) 0 }}
+  <p class="publication-note-intro publication-note-author">
+    <strong>{{ if eq (len $authorList) 1 }}Forfatter{{ else }}Forfattere{{ end }}:</strong>
+    {{ delimit $authorList ", " " og " }}
+  </p>
+  {{- end }}
+  {{- if .Date }}
+  <p class="publication-note-intro publication-note-date">
+    <strong>Publisert første gang:</strong> {{ .Date | time.Format ":date_long" }}
+  </p>
+  {{- end }}
+  {{- if .Params.lastmodNotes }}
+  {{- if gt (len .Params.lastmodNotes) 0 }}
+  <p class="publication-note-intro">
+    <strong>Oppdateringer:</strong>
+  </p>
+  <ul class="publication-note-list">
+    {{- range .Params.lastmodNotes }}
+    {{- $d := .date -}}
+    {{- if and (eq (printf "%T" $d) "string") (findRE `^\d{4}-\d{2}-\d{2}` $d) -}}
+      {{- $d = (time.AsTime $d) | time.Format ":date_long" -}}
+    {{- end }}
+    <li>{{ $d }}{{ if .note }}: {{ .note }}{{ end }}</li>
+    {{- end }}
+  </ul>
+  {{- end }}
+  {{- end }}
+</div>
+{{- end }}
+{{- end }}
