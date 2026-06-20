@@ -45,6 +45,10 @@ categories: ["Naturmangfold", "Lobbysvada", "Samfunnsnytte"]
 featured: false
 ---
 
+Er Hordfast virkelig samfunnsøkonomisk lønnsom når man sammenstiller den prissatte
+"nytten" med de ikke-prissatte virkningene, som tap av unikt naturmangfold? Svaret er
+nei!
+
 ![NTP superside](hovedfigur.png 'Fra ["supersider" i dokumentasjon til NTP prosessen](https://web.archive.org/web/20250827103353/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/2025-2036/vedlegg-3-supersider-rev-27.11.23.pdf). Ny NTP kommer vår 2024.')
 
 ## Innledning
