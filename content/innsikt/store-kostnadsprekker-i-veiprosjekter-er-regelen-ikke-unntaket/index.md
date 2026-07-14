@@ -183,7 +183,7 @@ indikerte 6,2 mrd 2012 kroner [8,8 MRD]. I 2014 ble prosjektet vedtatt i Stortin
 [Ryfast](https://no.wikipedia.org/wiki/Ryfast) (ekskl. Eiganestunnelen) er en ca 14,3 km
 undersjøisk forbindelse mellom Ryfylke og Nordjæren/Stavanger, som ble åpnet i 2019. I
 tidligfase
-["KVU" i 2001 (konsept 4C)](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/ryfast/vedlegg/13-ku.pdf)
+["KVU" i 2001 (konsept 4C)](https://web.archive.org/web/20211202164029/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/ryfast/vedlegg/13-ku.pdf)
 var prosjektkostnaden 0,83 MRD 2000 kroner [1,71 MRD] for Ryfast strekket (tunnel
 Solbakk, Hundvåg). I tall fra 2007 (trolig fra KMD fasen) steg kostnaden til 4,4
 milliarder [8,1 MRD]. Men prisen steg fortsatt, og i
