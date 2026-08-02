@@ -1,0 +1,18 @@
+{
+  "uploads": [
+    {
+      "source_url": "https://www.vegvesen.no/.../rapport.pdf",
+      "remote_name": "rapport.pdf",
+      "title": "Eksempelrapport",
+      "source_name": "Statens vegvesen",
+      "notes": "Lastet ned fra vegvesen.no og arkivert som kildedokument."
+    },
+    {
+      "file": "/path/to/local/annen-rapport.pdf",
+      "original_url": "https://www.regjeringen.no/.../annen-rapport.pdf",
+      "remote_name": "annen-rapport.pdf",
+      "title": "Annen rapport",
+      "source_name": "Samferdselsdepartementet"
+    }
+  ]
+}
