@@ -6,6 +6,14 @@ public/
 .DS_Store
 .idea/
 
+# Python
+__pycache__/
+*.pyc
+
 # VS Code: ignore local workspace settings, keep shared snippets
 .vscode/*
 !.vscode/markdown.code-snippets
+
+# archive_org_upload.py: ignore the local working config (may hold local file
+# paths); keep the example, README and results.jsonl audit log committed
+uploads_webarchive/config.json
