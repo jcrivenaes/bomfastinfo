@@ -37,6 +37,44 @@ Upload local file:
         --remote-name rapport.pdf \
         --upload
 
+Upload one or more jobs from a config file instead of (or in addition to) the
+command line. The config is a JSON file holding either a single job object, a
+bare array of job objects, or {"uploads": [...]}. Keys match the CLI options
+(source_url, file, item, remote_name, document_id, title, source_name,
+original_url, checked, notes, metadata, file_metadata, retries, upload,
+verify_timeout, no_backup_on_replace). Any field missing from a job falls back
+to the corresponding CLI option, so shared settings like --item or --upload can
+be passed once on the command line. Config and results files default to the
+uploads_webarchive/ folder:
+
+    python3 scripts/archive_org_upload.py --config --upload
+    python3 scripts/archive_org_upload.py --config uploads_webarchive/my-batch.json --upload
+
+Each successful, verified upload is appended as one JSON line to the results
+file (default uploads_webarchive/results.jsonl) with the manifest metadata and
+file URL. It is also recorded on archive.org itself as file-level metadata
+(`original_url`) via `ia metadata --target=files/<remote-name>`, unless
+--skip-original-url-metadata is set.
+
+Backfill metadata/results for files uploaded before this script tracked them,
+without deleting or re-uploading anything:
+
+    python3 scripts/archive_org_upload.py --backfill \
+        --remote-name hb-v712-konsekvensanalyser_2018.pdf \
+        --original-url "https://www.vegvesen.no/.../v712.pdf" \
+        --title "V712 - Konsekvensanalyser"
+
+Or via a config file with several {"backfill": true, "remote_name": ...} jobs,
+see uploads_webarchive/backfill.example.json.
+
+View a file's metadata (e.g. to confirm original_url was attached):
+
+    curl -s https://archive.org/metadata/bomfast-kildedokumenter | \
+        jq '.files[] | select(.name=="rapport.pdf")'
+
+Also:
+    curl -s https://archive.org/metadata/bomfast-kildedokumenter | python3 -m json.tool
+
 Checks locally:
     ia tasks bomfast-kildedokumenter | grep -E 'queued|running|failed|error'
 """
@@ -53,12 +91,37 @@ import tempfile
 import time
 import urllib.parse
 import urllib.request
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
-
 
 DEFAULT_ITEM = "bomfast-kildedokumenter"
 DEFAULT_USER_AGENT = "Mozilla/5.0 bomfast-source-archive"
+DEFAULT_UPLOADS_DIR = Path("uploads_webarchive")
+DEFAULT_CONFIG_PATH = DEFAULT_UPLOADS_DIR / "config.json"
+DEFAULT_RESULTS_PATH = DEFAULT_UPLOADS_DIR / "results.jsonl"
+
+# Job fields that a config entry may override; CLI options are the fallback.
+JOB_FIELDS = {
+    "source_url": None,
+    "file": Path,
+    "item": None,
+    "remote_name": None,
+    "document_id": None,
+    "title": None,
+    "source_name": None,
+    "original_url": None,
+    "checked": None,
+    "notes": None,
+    "metadata": None,
+    "file_metadata": None,
+    "retries": None,
+    "upload": None,
+    "verify_timeout": None,
+    "no_backup_on_replace": None,
+    "results_file": Path,
+    "skip_original_url_metadata": None,
+    "backfill": None,
+}
 
 
 def is_url(value: str) -> bool:
@@ -78,9 +141,11 @@ def remote_name_from_source(source: str) -> str:
 
 def download(url: str, destination: Path) -> None:
     request = urllib.request.Request(url, headers={"User-Agent": DEFAULT_USER_AGENT})
-    with urllib.request.urlopen(request, timeout=120) as response:
-        with destination.open("wb") as output:
-            shutil.copyfileobj(response, output)
+    with (
+        urllib.request.urlopen(request, timeout=120) as response,
+        destination.open("wb") as output,
+    ):
+        shutil.copyfileobj(response, output)
 
 
 def sha256(path: Path) -> str:
@@ -145,7 +210,7 @@ def print_manifest_snippet(
 ) -> None:
     title = args.title or document_id_from_remote_name(remote_name).replace("-", " ")
     archive_item = f"https://archive.org/details/{args.item}"
-    checked = args.checked or date.today().isoformat()
+    checked = args.checked or datetime.now(tz=timezone.utc).date().isoformat()
     notes = args.notes or ""
 
     print("\nManifest YAML:")
@@ -207,6 +272,38 @@ def metadata_contains_file(item: str, remote_name: str) -> tuple[bool, dict]:
     return False, metadata
 
 
+def build_ia_metadata_command(
+    item: str, remote_name: str, key: str, value: str
+) -> list[str]:
+    return [
+        "ia",
+        "metadata",
+        item,
+        "--target",
+        f"files/{remote_name}",
+        "--modify",
+        f"{key}:{value}",
+    ]
+
+
+def record_original_url_metadata(
+    item: str, remote_name: str, original_url: str
+) -> bool:
+    """Attach original_url as archive.org file-level metadata via the Metadata
+    Write API (not `ia upload --file-metadata`, which is for bulk uploads)."""
+    command = build_ia_metadata_command(item, remote_name, "original_url", original_url)
+    printable = " ".join(shell_quote(part) for part in command)
+    print(f"IA metadata command: {printable}")
+    result = subprocess.run(command, check=False)
+    if result.returncode != 0:
+        print(
+            f"warning: failed to attach original_url metadata to {remote_name}",
+            file=sys.stderr,
+        )
+        return False
+    return True
+
+
 def wait_for_uploaded_file(item: str, remote_name: str, timeout: int) -> bool:
     deadline = time.monotonic() + timeout
     last_metadata: dict = {}
@@ -236,9 +333,27 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Validate a source PDF and optionally upload it to an Internet Archive item."
     )
-    source = parser.add_mutually_exclusive_group(required=True)
+    source = parser.add_mutually_exclusive_group(required=False)
     source.add_argument("--source-url", help="URL to download before upload")
     source.add_argument("--file", type=Path, help="Existing local PDF to upload")
+    parser.add_argument(
+        "--config",
+        nargs="?",
+        const=str(DEFAULT_CONFIG_PATH),
+        type=Path,
+        help=(
+            "JSON config file with one job (object) or several (array, or "
+            f"{{'uploads': [...]}}). Defaults to {DEFAULT_CONFIG_PATH} when given "
+            "without a path. Missing fields in a job fall back to the matching CLI "
+            "option, e.g. --item or --upload."
+        ),
+    )
+    parser.add_argument(
+        "--results-file",
+        type=Path,
+        default=DEFAULT_RESULTS_PATH,
+        help="JSONL file to append successful, verified upload records to.",
+    )
     parser.add_argument(
         "--item", default=DEFAULT_ITEM, help="Internet Archive item identifier"
     )
@@ -291,11 +406,128 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Ask archive.org not to keep old versions if the remote filename already exists.",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--skip-original-url-metadata",
+        action="store_true",
+        help=(
+            "Do not attach the source/original URL as archive.org file-level "
+            "metadata (via `ia metadata --target=files/<name>`) after a verified upload."
+        ),
+    )
+    parser.add_argument(
+        "--backfill",
+        action="store_true",
+        help=(
+            "Do not download/upload anything. Instead, verify --remote-name already "
+            "exists in --item, attach --original-url as file metadata, and log it to "
+            "the results file. Use this for files uploaded before this script tracked "
+            "metadata/results."
+        ),
+    )
+    args = parser.parse_args()
+    if args.backfill:
+        if not args.config and not args.remote_name:
+            parser.error("--backfill requires --remote-name (or use --config)")
+    elif not args.config and not (args.source_url or args.file):
+        parser.error("one of --source-url, --file or --config is required")
+    return args
 
 
-def main() -> int:
-    args = parse_args()
+def load_config_jobs(config_path: Path) -> list[dict]:
+    try:
+        data = json.loads(config_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        raise SystemExit(f"Config file not found: {config_path}")
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Invalid JSON in {config_path}: {exc}")
+
+    if isinstance(data, dict) and isinstance(data.get("uploads"), list):
+        jobs = data["uploads"]
+    elif isinstance(data, list):
+        jobs = data
+    elif isinstance(data, dict):
+        jobs = [data]
+    else:
+        raise SystemExit(f"Invalid config format in {config_path}")
+
+    if not jobs:
+        raise SystemExit(f"No upload entries found in {config_path}")
+    return jobs
+
+
+def build_job_args(job: dict, defaults: argparse.Namespace) -> argparse.Namespace:
+    ns = argparse.Namespace(**vars(defaults))
+    for key, caster in JOB_FIELDS.items():
+        if key in job and job[key] is not None:
+            value = job[key]
+            setattr(ns, key, caster(value) if caster else value)
+
+    if ns.backfill:
+        if not ns.remote_name:
+            raise SystemExit("Config entry with 'backfill' needs 'remote_name'")
+    else:
+        if not ns.source_url and not ns.file:
+            raise SystemExit("Config entry needs 'source_url' or 'file'")
+        if ns.source_url and ns.file:
+            raise SystemExit("Config entry cannot have both 'source_url' and 'file'")
+    return ns
+
+
+def append_result(results_file: Path, record: dict) -> None:
+    results_file.parent.mkdir(parents=True, exist_ok=True)
+    with results_file.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def process_backfill_job(args: argparse.Namespace) -> dict | None:
+    """Attach metadata/log an entry for a file already uploaded to archive.org,
+    without downloading a source or running `ia upload` again."""
+    found, _ = metadata_contains_file(args.item, args.remote_name)
+    if not found:
+        raise SystemExit(
+            f"{args.remote_name} not found in item {args.item}; nothing to backfill"
+        )
+
+    file_url = f"https://archive.org/download/{args.item}/{urllib.parse.quote(args.remote_name)}"
+
+    with tempfile.TemporaryDirectory(prefix="bomfast-archive-backfill-") as temp_dir:
+        local_file = Path(temp_dir) / args.remote_name
+        print(f"Downloading existing file to compute checksum: {file_url}")
+        download(file_url, local_file)
+        checksum = sha256(local_file)
+        size = local_file.stat().st_size
+
+    print(f"Remote name: {args.remote_name}")
+    print(f"Size: {size} bytes")
+    print(f"SHA256: {checksum}")
+    print(f"File URL: {file_url}")
+
+    if args.original_url and not args.skip_original_url_metadata:
+        record_original_url_metadata(args.item, args.remote_name, args.original_url)
+
+    return {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "item": args.item,
+        "document_id": args.document_id
+        or document_id_from_remote_name(args.remote_name),
+        "title": args.title
+        or document_id_from_remote_name(args.remote_name).replace("-", " "),
+        "source_name": args.source_name,
+        "source": args.original_url or "",
+        "original_url": args.original_url or "",
+        "remote_name": args.remote_name,
+        "file_url": file_url,
+        "size_bytes": size,
+        "sha256": checksum,
+        "checked": args.checked or datetime.now(tz=timezone.utc).date().isoformat(),
+        "notes": args.notes,
+        "backfilled": True,
+    }
+
+
+def process_job(args: argparse.Namespace) -> dict | None:
+    """Validate and optionally upload one job. Returns a result record on a
+    verified successful upload, or None for a dry run or unverified upload."""
     source = args.source_url or str(args.file)
     remote_name = args.remote_name or remote_name_from_source(source)
 
@@ -325,7 +557,7 @@ def main() -> int:
 
         if not args.upload:
             print("Dry run only. Add --upload to run ia upload.")
-            return 0
+            return None
 
         if not shutil.which("ia"):
             raise SystemExit(
@@ -341,8 +573,68 @@ def main() -> int:
                 "Try checking item tasks or rerun the upload after archive.org finishes processing.",
                 file=sys.stderr,
             )
-            return 1
-        return 0
+            return None
+
+        original_url_value = args.source_url or args.original_url
+        if original_url_value and not args.skip_original_url_metadata:
+            record_original_url_metadata(args.item, remote_name, original_url_value)
+
+        return {
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "item": args.item,
+            "document_id": args.document_id
+            or document_id_from_remote_name(remote_name),
+            "title": args.title
+            or document_id_from_remote_name(remote_name).replace("-", " "),
+            "source_name": args.source_name,
+            "source": source,
+            "original_url": args.original_url if not is_url(source) else source,
+            "remote_name": remote_name,
+            "file_url": file_url,
+            "size_bytes": size,
+            "sha256": checksum,
+            "checked": args.checked or datetime.now(tz=timezone.utc).date().isoformat(),
+            "notes": args.notes,
+        }
+
+
+def main() -> int:
+    args = parse_args()
+
+    if args.config:
+        raw_jobs = load_config_jobs(args.config)
+    else:
+        raw_jobs = [None]
+
+    failures = 0
+    for index, raw_job in enumerate(raw_jobs, start=1):
+        try:
+            job_args = args if raw_job is None else build_job_args(raw_job, args)
+        except SystemExit as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            failures += 1
+            continue
+
+        if len(raw_jobs) > 1:
+            source = job_args.source_url or job_args.file or job_args.remote_name
+            print(f"\n=== Job {index}/{len(raw_jobs)}: {source} ===")
+        try:
+            if job_args.backfill:
+                record = process_backfill_job(job_args)
+            else:
+                record = process_job(job_args)
+        except (SystemExit, subprocess.CalledProcessError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            failures += 1
+            continue
+
+        if record is not None:
+            append_result(job_args.results_file, record)
+            print(f"Recorded result in {job_args.results_file}")
+        elif job_args.backfill or job_args.upload:
+            failures += 1
+
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":
