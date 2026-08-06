@@ -255,10 +255,10 @@ rekke registrerte rødlistearter."
 
 Så om en samlet vurdering av ikke-prissatte konsekvenser skal lande på "stor negativ",
 "svært stor negativ" eller "kritisk stor negativ" kan sikkert diskuteres. Etter vårt syn
-er dette nærmere "kritisk stor negativ", siden
-[myndighetene selv påpeker at Norge har et spesielt internasjonalt ansvar for å ta vare på kystregnskogen](https://tema.miljodirektoratet.no/no/Nyheter/Nyheter/2018/Mars-2018/Unike-regnskoger-kartlagt-flere-steder-pa-Vestlandet/).
-Dette kombinert med at miljøvernministeren sier vi trenger en
-[egen Parisavtale for nettopp å stoppe mer tap av naturmangfold](https://www.bevar-baardsund.org/post/rotevatn-skrinlegg-hordfast).
+er dette nærmere "kritisk stor negativ", siden myndighetene selv påpeker at Norge har et
+spesielt internasjonalt ansvar for å ta vare på kystregnskogen Dette kombinert med at
+miljøvernministeren sier vi trenger en
+[egen Parisavtale for nettopp å stoppe mer tap av naturmangfold](https://www.dagsavisen.no/nyheter/rotevatn-vi-trenger-en-paris-avtale-for-naturen/6197606).
 
 Slikt sett er det ingen tvil om at dette alene gjør at Hordfast umulig kan ha "positiv
 samfunnsnytte" når man bruker en samlet vurdering av ikke-prissatte og prissatte

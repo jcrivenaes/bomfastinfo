@@ -11,8 +11,10 @@ featured: false
 
 Publisert 21 januar 2023, oppdatert/korrigert 1 mars 2023
 
+![Eksempel på Hordfast takster](bompenger_eksempel.png)
+
 Et gjentatt spørsmål i Hordfast er: hva blir bompengene? Dette spør
-[Per Fadnes om i Sunnhordland i november 2021](https://www.sunnhordland.no/meiningar/hvorfor-er-det-ingen-som-vil-si-hva-det-vil-koste/),
+[Per Fadnes om i Sunnhordland i november 2021](https://www.sunnhordland.no/meiningar/o/Kny6ke/hvorfor-er-det-ingen-som-vil-si-hva-det-vil-koste),
 men han får ikke noe svar der. Kanskje ikke så rart, for et ærlig svar er ubehagelig. Et
 halvt år senere, i et
 [et innlegg i Haugaland Vekst 13 mai 2022](https://haugalandvekst.no/hordfast-er-i-rute/)
@@ -26,7 +28,7 @@ hevder sjefen i lobbyselskapet Hordfast AS, Øyvind Halleraker følgende:
 > fergeavløsningsprosjekter."
 
 Her er mye feil.
-[Retningslinjene til transportetatene](https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf)
+[Retningslinjene til transportetatene](https://web.archive.org/web/20230308010133/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf)
 sier at bompengene for fergeavløsnings-prosjekter skal være fergetakst + 40%, pluss et
 tillegg på om lag 2-3 kroner per kilometer vei. Og (minst) 20 år er svært sannsynlig,
 akkurat som Rogfast og Sotrasambandet, kommer tilbake til det.
@@ -37,13 +39,14 @@ Neppe, hvis vi regner på det, og leser SVV sin egen dokumentasjon!
 
 ## Et notat fra Vegvesenet i 2015 angir svært høye bompenger
 
-I [2015 utarbeidet Vegvesenet et notat](https://tinyurl.com/3kvkfdkd), der regner de på
-forskjellige alternativer. Mest interessant er at de finner at takst for personbil må
-bli 407 kroner (og 3 ganger så mye for tungbil) for å kunne finansiere et bompengelån på
-10,9 mrd. Men NTP angir et enda høyere bompengelån, nemlig 14,4 milliarder. "Enkelt
-matte" tilsier da at takstene blir over 500 kroner!
+I
+[2015 utarbeidet Vegvesenet et notat](https://archive.org/download/bomfast-kildedokumenter/svv_2015--bompengebidrag_hordfast_estimat.pdf),
+der regner de på forskjellige alternativer. Mest interessant er at de finner at takst
+for personbil må bli 407 kroner (og 3 ganger så mye for tungbil) for å kunne finansiere
+et bompengelån på 10,9 mrd. Men NTP angir et enda høyere bompengelån, nemlig 14,4
+milliarder. "Enkelt matte" tilsier da at takstene blir over 500 kroner!
 
-![Vegvesenets notat fra 2015 om bompengetakster.](vegvesenet-notat-2015.png)
+![Vegvesenets notat fra 2015 om bompengetakster.](bompengescenarier.png)
 
 Blir det så gale? La oss se på litt tekniske detaljer. Men obs, litt "nerde-alarm"
 her...
@@ -187,9 +190,7 @@ og
 [annen info fra SVV](https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972).
 Da før vi følgende gjennomsnittstakst:
 
-**514 kroner**
-
-{{< countup id="bompenger_id1" value="514" suffix="kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
+{{< countup id="bompenger_id1" value="514" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 Dette svarer en gjennomsnittstakst omtalt i en
 [SVV "klima-rapport" fra 2022](https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972)
@@ -238,18 +239,18 @@ flytebro og en rekke andre krevende broer og tunneler. Rogfast skulle egentlig o
 ta 5 år, nå er byggetiden over 10 år. Hva om byggetiden til Hordfast blir minst 7 år? Da
 blir gjennomsnittakst:
 
-{{< countup id="bompenger_id2" value="575" suffix="kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
+{{< countup id="bompenger_id2" value="575" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 En årlig trafikkvekst på 1,5% er relativt høyt gitt at trafikken for fergene de siste 7
 årene knapt har hatt økning. Hva trafikkøkningen blir 0% i stedet? Beregnet
 gjennomsnittstakst blir da
 
-{{< countup id="bompenger_id3" value="646" suffix="kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
+{{< countup id="bompenger_id3" value="646" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 Hordfast AS hevder at bompengeperioden blir 15 år og ikke 20 slik SVV sier i sine egne
 rapporter, hva må da gjennomsnittstakst bli da (gitt 7 års byggetid)?
 
-{{< countup id="bompenger_id4" value="719" suffix="kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
+{{< countup id="bompenger_id4" value="719" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 I dag er trafikken over Bjørnafjorden ca. 3200 biler per døgn. En engangsøkning til 5700
 "over natten" er ganske mye, spesielt når bompengene er såpass høye. SVV hevder at mye
@@ -260,13 +261,13 @@ Hvorfor de skal ønske å gjøre det gitt de høye bompengene forblir et mysteri
 Hva hvis trafikken ikke øker i det hele tatt men er 3200 ved oppstart, og veksten
 deretter er kun 0.5% per år (20 år nedbetaling)?
 
-{{< countup id="bompenger_id5" value="1098" suffix="kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
+{{< countup id="bompenger_id5" value="1098" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 Grafen under (hentet fra [denne siden](https://www.bomfast.info/bompengescenarier))
 viser hvordan bompengene varierer, gitt forskjellig ÅDT ved oppstart og forskjellig
 trafikkvekst
 
-![Bompengescenarier ved ulik trafikk og trafikkvekst.](bompengescenarier.png)
+![Bompengescenarier ved ulik trafikk og trafikkvekst.](bompengegraf.png)
 
 ## Hvis Tysnesingene skal betale mindre, må Stordabuene betale mer
 
