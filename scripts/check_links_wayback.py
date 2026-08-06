@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import csv
+import http.cookiejar
 import json
 import re
 import ssl
@@ -28,10 +29,28 @@ from pathlib import Path
 from typing import Iterable
 
 
+# A generic "...link-check-wayback" UA (and minimal headers) gets 403'd by bot/WAF
+# protection on several real, working sites (e.g. Cloudflare-style checks for
+# Sec-Fetch-*/Sec-Ch-Ua headers), even though the pages load fine in a browser.
+# Mimicking a real browser's request headers avoids those false positives.
 DEFAULT_USER_AGENT = (
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-    "Chrome/125 Safari/537.36 link-check-wayback"
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 )
+
+BROWSER_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+    "image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Accept-Language": "nb-NO,nb;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Sec-Ch-Ua": '"Chromium";v="126", "Not.A/Brand";v="24", "Google Chrome";v="126"',
+    "Sec-Ch-Ua-Mobile": "?0",
+    "Sec-Ch-Ua-Platform": '"Windows"',
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+}
 
 LINK_PATTERNS = [
     # Markdown links: [text](https://example.com) but not images.
@@ -66,6 +85,13 @@ class LinkResult:
     @property
     def broken(self) -> bool:
         return self.status is None or self.status >= 400
+
+    @property
+    def likely_blocked(self) -> bool:
+        # 403/406/429 are the classic bot/WAF-blocking responses; these links may
+        # actually work fine in a real browser and should be verified manually
+        # rather than treated as confirmed-dead.
+        return self.status in {403, 406, 429}
 
 
 def clean_url(raw_url: str) -> str:
@@ -116,19 +142,28 @@ def extract_links(
     return refs
 
 
+def build_opener(context: ssl.SSLContext) -> urllib.request.OpenerDirector:
+    # Cookies matter for sites that gate content behind a consent-cookie redirect.
+    cookie_jar = http.cookiejar.CookieJar()
+    return urllib.request.build_opener(
+        urllib.request.HTTPSHandler(context=context),
+        urllib.request.HTTPCookieProcessor(cookie_jar),
+    )
+
+
 def open_url(
     url: str,
     method: str,
     timeout: int,
     user_agent: str,
-    context: ssl.SSLContext,
+    opener: urllib.request.OpenerDirector,
 ) -> tuple[int, str, str]:
     request = urllib.request.Request(
         url,
         method=method,
-        headers={"User-Agent": user_agent, "Accept": "text/html,application/pdf,*/*"},
+        headers={"User-Agent": user_agent, **BROWSER_HEADERS},
     )
-    with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
+    with opener.open(request, timeout=timeout) as response:
         if method == "GET":
             response.read(256)
         return response.status, "", response.geturl()
@@ -180,11 +215,11 @@ def wayback_capture_looks_complete(
 
 
 def check_http_status(
-    url: str, timeout: int, user_agent: str, context: ssl.SSLContext
+    url: str, timeout: int, user_agent: str, opener: urllib.request.OpenerDirector
 ) -> tuple[int | None, str, str]:
     for method in ("HEAD", "GET"):
         try:
-            return open_url(url, method, timeout, user_agent, context)
+            return open_url(url, method, timeout, user_agent, opener)
         except urllib.error.HTTPError as error:
             if method == "HEAD" and error.code in {403, 405, 406, 429, 500, 501}:
                 continue
@@ -343,10 +378,14 @@ def find_wayback(
 
 
 def check_link(
-    url: str, refs: list[Reference], args: argparse.Namespace, context: ssl.SSLContext
+    url: str,
+    refs: list[Reference],
+    args: argparse.Namespace,
+    context: ssl.SSLContext,
+    opener: urllib.request.OpenerDirector,
 ) -> LinkResult:
     status, reason, final_url = check_http_status(
-        url, args.timeout, args.user_agent, context
+        url, args.timeout, args.user_agent, opener
     )
     result = LinkResult(
         url=url, status=status, reason=reason, final_url=final_url, refs=refs
@@ -376,10 +415,14 @@ def write_markdown(results: list[LinkResult], output: Path | None) -> None:
         f"Wayback matches: {sum(bool(result.wayback_url) for result in results)}"
     )
     lines.append("")
+
+    broken = [
+        result for result in results if result.broken and not result.likely_blocked
+    ]
+    blocked = [result for result in results if result.broken and result.likely_blocked]
+
     lines.append("## Broken Links")
     lines.append("")
-
-    broken = [result for result in results if result.broken]
     if not broken:
         lines.append("No broken links found.")
     for result in broken:
@@ -396,6 +439,22 @@ def write_markdown(results: list[LinkResult], output: Path | None) -> None:
         else:
             lines.append("  - Wayback: no 200 snapshot found")
 
+    if blocked:
+        lines.append("")
+        lines.append("## Possibly Blocked by Bot Protection (verify manually)")
+        lines.append("")
+        lines.append(
+            "These returned 403/406/429, which is often a WAF/anti-bot response "
+            "rather than a truly dead link. Open them in a browser before assuming "
+            "they are broken."
+        )
+        lines.append("")
+        for result in blocked:
+            lines.append(f"- `{result.status}` {result.url}")
+            if result.reason:
+                lines.append(f"  - Reason: {result.reason}")
+            lines.append(f"  - References: {format_refs(result.refs)}")
+
     text = "\n".join(lines) + "\n"
     if output:
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -411,6 +470,7 @@ def write_csv(results: list[LinkResult], output: Path | None) -> None:
         "url",
         "final_url",
         "references",
+        "likely_blocked",
         "wayback_url",
         "wayback_timestamp",
         "wayback_status",
@@ -432,6 +492,7 @@ def write_csv(results: list[LinkResult], output: Path | None) -> None:
                     "url": result.url,
                     "final_url": result.final_url,
                     "references": format_refs(result.refs),
+                    "likely_blocked": result.likely_blocked,
                     "wayback_url": result.wayback_url,
                     "wayback_timestamp": result.wayback_timestamp,
                     "wayback_status": result.wayback_status,
@@ -470,11 +531,12 @@ def main() -> int:
 
     refs_by_url = extract_links(args.content_dir, args.host)
     context = ssl.create_default_context()
+    opener = build_opener(context)
     results: list[LinkResult] = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
         futures = [
-            executor.submit(check_link, url, refs, args, context)
+            executor.submit(check_link, url, refs, args, context, opener)
             for url, refs in sorted(refs_by_url.items())
         ]
         for future in concurrent.futures.as_completed(futures):
