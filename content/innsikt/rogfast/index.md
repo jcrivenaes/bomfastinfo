@@ -89,7 +89,7 @@ garantere for.
 ## Nye kostnadssprekker
 
 Men dette fortsetter å stige. Siste tallet fra
-[Statens Vegvesen](https://www.vegvesen.no/globalassets/om-oss/om-organisasjonen/arsrapporter/tertialrapport-for-statens-vegvesen-per-30.-april-2023.pdf)
+[Statens Vegvesen](https://www.vegvesen.no/globalassets/om-oss/om-organisasjonen/arsrapporter/tertialrapport-for-statens-vegvesen-per-30.-april-2023_.pdf?v=4a25e1)
 er nå om lag 32 milliarder (2023 kroner) i kostnadsramme. Hvor ender dette?
 
 I figuren nedenfor oppsummeres endringene i kostnader. Merk at grafen tar hensyn til en
@@ -110,7 +110,7 @@ støter stadig vekk på "uforutsette" problemer som dårlig fjell, problemer med
 forurensede masser, etc. E39 Svegatjørn-Rådal, Hålogolandsbrua og Ryfast er alle
 eksempler på dette. Førstnevnte (Svegetjørn-Rådal) skulle koste 6,5 milliarder i 2014
 (ca. 8,3 milliarder 2023 kroner), men siste rapport fra SVV viser at
-[sluttkostnaden nå er rundt 12 milliarder](https://www.vegvesen.no/globalassets/om-oss/om-organisasjonen/arsrapporter/tertialrapport-for-statens-vegvesen-per-30.-april-2023.pdf).
+[sluttkostnaden nå er rundt 12 milliarder](https://www.vegvesen.no/globalassets/om-oss/om-organisasjonen/arsrapporter/tertialrapport-for-statens-vegvesen-per-30.-april-2023_.pdf?v=4a25e1).
 Så at Rogfast kan ende på 40 milliarder til slutt er ikke utenkelig, dessverre.
 
 ## Samfunnsnytten som forsvant
@@ -133,7 +133,7 @@ altså fortsette dagens løsning.
 Rogfast har lenge vært markedsført som
 [et av de mest lønnsomme prosjektene i NTP](https://www.aftenbladet.no/lokalt/i/9qjEd/rogfast-landets-mest-loennsomme-veiprosjekt).
 Men i
-[materialet fra KS2](https://drive.google.com/file/d/12DZYZZ0mAFO9HaZE15W2L2AzGvnf8Uq5/view?usp=sharing)
+[materialet fra KS2](https://archive.org/download/bomfast-kildedokumenter/atkins_2020--sluttrapport_ks2_rogfast_uten_vedlegg_oktober2020)
 finner vi at SVV nå innrømmer at samfunnsnytte ved 40 år nå er null, mens KS2 (Atkins)
 sin analyse viser et svakt positiv tall. Men dette gjelder kun hvis kostnadene følger
 styringsmålet (20,6 mrd kroner fra Stortinget)! Basert på nåværende kunnskap er dette
@@ -167,12 +167,11 @@ rimelig å anta at den egentlige samfunnsnytten ved Rogfast er betydelig på min
 
 ## Er trafikkprognosene realistiske?
 
-Både SVV og KS2 mener at trafikken ved oppstart vil være rundt 6000 ÅDT. Ser man
-[på trafikken de siste 5 årene Mortavika-Årsvågen](https://www.bevar-baardsund.org/trafikk-ferger)
-så har den vært flat mellom 2013 og 2019 på om lag 4100 i ÅDT, men et lite hopp i 2022
-pga. halverte fergepriser, som kanskje flater ut i 2023. Men hvorfor i all verden skal
-det komme om lag 2000 nye kjøretøy ved åpning i 2033 med bompenger for lettbil på over
-370 (2020) kroner?
+Både SVV og KS2 mener at trafikken ved oppstart vil være rundt 6000 ÅDT. Ser man på
+trafikken de siste 5 årene Mortavika-Årsvågen, så har den vært flat mellom 2013 og 2019
+på om lag 4100 i ÅDT, men et lite hopp i 2022 pga. halverte fergepriser, som kanskje
+flater ut i 2023. Men hvorfor i all verden skal det komme om lag 2000 nye kjøretøy ved
+åpning i 2033 med bompenger for lettbil på over 370 (2020) kroner?
 
 ## Hva med vedlikeholdskostnader for Rogfast?
 
@@ -211,7 +210,7 @@ Og det selv med 75 års nytteberegning! Den
 det er udiskutabelt.
 
 Så hvis Hordfast gjennomføres med samme kostnadsutvikling som Rogfast, så får vi et
-["grensesprengende" prosjekt](https://www.vegvesen.no/vegprosjekter/ferjefriE39/nyhetsarkiv/veier-og-fjordkrysninger-endrer-og-moderniserer-verden)
+["grensesprengende" prosjekt](https://www.samferdselinfra.no/veier-og-fjordkrysninger-endrer-og-moderniserer-verden/)
 som "pengemessig" koster samfunnet (veldig mye) mer enn det vi får igjen, og som i
 tillegg har en uerstattelig kostnad for naturmangfold, landskap og kulturminner.
 

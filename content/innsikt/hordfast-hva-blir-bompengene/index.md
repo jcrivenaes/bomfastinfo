@@ -28,7 +28,7 @@ hevder sjefen i lobbyselskapet Hordfast AS, Øyvind Halleraker følgende:
 > fergeavløsningsprosjekter."
 
 Her er mye feil.
-[Retningslinjene til transportetatene](https://web.archive.org/web/20230308010133/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf)
+[Retningslinjene til transportetatene](https://web.archive.org/web/20230308010133if_/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf)
 sier at bompengene for fergeavløsnings-prosjekter skal være fergetakst + 40%, pluss et
 tillegg på om lag 2-3 kroner per kilometer vei. Og (minst) 20 år er svært sannsynlig,
 akkurat som Rogfast og Sotrasambandet, kommer tilbake til det.
@@ -169,9 +169,9 @@ Merk forøvrig de høye takstene for Rogfast! Det blir neppe noe lavere for Hord
 I NTP 2022-2033 blir angitt en byggekostnad på 37,7 milliarder 2021 kroner, hvorav
 bompengeandelen (annen finansiering) skal utgjøre 14,4 milliarder (fergeavløsningsmidler
 inngår neppe i "annen finansiering" i særlig grad, da
-[tidligere regnestykker](https://tinyurl.com/3kvkfdkd) viser at vedlikeholdskostnadene
-ved prosjektet er noe større enn tilskuddet til fergedriften). Etter dette har Hordfast
-sin kostnad
+[tidligere regnestykker](https://archive.org/download/bomfast-kildedokumenter/svv_2015--bompengebidrag_hordfast_estimat.pdf)
+viser at vedlikeholdskostnadene ved prosjektet er noe større enn tilskuddet til
+fergedriften). Etter dette har Hordfast sin kostnad
 [økt til over 41 milliarder](https://www.vegvesen.no/contentassets/ec00a3a5e447428da5f3f3911fe3c217/presentasjon-pressekonferanse-10.-mai-2022-statens-vegvesen-002.pdf),
 men vi antar fortsatt her at bompengelånet forblir uendret (rett og slett fordi
 bilistene neppe tåler enda høyere bompenger).
@@ -187,13 +187,13 @@ tidlig (noe som gir høyere bompenger). Det er er antatt at bompengeperioden bli
 20 år, basert på Rogfast,
 [Sotrasambandet](https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2017-2018/inns-201718-270s.pdf)
 og
-[annen info fra SVV](https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972).
+[annen info fra SVV](https://web.archive.org/web/20231206181037if_/https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972).
 Da før vi følgende gjennomsnittstakst:
 
 {{< countup id="bompenger_id1" value="514" suffix=" kr per passering" duration="2" centered="true" size="2em" mb="1.25rem">}}
 
 Dette svarer en gjennomsnittstakst omtalt i en
-[SVV "klima-rapport" fra 2022](https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972)
+[SVV "klima-rapport" fra 2022](https://web.archive.org/web/20220314115414if_/https://vegvesen.brage.unit.no/vegvesen-xmlui/handle/11250/2981972)
 (som forøvrig har en rekke pinlige regne- og andre tekniske feil, se
 [Naturvernforbundet sin motrapport](https://naturvernforbundet.no/content/uploads/sites/13/2022/11/Naturvernforbundets-motrapport-mot-SVV-som-mener-Hordfast-er-et-klimatiltak-300922.pdf))
 sier (side 6): "Bompengene blir lik dagens ferjetakster + 40% på strekningen" (som
@@ -306,14 +306,14 @@ ned i tilsvarende priser + 40% så må Staten øke sin andel ved utbyggingen med
 milliarder.
 
 Gjeldende veiledning sier at
-[bomtaksten skal være ferjetakst + 40 prosent, pluss 2 kroner pr kilometer (personbiler)](https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf).
+[bomtaksten skal være ferjetakst + 40 prosent, pluss 2 kroner pr kilometer (personbiler)](https://web.archive.org/web/20230308010133if_/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/transportanalyser/samfunnsokonomiske-analyser/ntp-2022-2033-retningslinjer-for-transportanalyser-og-samfunnsokonomiske-analyser.pdf).
 Tar man utgangspunkt i autopasspris (197 kroner) og 55 km, så skal taksten være 386
 kroner for lettbil med autopassbrikke.
 
 Nå vil noen påpeke at de reduserte ferjetakstene må også betales av Staten, og det er
 riktig. Men ser man på Statsbudsjettet så finner man følgende statlige midler for alle
 riksveifergene ("kjøp av riksveiferjetjenester",
-[om lag 16 samband](https://www.vegvesen.no/trafikkinformasjon/reiseinformasjon/riksveiferjesamband/);
+[om lag 16 samband](https://web.archive.org/web/20220522022303if_/https://www.vegvesen.no/trafikkinformasjon/reiseinformasjon/riksveiferjesamband/);
 dessverre er ikke tall per samband gitt offentlig):
 
 - 2018-2019: 1,277 milliarder
@@ -329,7 +329,7 @@ reduserte fergetakstene gir en netto økning i Statsbudsjettet på ca. 1 milliar
 Tja noen har fått det, men andre ikke. For eksempel sliter nå
 [Hardangerbrua, som trolig må både øke takster og forlenge bompengeperioden](https://direkte.vg.no/nyhetsdognet/news/foreslaar-bompengeoekning-paa-hardangerbrua.lum5Rb6k9).
 En faktor som er viktig her er at
-[trafikkveksten i Norge har flatet ut](https://www.vegvesen.no/globalassets/fag/trafikk/trafikkdata/vegtrafikkindeksen_2022-09.pdf)
+[trafikkveksten i Norge har flatet ut](https://www.vegvesen.no/globalassets/fag/trafikk/trafikkdata/vegtrafikkindeksen_2022-12.pdf?v=49016b)
 de senere årene.
 
 ## Hvor mye må Staten betale av Hordfast dersom gjennomsnittstakst skal bli "kun" 200 kroner?
@@ -359,7 +359,7 @@ dette går til mindre utbedringer (oppgradering av tunneler for eksempel) over h
 landet.
 
 Vi kan avsluttet med et sitat fra vegdirektør Kjartan Hove i SVV som uttaler
-[i et brev forbindelse med E39 Vågsbotn-Klauvaneset (ringveg øst) i Bergen](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e16e39arnaklauvaneset/vedlegg/kommunedelplan/20_16800-101-oversendingsbrev.pdf),
+[i et brev forbindelse med E39 Vågsbotn-Klauvaneset (ringveg øst) i Bergen](https://web.archive.org/web/20240806203315if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e16e39arnaklauvaneset/vedlegg/kommunedelplan/20_16800-101-oversendingsbrev.pdf),
 sitat fra side 4:
 
 > _"Samtidig vil Statens vegvesen sterkt imøtegå høringsinnspill som hevder at en

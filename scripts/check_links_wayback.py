@@ -52,6 +52,12 @@ BROWSER_HEADERS = {
     "Upgrade-Insecure-Requests": "1",
 }
 
+# Wayback Machine cold reads from Petabox/S3 are slow and flaky enough (often
+# 20-30s+, sometimes timing out outright) that checking them over the network
+# produces false ERR reports. Links already pointing at web.archive.org are
+# assumed to be fine and are not re-checked.
+WAYBACK_HOST = "web.archive.org"
+
 LINK_PATTERNS = [
     # Markdown links: [text](https://example.com) but not images.
     re.compile(
@@ -217,6 +223,9 @@ def wayback_capture_looks_complete(
 def check_http_status(
     url: str, timeout: int, user_agent: str, opener: urllib.request.OpenerDirector
 ) -> tuple[int | None, str, str]:
+    if urllib.parse.urlparse(url).netloc == WAYBACK_HOST:
+        return 200, "skipped: assumed-ok wayback link", url
+
     for method in ("HEAD", "GET"):
         try:
             return open_url(url, method, timeout, user_agent, opener)

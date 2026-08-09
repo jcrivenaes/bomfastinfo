@@ -4,13 +4,15 @@
       "backfill": true,
       "remote_name": "e39-aksdal-bergen-kvu-tilleggsutgreing-2012.pdf",
       "title": "E39 Aksdal-Bergen KVU tilleggsutgreiing 2012",
-      "original_url": "https://www.regjeringen.no/globalassets/upload/sd/vedlegg/kvu-rapporter/tilleggsutgr2012.pdf"
+      "original_url": "https://www.regjeringen.no/globalassets/upload/sd/vedlegg/kvu-rapporter/tilleggsutgr2012.pdf",
+      "tags": ["hordfast", "kvu"]
     },
     {
       "backfill": true,
       "remote_name": "e39-stord-os-ku-naturmangfold-hoyringsrapport-juni-2016.pdf",
       "title": "E39 Stord-Os KU naturmangfold hoyringsrapport juni 2016",
-      "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/kommunedelplan-med-ku/fagrapportar---ku/e39-stord-os-ku-naturmangfold-hoyringsrapport-juni-2016.pdf?v=499071"
+      "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/kommunedelplan-med-ku/fagrapportar---ku/e39-stord-os-ku-naturmangfold-hoyringsrapport-juni-2016.pdf?v=499071",
+      "tags": ["hordfast", "kmd"]
     },
     {
       "backfill": true,
@@ -22,13 +24,15 @@
       "backfill": true,
       "remote_name": "svv_2016--kommunedelplan_hovedrapport.pdf",
       "title": "Kommunedelplan hovedrapport 2016",
-      "original_url": ""
+      "original_url": "",
+      "tags": ["hordfast", "kmd"]
     },
     {
       "backfill": true,
       "remote_name": "vedlegg-1-dokumentasjon-beregninger---prissatte-virkninger.pdf",
       "title": "Vedlegg 1 - dokumentasjon beregninger prissatte virkninger",
-      "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/nasjonal-transportplan-ntp/portefoljestyring/2027/vedlegg-1-dokumentasjon-beregninger---prissatte-virkninger.pdf?v=49ad18"
+      "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/nasjonal-transportplan-ntp/portefoljestyring/2027/vedlegg-1-dokumentasjon-beregninger---prissatte-virkninger.pdf?v=49ad18",
+      "tags": ["ntp"]
     }
   ]
 }

@@ -77,7 +77,7 @@ bussen betydelig). Nei, vi må reise til bussterminalen sentralt i Bergen først
 ![Eksempel total tid fly versus totaltid buss](totaltid-tabell.png)
 
 Husk at når [svindyre Rogfast](../rogfast/) er ferdig
-([ca. 2033](https://www.veier24.no/artikler/den-andre-av-tre-store-rogfast-kontrakter-er-na-utlyst/517760))
+([ca. 2033](https://web.archive.org/web/20230924080248if_/https://www.veier24.no/artikler/den-andre-av-tre-store-rogfast-kontrakter-er-na-utlyst/517760))
 og hvis Hordfast blir realisert, så er det likevel et langt stykke (78 km) der
 gjennomsnittsfarten i dag (i følge Google maps) er rundt 70-75 km/t. Dette strekket kan
 omtales som "Stord-Bokn", og
@@ -142,7 +142,7 @@ Sparer da både egen tid, og sparer miljøet. En vinn-vinn!
 
 Hvis næringslivet virkelig vil ha lengre reisetid Bergen-Stavanger og dårligere
 flytilbud, samt være en aktiv pådriver for å
-[bygge ned unikt naturmangfold](https://www.vestlandfylke.no/globalassets/fylkesveg/presentasjonar/naturvernforbundet-pa-stord.pdf)
+[bygge ned unikt naturmangfold](https://www.miljodirektoratet.no/tjenester/naturtyper/boreonemoral-regnskog/)
 og
 [øke klimagassutslipp betydelig](https://www.bt.no/nyheter/lokalt/i/69kEne/vegvesenet-hevdet-at-hordfast-er-best-for-klimaet-naa-har-naturvernforbundet-tatt-frem-kalkulatoren),
 så bør de promotere Hordfast.

@@ -1,7 +1,9 @@
 ---
 title: 'Er Hordfast nøkkelen til det "grønne skiftet"?'
 date: 2022-04-29
-lastmod: 2022-04-29
+lastmodNotes:
+  - date: "8 august 2026"
+    note: "Korrigerte lenker som var feil"
 author: "J. C. Rivenæs"
 aliases:
   - "/post/er-hordfast-noekkelen-til-det-groenne-skiftet/"
@@ -16,7 +18,7 @@ fremover. Stikkordene i dette "grønne skiftet" er "bedre mobilitet og utvidede 
 arbeidsmarked". Eller oversatt: kraftig økning av trafikken, høyere fart, mer og lengre
 pendling mellom kommuner og flere biler i kø inn mot byene.
 
-![Samfunnsnytte](samfunnsnytte.png)
+![Er Hordfast nøkkelen, kronikk](hordfast-nokkelen-paastand.jpg)
 
 Implisitt her er at de ikke bare ønsker seg Hordfast, men også videre utbygging av
 4-felts motorvei mellom Stord og Bokn.
@@ -25,7 +27,7 @@ Det må jo gå i 110 km/t hele veien mellom Bergen og Stavanger, ellers knekker 
 hele vest-Norge sammen får vi inntrykk av. Og ikke nok med, i tilknytning til Hordfast
 jobbes det også for [fjordkryssing-prosjektet Sunnfast](https://sunnfast.no/) (som
 allerede har en
-[betalt lobbyist ansatt på heltid](https://www.sunnhordland.no/nyhende/hentar-tidlegare-ordforar-i-ny-lobby-stilling-slik-skal-dei-fa-gjennomslag-for-sunnfast-prosjektet/)),
+[betalt lobbyist ansatt på heltid](https://www.sunnhordland.no/nyhende/n/76Kno3/hentar-tidlegare-ordfoerar-i-ny-lobbfor-sunnfasty-stilling-slik-skal-dei-faa-gjennomslag-for-sunnfast-prosjektet)),
 og kanskje også
 ["Austevollfast"](https://www.bt.no/nyheter/lokalt/i/m5qPq/austevoll-vil-bli-landfast).
 
@@ -39,7 +41,7 @@ For å ta "samfunnsnytte" først:
 [I Nasjonal Transportplan (NTP)](https://www.regjeringen.no/no/tema/transport-og-kommunikasjon/nasjonal-transportplan/id2475111/)
 sies det nå at netto nytte for Hordfast er relativ lav, ca. 1 milliard etter korrigert
 pris på Hordfast (38,5 mrd). Forlengelsen av Hordfast på Stord,
-["Heiane-Ådland/Nordre Tveita"](https://www.vegvesen.no/vegprosjekter/europaveg/e39leirvik/),
+["Heiane-Ådland/Nordre Tveita"](https://web.archive.org/web/20250916014638if_/https://www.vegvesen.no/vegprosjekter/europaveg/e39leirvik/),
 vil i følge
 [en revidert plan fra 2019](https://trafikksikkerhetsforeningen.no/wp-content/uploads/2020/10/2019_10_01_oppdrag_1_vedlegg_1_prosjektomtaler_1.pdf)
 koste omlag 2,6 mrd og ha en netto nytte på minus 1,5 mrd. Samlet betyr dette en netto
@@ -47,7 +49,7 @@ nytte for hele Os-Bokn til å bli negativ på minus 12 milliarder. Totalt er alt
 Os-Bokn et tapsprosjekt med en kostnad på 64 milliarder kroner og en "nytte" på minus
 12,3 milliarder i utgangspunktet. Det er mye penger!
 
-![Klimautslipp](klimautslipp.png)
+![Strekninger](nokkelen-strekninger.avif)
 
 Og dette er
 [før alle kostnadssprekkene vi kan forvente](https://www.ba.no/de-store-veiprosjektene-sprenger-prisantydningene/s/5-8-1868088).
@@ -63,14 +65,14 @@ friluftsperlene som finnes i Sunnhordland er ikke nevnt med ett eneste ord av di
 ordførerne! Oppsummert er nytten for disse "ikke-prissatte" kostnadene "stor til meget
 stor negativ", i følge SVV egne rapporter og (ikke minst) Statsforvalteren sin kraftige
 kritikk av prosjektet (se for eksempel hva
-[Statsforvalteren skriver i sin høring til planprogrammet for reguleringsplan](https://drive.google.com/file/d/1TQTBGKOr4pHGbpUKr7e2U_Gt3VPdeBtn/view?usp=sharing),
+[Statsforvalteren skriver i sin høring til planprogrammet for reguleringsplan](https://archive.org/download/bomfast-kildedokumenter/statsforvalteren_vestland_2021--merknader_hordfast__20211130),
 høsten 2021).
 
 Vedlikeholdet av vei, broer, tunneler etc vil koste store summer årlig, estimert til
 minst 350 millioner per år! Med
 [begrensede samferdselsmidler](https://www.faktisk.no/artikler/jeo3x/har-regjeringen-doblet-samferdselsbudsjettet)
 må vi
-[heller prioritere det store etterslepet vedlikehold og sikring av eksisterende veier](https://www.veier24.no/artikler/naf-mange-mener-at-vedlikehold-av-veiene-er-viktigere-enn-nybygging/512567)
+[heller prioritere det store etterslepet vedlikehold og sikring av eksisterende veier](https://web.archive.org/web/20230203201811if_/https://www.veier24.no/artikler/naf-mange-mener-at-vedlikehold-av-veiene-er-viktigere-enn-nybygging/512567)
 på vestlandet i resten av Norge. Samt at man må sørge for at
 [nedbygging av natur](https://www.sabima.no/hva-truer-naturen/arealendringer/) stopper
 umiddelbart, [slik FN krever](https://news.un.org/en/story/2021/02/1085382)!
@@ -78,10 +80,10 @@ umiddelbart, [slik FN krever](https://news.un.org/en/story/2021/02/1085382)!
 ## Men hva med netto ringvirkninger da?
 
 Netto ringvirkninger er en
-[en beregning av "mernytte"](https://www.moreforsk.no/publikasjoner/rapporter/transportokonomi/beregningsmetodikk-for-netto-ringvirkninger-av-samferdselsinvestering/1094/3270/)
+[en beregning av "mernytte"](https://web.archive.org/web/20260117124611if_/https://www.moreforsk.no/publikasjoner/rapporter/transportokonomi/beregningsmetodikk-for-netto-ringvirkninger-av-samferdselsinvestering/1094/3270/)
 som i teorien skal ta inn nytte (og ulemper!) som den vanlige (trafikant-)nytten ikke
 plukker opp. Temaet er
-[imidlertid omstridt, og metodikk og tall spriker](https://uia.brage.unit.no/uia-xmlui/handle/11250/2561960)
+[imidlertid omstridt, og metodikk og tall spriker](https://web.archive.org/web/20250827103750if_/https://uia.brage.unit.no/uia-xmlui/handle/11250/2561960)
 kraftig. Dessuten viser Nordlandsforskning at
 [resultatet synes også å være påvirket av hvem som oppdragsgiver](https://www.nordlandsforskning.no/sites/default/files/files/NF-rapport%2008_2018.pdf).
 I NTP er mernytte derfor kun ansett som tilleggsinformasjon. Men dette kan uansett ikke
@@ -90,15 +92,15 @@ redde regnestykket til Bokn-Os.
 Statens Vegvesen mener at
 [mernytten til Hordfast om lag 1,4 mrd i innspill til NTP](https://www.regjeringen.no/contentassets/13a80858d58a47e1a23e944b7144ee9b/2020-03-26-oppdrag-9-til-sd-korrigert-versjon.pdf).
 For Bokn-Stord
-[finner Menon at tallet også er 1,4 mrd](https://www.menon.no/wp-content/uploads/Dokumentasjonsnotat-netto-ringvirkninger.pdf),
-men det tallet er trolig for høyt da bompenger neppe er inkludert. Uansett, i sum altså
-ca. 2,8 milliarder (og svært usikkert). For Heiane-Ådland har vi ikke funnet tall, men
+[finner Menon at tallet er ca 1,3 mrd](https://www.regjeringen.no/contentassets/575aa327ac6944d7b36fb57bba14f1e9/nye-veier---svar-pa-tilleggsoppdrag-prioriteringer-og-marginalvurderinger.pdf),
+men dette er trolig for høyt da bompenger neppe er inkludert. Uansett, i sum altså ca.
+2,8 milliarder (og svært usikkert). For Heiane-Ådland har vi ikke funnet tall, men
 mernytten på dette kortet strekket er trolig minimal. Så selv inklusiv mernytte blir den
 samlede nytten likevel minus 9,5 milliarder.
 
 ## Store gevinster for klimautslipp?
 
-[I følge regjeringen og stortinget](https://www.regjeringen.no/no/tema/klima-og-miljo/innsiktsartikler-klima-miljo/det-gronne-skiftet/id2879075/)
+[I følge regjeringen og stortinget](https://web.archive.org/web/20240926155325if_/https://www.regjeringen.no/no/tema/klima-og-miljo/innsiktsartikler-klima-miljo/det-gronne-skiftet/id2879075/)
 så handler "det grønne skiftet" om "hvordan Norge skal bli et lavutslippsland innen
 2050", og "hvor vekst og utvikling må skje innenfor naturens tålegrenser". Merk innenfor
 naturens tålegrenser og innen 2050!
@@ -125,6 +127,8 @@ Før 2050 er netto utslippet enda større (se figur). Så skal Regjeringen og St
 kutte minst 3 millioner tonn per år fremover til 2030... blir det ikke da litt pussig å
 gå inn for et transportprosjekt som over natten øker utslippene med minst 1,3 millioner
 tonn?
+
+![Klimagasser, profil](nokkelen-co2.avif)
 
 ## Avgjørende konkurransefaktor?
 
