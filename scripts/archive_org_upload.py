@@ -67,6 +67,25 @@ without deleting or re-uploading anything:
 Or via a config file with several {"backfill": true, "remote_name": ...} jobs,
 see uploads_webarchive/backfill.example.json.
 
+Tag a document from a fixed vocabulary (repeatable, validated against
+ALLOWED_TAGS in this script; invalid tags abort with the allowed list):
+
+    python3 scripts/archive_org_upload.py \
+        --item bomfast-kildedokumenter \
+        --source-url "https://www.vegvesen.no/.../rapport.pdf" \
+        --remote-name rapport.pdf \
+        --tags hordfast --tags ks2 --upload
+
+Find files that have ALL of the given tags (no upload/download of anything,
+just reads and filters item metadata):
+
+    python3 scripts/archive_org_upload.py --query-tags hordfast ks2
+
+List every PDF currently in the item, with its tags and original_url (no
+upload/download of anything):
+
+    python3 scripts/archive_org_upload.py --list
+
 View a file's metadata (e.g. to confirm original_url was attached):
 
     curl -s https://archive.org/metadata/bomfast-kildedokumenter | \
@@ -100,6 +119,48 @@ DEFAULT_UPLOADS_DIR = Path("uploads_webarchive")
 DEFAULT_CONFIG_PATH = DEFAULT_UPLOADS_DIR / "config.json"
 DEFAULT_RESULTS_PATH = DEFAULT_UPLOADS_DIR / "results.jsonl"
 
+# Fixed tag vocabulary for source documents: project name + document type.
+# Keep this in sync with the project/category names actually used across
+# content/innsikt/*/index.md so tags stay meaningful and consistent.
+ALLOWED_TAGS = frozenset(
+    {
+        # Prosjekt
+        "hordfast",
+        "rogfast",
+        "sotrasambandet",
+        "ryfast",
+        "eiganestunnelen",
+        "smiene-harestad",
+        "raadal-svegatjoern",
+        "haalogalandsbrua",
+        "hardangerbrua",
+        "bommestad-sky",
+        # Dokumenttype/fase
+        "kvu",
+        "ks1",
+        "ks2",
+        "kmd",
+        "reguleringsplan",
+        "ntp",
+        "ntp-2022-2033",
+        "ntp-2025-2036",
+        "ntp-2029-2040",
+        "statsbudsjett",
+        "perioderapport",
+        "kostnadsprekk",
+    }
+)
+
+
+def validate_tags(tags: list[str]) -> None:
+    unknown = sorted(set(tags) - ALLOWED_TAGS)
+    if unknown:
+        allowed = ", ".join(sorted(ALLOWED_TAGS))
+        raise SystemExit(
+            f"Unknown tag(s): {', '.join(unknown)}. Allowed tags: {allowed}"
+        )
+
+
 # Job fields that a config entry may override; CLI options are the fallback.
 JOB_FIELDS = {
     "source_url": None,
@@ -112,6 +173,7 @@ JOB_FIELDS = {
     "original_url": None,
     "checked": None,
     "notes": None,
+    "tags": None,
     "metadata": None,
     "file_metadata": None,
     "retries": None,
@@ -230,6 +292,9 @@ def print_manifest_snippet(
     print(f"  sha256: {yaml_quote(checksum)}")
     print(f"  checked: {yaml_quote(checked)}")
     print(f"  notes: {yaml_quote(notes)}")
+    if args.tags:
+        tags_yaml = ", ".join(yaml_quote(tag) for tag in sorted(set(args.tags)))
+        print(f"  tags: [{tags_yaml}]")
 
 
 def build_ia_command(
@@ -272,6 +337,66 @@ def metadata_contains_file(item: str, remote_name: str) -> tuple[bool, dict]:
     return False, metadata
 
 
+def find_files_by_tags(item: str, tags: list[str]) -> list[dict]:
+    """Return file metadata entries in `item` whose 'tags' field (a ';'-joined
+    string set via apply_file_metadata) includes ALL of the given tags."""
+    wanted = set(tags)
+    metadata = item_metadata(item)
+    matches = []
+    for file_info in metadata.get("files", []):
+        raw_tags = file_info.get("tags", "")
+        file_tags = set(raw_tags.split(";")) if raw_tags else set()
+        if wanted <= file_tags:
+            matches.append(file_info)
+    return matches
+
+
+def run_query_tags(item: str, tags: list[str]) -> int:
+    validate_tags(tags)
+    matches = find_files_by_tags(item, tags)
+    if not matches:
+        print(f"No files in {item} tagged with all of: {', '.join(tags)}")
+        return 1
+
+    for file_info in matches:
+        name = file_info.get("name", "")
+        file_url = f"https://archive.org/download/{item}/{urllib.parse.quote(name)}"
+        print(name)
+        print(f"  tags: {file_info.get('tags', '')}")
+        if file_info.get("original_url"):
+            print(f"  original_url: {file_info['original_url']}")
+        print(f"  file_url: {file_url}")
+    return 0
+
+
+def run_list_all(item: str) -> int:
+    """List every PDF file in `item` with its tags/original_url, regardless of
+    whether it has any tags set."""
+    metadata = item_metadata(item)
+    files = [
+        file_info
+        for file_info in metadata.get("files", [])
+        if file_info.get("name", "").lower().endswith(".pdf")
+    ]
+    if not files:
+        print(f"No PDF files found in {item}")
+        return 1
+
+    for file_info in sorted(files, key=lambda file_info: file_info.get("name", "")):
+        print("=" * 80)
+        name = file_info.get("name", "")
+        file_url = f"https://archive.org/download/{item}/{urllib.parse.quote(name)}"
+        print(name)
+        if file_info.get("tags"):
+            print(f"  tags: {file_info['tags']}")
+        if file_info.get("original_url"):
+            print(f"  original_url: {file_info['original_url']}")
+        print(f"  file_url: {file_url}")
+
+    print(f"\n{len(files)} PDF file(s) in {item}")
+    return 0
+
+
 def build_ia_metadata_command(
     item: str, remote_name: str, key: str, value: str
 ) -> list[str]:
@@ -291,17 +416,28 @@ def record_original_url_metadata(
 ) -> bool:
     """Attach original_url as archive.org file-level metadata via the Metadata
     Write API (not `ia upload --file-metadata`, which is for bulk uploads)."""
-    command = build_ia_metadata_command(item, remote_name, "original_url", original_url)
+    return apply_file_metadata(item, remote_name, "original_url", original_url)
+
+
+def apply_file_metadata(item: str, remote_name: str, key: str, value: str) -> bool:
+    """Attach a single key/value pair as archive.org file-level metadata via
+    the Metadata Write API (not `ia upload --file-metadata`, which is for bulk
+    uploads)."""
+    command = build_ia_metadata_command(item, remote_name, key, value)
     printable = " ".join(shell_quote(part) for part in command)
     print(f"IA metadata command: {printable}")
     result = subprocess.run(command, check=False)
     if result.returncode != 0:
         print(
-            f"warning: failed to attach original_url metadata to {remote_name}",
+            f"warning: failed to attach {key} metadata to {remote_name}",
             file=sys.stderr,
         )
         return False
     return True
+
+
+def record_tags_metadata(item: str, remote_name: str, tags: list[str]) -> bool:
+    return apply_file_metadata(item, remote_name, "tags", ";".join(sorted(set(tags))))
 
 
 def wait_for_uploaded_file(item: str, remote_name: str, timeout: int) -> bool:
@@ -378,6 +514,32 @@ def parse_args() -> argparse.Namespace:
         "--notes", default="", help="Notes to use in the manifest snippet"
     )
     parser.add_argument(
+        "--tags",
+        action="append",
+        default=[],
+        help=(
+            "Tag from a fixed vocabulary, may be repeated to add several. "
+            "Allowed: " + ", ".join(sorted(ALLOWED_TAGS))
+        ),
+    )
+    parser.add_argument(
+        "--query-tags",
+        nargs="+",
+        metavar="TAG",
+        help=(
+            "List files in --item whose tags include ALL given tags, then exit "
+            "without uploading/backfilling anything."
+        ),
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help=(
+            "List every PDF file in --item with its tags/original_url, then exit "
+            "without uploading/backfilling anything."
+        ),
+    )
+    parser.add_argument(
         "--metadata",
         action="append",
         default=[],
@@ -425,6 +587,8 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     args = parser.parse_args()
+    if args.list or args.query_tags:
+        return args
     if args.backfill:
         if not args.config and not args.remote_name:
             parser.error("--backfill requires --remote-name (or use --config)")
@@ -482,6 +646,7 @@ def append_result(results_file: Path, record: dict) -> None:
 def process_backfill_job(args: argparse.Namespace) -> dict | None:
     """Attach metadata/log an entry for a file already uploaded to archive.org,
     without downloading a source or running `ia upload` again."""
+    validate_tags(args.tags)
     found, _ = metadata_contains_file(args.item, args.remote_name)
     if not found:
         raise SystemExit(
@@ -504,6 +669,8 @@ def process_backfill_job(args: argparse.Namespace) -> dict | None:
 
     if args.original_url and not args.skip_original_url_metadata:
         record_original_url_metadata(args.item, args.remote_name, args.original_url)
+    if args.tags:
+        record_tags_metadata(args.item, args.remote_name, args.tags)
 
     return {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -521,6 +688,7 @@ def process_backfill_job(args: argparse.Namespace) -> dict | None:
         "sha256": checksum,
         "checked": args.checked or datetime.now(tz=timezone.utc).date().isoformat(),
         "notes": args.notes,
+        "tags": sorted(set(args.tags)),
         "backfilled": True,
     }
 
@@ -528,6 +696,7 @@ def process_backfill_job(args: argparse.Namespace) -> dict | None:
 def process_job(args: argparse.Namespace) -> dict | None:
     """Validate and optionally upload one job. Returns a result record on a
     verified successful upload, or None for a dry run or unverified upload."""
+    validate_tags(args.tags)
     source = args.source_url or str(args.file)
     remote_name = args.remote_name or remote_name_from_source(source)
 
@@ -578,6 +747,8 @@ def process_job(args: argparse.Namespace) -> dict | None:
         original_url_value = args.source_url or args.original_url
         if original_url_value and not args.skip_original_url_metadata:
             record_original_url_metadata(args.item, remote_name, original_url_value)
+        if args.tags:
+            record_tags_metadata(args.item, remote_name, args.tags)
 
         return {
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -595,11 +766,18 @@ def process_job(args: argparse.Namespace) -> dict | None:
             "sha256": checksum,
             "checked": args.checked or datetime.now(tz=timezone.utc).date().isoformat(),
             "notes": args.notes,
+            "tags": sorted(set(args.tags)),
         }
 
 
 def main() -> int:
     args = parse_args()
+
+    if args.list:
+        return run_list_all(args.item)
+
+    if args.query_tags:
+        return run_query_tags(args.item, args.query_tags)
 
     if args.config:
         raw_jobs = load_config_jobs(args.config)

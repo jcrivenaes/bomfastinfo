@@ -4,6 +4,9 @@ date: 2025-02-18
 lastmodNotes:
   - date: "18 mars 2026"
     note: "Sotrasambandet og Smiene-Harestad, språklige rettinger"
+  - date: "9 august 2026"
+    note:
+      "Mindre korrigering av 2007/2009 sum for Eiganes, og oppdatering av døde lenker"
 author: "J. C. Rivenæs"
 aliases:
   - "/post/store-kostnadsprekker-i-veiprosjekter-er-regelen-ikke-unntaket/"
@@ -158,11 +161,11 @@ Prosjektet ble åpnet høsten 2022. Endelig sluttkostnad inklusiv etterarbeid in
 ![E39 Rådal-Svegatjørn. Figur fra reguleringsplanen i 2005. Også den gangen var det firefelt vei med toløps tunneler og store kryss. Kostnad dengang antydet 2,8 milliarder 2005 kroner, som tilsvarer ca 5,3 milliarder 2024 kroner. Men sluttkostnad ble nær 12 milliarder 2024 kroner!](radal-svegatjorn-reguleringsplan-2005.png)
 
 _Kilde:
-[Reguleringsplan 2005](https://drive.google.com/file/d/1cY6FbuwQBW4A1x7IzDi2KuSVQsnZJBgb/view)._
+[Reguleringsplan 2005](https://archive.org/download/bomfast-kildedokumenter/svv_2005--reguleringsplan_e39raadal_svegatjorn_2005)._
 
 Den første omtalen "KVU planen" fra rundt år 2000 var planlagt med to felt og er derfor
 ikke sammenlignbar. Dette ble imidlertid endret
-[i den første reguleringsplan fra 2005](https://drive.google.com/file/d/1cY6FbuwQBW4A1x7IzDi2KuSVQsnZJBgb/view?usp=sharing),
+[i den første reguleringsplan fra 2005](https://archive.org/download/bomfast-kildedokumenter/svv_2005--reguleringsplan_e39raadal_svegatjorn_2005),
 hvor prosjektet ligner veldig på det som er resultatet i dag, med mesteparten av vegen i
 tunnel og fartsgrense 100km/t (se bildet). Tar vi med kostnadene med forlengelsen mot
 Sørås, så ser man at prognosen dengang totalt var estimert til 2,8 mrd [5,27 MRD].
@@ -203,11 +206,11 @@ Eiganestunnelen er en videreføring av Ryfast mot Stavanger, og ble åpnet i 201
 5 km vei, hvorav 3,7 km i tunnel.
 [I samme KVU som for Ryfast](https://web.archive.org/web/20250618204132if_/https://www.vegvesen.no/globalassets/vegprosjekter/fullforte/ryfast/vedlegg/13-ku.pdf?v=4990e4)
 kan vi finne et estimat på 0,77 milliarder 2000 kroner [1,59 MRD]. I
-[en 2007 prognose](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/ryfast/vedlegg/ryfastfakta23april08.pdf?v=49916d),
-som trolig er KMD, finner vi 1,4 milliarder kroner [2,7 MRD]. Sluttprisen ender på [5,3
-MRD] 2024 kroner. Relativt til KU er sluttsummen en økning på hele 234%! Relativt til
-første Stortingsvedtak (som dessverre ofte er et "point of no return") er økningen på
-50% (34% relativt til Stortingsvedtaket i 2014).
+[NTP 2010-2019](https://www.regjeringen.no/no/dokumenter/stmeld-nr-16-2008-2009-/id548837/?ch=1)
+som trolig er KMD, finner vi 1,6 milliarder 2009 kroner [2,4 MRD]. Sluttprisen ender på
+[5,3 MRD] 2024 kroner. Relativt til KU er sluttsummen en økning på hele 234%! Relativt
+til første Stortingsvedtak (som dessverre ofte er et "point of no return") er økningen
+på 50% (34% relativt til Stortingsvedtaket i 2014).
 
 Totalt har søsterprosjektene Ryfast + Eiganestunnelen kostet 16,6 milliarder 2024
 kroner.
@@ -222,7 +225,7 @@ kroner.
 Bommestad-Sky er et motorveiprosjekt nær Larvik og ble åpnet i mai 2018. Det er ikke
 lett å finne noe KVU for dette prosjektet, men en avisomtale fra 2007 refererer muligens
 til noe som tilsvarer KVU og antyder en prislapp på 2 milliarder 2007 kroner [3,57 MRD].
-[Info fra SVV i 2011](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e18larvik/vedlegg/e18bommestskyprosjektinformasjon2011.pdf?v=498f8b)
+[Info fra SVV i 2011](https://web.archive.org/web/20240526224523if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e18larvik/vedlegg/e18bommestskyprosjektinformasjon2011.pdf)
 angir 3,2 milliarder 2011 kroner [5,2 MRD]. I
 [2012 sa stortingsvedtaket](https://www.regjeringen.no/contentassets/c5fbd77a303849109ed670d87b14331a/no/pdfs/prp201220130123000dddpdfs.pdf)
 en styringsramme på 4,2 milliarder 2012 kroner [6,7 MRD].
@@ -243,7 +246,7 @@ stortingsrammen var på 15%.
 er ventet å åpne i 2033. Sluttprisen er således ukjent, men
 [Rogfast har en lang historie på spektakulære kostnadsprekker](/innsikt/rogfast), og det
 er trolig ikke slutt. I
-[2007 (KVU)](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39rogfast/vedlegg/kvu/kvu-e39boknafj-web.pdf?v=499073)
+[2007 (KVU, jf. KS1 rapport)](https://web.archive.org/web/20220126135801if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39rogfast/vedlegg/kvu/ks1-boknafjordkryssingen.pdf)
 var prisen om lag 5,5 milliarder [10,1 MRD], men siden steg det. Ved kommunedelplan i
 2011-2012 var kostnad 10,2 milliarder 2012 kroner [16,9 MRD], riktignok etter at
 strengere krav til stigning og sikkerhet ble inkludert. Men det var ikke nok, og prisen
@@ -270,7 +273,7 @@ styringsramme i Stortinget (2017) blir da på minst 55%.
 
 [Sotrasambandet](https://www.vegvesen.no/vegprosjekter/riksveg/sotrabergen/) sin bygging
 pågår, og opprinnelig planlagt åpnet i 2027 (blir trolig forsinket). I 2009, etter
-[KS1 av KVU](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/sotrabergen/vedlegg/ks1-sotra3.pdf),
+[KS1 av KVU](https://web.archive.org/web/20240912155034if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/sotrabergen/vedlegg/ks1-sotra3.pdf),
 skulle Sotrasambandet koste 4,5 milliarder 2009 kroner [7,77 MRD]. Siden ble prosjektet
 omgjort til et [OPS prosjekt](https://www.vegvesen.no/vegprosjekter/ops-ppp/), der 15
 til 25 år drift og vedlikehold etter åpning er lagt til i sluttprisen.
@@ -326,7 +329,7 @@ Det startet mye lavere. I
 2004 kroner [0,3 MRD], mulig dette er basert på en KVU. I kommunedelplanen i 2009 var
 kostnaden 0,852 milliarder 2009 kroner [1,43 MRD]. Så ble prosjektet igjen nevnt i NTP
 2018, denne gangen var prisen steget til 3,3 milliarder 2017 kroner [4,1 MRD].
-[I reguleringsplanen fra 2024](https://www.vegvesen.no/contentassets/1e6e40ce0a0146d39d2023c7fdc52c4c/1_planbeskrivelse.pdf)
+[I reguleringsplanen fra 2024](https://web.archive.org/web/20240831212226if_/https://www.vegvesen.no/contentassets/1e6e40ce0a0146d39d2023c7fdc52c4c/1_planbeskrivelse.pdf)
 er siste overslag på [4,348 MRD]. KS2 rapport finnes i skrivende stund ikke, og vedtak i
 Stortinget gjenstår.
 
