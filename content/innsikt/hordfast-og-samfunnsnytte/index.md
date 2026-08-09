@@ -49,7 +49,7 @@ Er Hordfast virkelig samfunnsøkonomisk lønnsom når man sammenstiller den pris
 "nytten" med de ikke-prissatte virkningene, som tap av unikt naturmangfold? Svaret er
 nei!
 
-![NTP superside](hovedfigur.png 'Fra ["supersider" i dokumentasjon til NTP prosessen](https://web.archive.org/web/20250827103353/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/2025-2036/vedlegg-3-supersider-rev-27.11.23.pdf). Ny NTP kommer vår 2024.')
+![NTP superside](hovedfigur.png 'Fra ["supersider" i dokumentasjon til NTP prosessen](https://web.archive.org/web/20250827103353if_/https://www.vegvesen.no/globalassets/fag/fokusomrader/nasjonal-transportplan-ntp/2025-2036/vedlegg-3-supersider-rev-27.11.23.pdf). Ny NTP kommer vår 2024.')
 
 ## Innledning
 
@@ -57,7 +57,7 @@ En gjentatt feil er at man setter likhet mellom "prissatt nytte" og "samfunnsøk
 lønnsomhet" i veiprosjekter som Hordfast. At feilen kommer fra lobbyister som Hordfast
 AS er ikke mer enn man kan forvente. Men at det kommer fra Statens Vegvesen (SVV) og fra
 Departementene selv er skremmende. Se for eksempel
-[her](https://www.veier24.no/artikler/vil-endre-samferdselen-pa-vestlandet-for-alltid/461284)
+[her](https://web.archive.org/web/20230604235118if_/https://www.veier24.no/artikler/vil-endre-samferdselen-pa-vestlandet-for-alltid/461284)
 og
 [her](https://www.bt.no/nyheter/innenriks/i/2Geeqq/vegvesenet-prioriterer-hordfast-fremfor-e16).
 
@@ -120,7 +120,7 @@ konsekvent. Hvis det er usikkerhet i hva som er brukt i rapportene brukes bare "
 
 Opp gjennom årene har det kommet mange tall på prissatt nytte (NNK/NNB) på Hordfast (men
 merk at ofte er det NNB som er angitt). I motsetning
-[til hva SVV selv hevder (versjon fra 2021, arkivert)](https://web.archive.org/web/20210726044827/https://www.vegvesen.no/vegprosjekter/europaveg/e39stordos/ofte-stilte-sporsmal/),
+[til hva SVV selv hevder (versjon fra 2021, arkivert)](https://web.archive.org/web/20210726044827if_/https://www.vegvesen.no/vegprosjekter/europaveg/e39stordos/ofte-stilte-sporsmal/),
 så har disse
 [svingt fra negativ lønnsomhet til positiv](https://www.nrk.no/vestland/ekspertane-kranglar-om-kor-nyttig-hordfast-blir-1.12864739),
 alt etter forutsetninger. Tallene er imidlertid ikke helt rett frem sammenlignbare, da
@@ -132,7 +132,7 @@ Med høye bompenger så senkes "trafikantnytten" betydelig.
 
 Her er noen eksempler:
 
-- [KVU 2011](https://web.archive.org/web/20220522132631/https://www.vegvesen.no/vegprosjekter/europaveg/e39stordos/planar-og-dokument/kvu/):
+- [KVU 2011](https://web.archive.org/web/20220522132631if_/https://www.vegvesen.no/vegprosjekter/europaveg/e39stordos/planar-og-dokument/kvu/):
   Midtre trase (4C) negativ NN: -0.25. Strekningen det er ble beregnet for er
   Aksdal-Bergen (Aksdal er nær Haugesund, o.a.), og det ble her hevdet at det hele ville
   koste 19,3 milliarder (inklusiv bro over Bjørnafjorden!). I dag er samme strekning
@@ -173,7 +173,7 @@ Her er noen eksempler:
   [fra 40 års beregningsgtid til 75 år](https://www.tu.no/artikler/store-veiprosjekter-ble-mer-lonnsomme-over-natta-okte-levetiden-fra-40-til-75-ar/511504).
   Dette grepet øker den tilsynelatende samfunnsnytten med rundt 20 milliarder (basert på
   tall angitt i
-  [denne rapporten](https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39stordos/vedlegg/kommunedelplan-med-ku/fagrapportar---ku/e39-stord-os-ku-transport-og-nyttekostanalyse-1-0.pdf)).
+  [denne rapporten](https://web.archive.org/web/20230612225755if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39stordos/vedlegg/kommunedelplan-med-ku/fagrapportar---ku/e39-stord-os-ku-transport-og-nyttekostanalyse-1-0.pdf)).
   Mao, hadde man regnet på "gamlemåten" ville prissatt samfunnsnytte i NTP være ca -18
   milliarder!
 - I mai 2021 ble prisen oppjustert ytterligere, med nytt
@@ -189,7 +189,7 @@ Her er noen eksempler:
 Den store usikkerheten i dette regnestykke er faktisk "trafikkantnytte" (T), selv om det
 ofte blir fremstilt at det er byggekostnaden som er mest usikker (og ja den er svært
 usikker også;
-[Rogfast har jo sprukket før oppstart og ble derfor utsatt](https://www.abcnyheter.no/nyheter/norge/2019/11/09/195625339/rogfast-utsatt-pa-ubestemt-tid)!).
+[Rogfast har jo sprukket før oppstart og ble derfor utsatt](https://www.nrk.no/rogaland/full-gjennomgang-av-rogfast-1.14774708)!).
 SVV regner seg på "robusthet" i innspill til NTP og sier at dersom trafikken ikke vokser
 med 1,5% per år etter åpning men blir konstant 5700 ÅDT, så senkes trafikkantnytten med
 hele 9 milliarder
@@ -201,7 +201,7 @@ flere biler inn mot de de store byene er en diskusjon i seg selv.
 
 I tillegg er det kommet rapporter fra blant annet SNF/NHH, Vista analyse, Cowi og Menon
 på såkalt "mernytte/ringvirkninger".
-[Disse spriker i alle retninger](https://uia.brage.unit.no/uia-xmlui/handle/11250/2561960),
+[Disse spriker i alle retninger](https://web.archive.org/web/20250827103750if_/https://uia.brage.unit.no/uia-xmlui/handle/11250/2561960),
 blant annet viste SNF sin analyse 400 ganger så mye "mernytte" en Vista Analyse sine
 tall. Menon analysen, som ble bestilt av lobbyselskapet Hordfast og som Kjartan Hove
 referer, innrømmer også stor usikkerhet.
@@ -241,7 +241,7 @@ og sier rett ut at prosjektet ligger soleklart innenfor innsigelse (men kan ikke
 innsigelse dessverre da dette er "statlig plan").
 
 Departementet skrev selv i sitt
-[vedtak i 2019](https://www.vegvesen.no/_attachment/2795510/binary/1341673?fast_title=Vedtak+av+statlig+kommunedelplan+for+E39+Stord%E2%80%93Os.pdf):
+[vedtak i 2019](https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/vedtak-kommunedelplan-e39-stord-os.pdf?v=49906b):
 "Ny E39 på strekningen Stord-Os vil føre til store inngrep i urørt natur. Særlig gjelder
 dette på Tysnes, hvor traséen på store deler av strekningen er lagt gjennom ubebygde
 områder. På øya Reksteren er det en rekke forekomster av den truete naturtypen
@@ -321,7 +321,7 @@ den direkte trafikantnytten de hevder de forventer. For hvis de mener at samfunn
 er så stor, så har man god råd til tiltak som bedrer den ikke-prissatte nytten, ikke
 sant?
 
-[SVV lyktes med å hindre senketunnel](https://web.archive.org/web/20230612225754/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39stordos/vedlegg/vedtak-kommunedelplan-e39-stord-os.pdf),
+[SVV lyktes med å hindre senketunnel](https://web.archive.org/web/20230612225754if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39stordos/vedlegg/vedtak-kommunedelplan-e39-stord-os.pdf),
 og da er det bevist at hverken SVV eller Staten egentlig tror på sine egne samfunnsnytte
 tall. Så kanskje like greit å gi saksbehandlerne i Hordfastavdelingen noe annet å gjøre,
 for eksempel jobbe med

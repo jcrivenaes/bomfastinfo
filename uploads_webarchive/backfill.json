@@ -18,8 +18,10 @@
       "backfill": true,
       "remote_name": "hb-v712-konsekvensanalyser_2018.pdf",
       "title": "V712 - Konsekvensanalyser (2018)",
-      "original_url": ""
+      "original_url": "",
+      "tags": ["ntp", "reguleringsplan", "kmd"]
     },
+
     {
       "backfill": true,
       "remote_name": "svv_2016--kommunedelplan_hovedrapport.pdf",
@@ -29,10 +31,24 @@
     },
     {
       "backfill": true,
+      "remote_name": "svv_2015--bompengebidrag_hordfast_estimat.pdf",
+      "title": "Bompengebidrag Hordfast estimat 2015",
+      "original_url": "",
+      "tags": ["hordfast"]
+    },
+    {
+      "backfill": true,
       "remote_name": "vedlegg-1-dokumentasjon-beregninger---prissatte-virkninger.pdf",
       "title": "Vedlegg 1 - dokumentasjon beregninger prissatte virkninger",
       "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/nasjonal-transportplan-ntp/portefoljestyring/2027/vedlegg-1-dokumentasjon-beregninger---prissatte-virkninger.pdf?v=49ad18",
-      "tags": ["ntp"]
+      "tags": ["ntp", "ntp-2025-2036"]
+    },
+    {
+      "backfill": true,
+      "remote_name": "vedlegg-3-supersider-til-ntp-rev-27.11.23.pdf",
+      "title": "Vedlegg 3 - supersider til NTP rev 27.11.23",
+      "original_url": "https://www.vegvesen.no/globalassets/vegprosjekter/nasjonal-transportplan-ntp/portefoljestyring/2027/vedlegg-3-supersider-til-ntp-rev-27.11.23.pdf?v=49ad18",
+      "tags": ["ntp", "ntp-2025-2036"]
     }
   ]
 }
