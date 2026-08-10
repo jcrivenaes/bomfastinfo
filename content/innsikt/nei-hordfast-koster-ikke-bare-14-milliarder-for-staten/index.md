@@ -1,7 +1,11 @@
 ---
 title: "Nei, Hordfast koster ikke bare 14 milliarder for Staten"
 date: 2025-03-08
-lastmod: 2026-02-23
+lastmodNotes:
+  - date: "23 februar 2026"
+    note: "Fikset lenker, språklige rettinger"
+  - date: "10 august 2026"
+    note: "Språklige rettinger"
 author: "J. C. Rivenæs"
 aliases:
   - "/post/nei-hordfast-koster-ikke-bare-14-milliarder-for-staten/"
@@ -11,18 +15,15 @@ weight: 3
 ---
 
 Pådriverselskapet Hordfast AS har de siste årene påstått at Hordfast koster "bare" 14
-milliarder for staten. Men Staten vegvesen opererer med et tall som 10-14 milliarder
+milliarder for staten. Men Statens vegvesen opererer med et tall som 10-14 milliarder
 høyere. Selv tror jeg at inngangstallene i SVV sitt regnestykke er urealistiske, og
 hevder her at det er mer sannsynlig at prosjektet kan koste rundt 88 milliarder for
 staten.
 
-Publisert 8 mars 2025 Oppdatert 23 februar 2026 (fikset noen lenker, pluss mindre
-endringer i tekst)
-
 ## Innledning
 
 I en rekke innlegg de siste årene hevder pådriver/lobbyselskapet Hordfast at "Ja selv om
-prisen på Hordfast er 46 milliarder, så er nettokostnaden for Staten kun på 14
+prisen på Hordfast er 46 milliarder, så er nettokostnaden for staten kun på 14
 milliarder". Dette flaue regnestykket blir videre brukt av politikere tilsynelatende
 helt uten kritisk sans, spesielt fra Høyre.
 
@@ -45,7 +46,7 @@ Her er regnestykket til Hordfast AS, klippet fra innlegget i Bergenavisen:
 I forbindelse med NTP prosessen laget Statens Vegvesen (SVV)
 [såkalte supersider](https://www.regjeringen.no/contentassets/f517f097ff11468fbb8087f6bc981c43/svv/statens-vegvesen-vedlegg-rettetversjon190423.pdf),
 der de oppsummerer noen av prosjektene de spiller inn. Og gjett hva, også SVV kommer her
-med et regnestykke på hva Hordast koster for det "det offentlige", altså staten:
+med et regnestykke på hva Hordfast koster for det "det offentlige", altså staten:
 
 ![Samfunnsregnskapet for Hordfast, hentet fra supersider gitt til NTP prosessen fra mars 2023.](samfunnsregnskap-svv.png)
 
@@ -54,7 +55,7 @@ milliarder. Så hvem regner riktig, SVV eller lobbyselskapet?
 
 Merk at dette er basert på en tidlig versjon av disse supersidene, i
 [senere versjoner er utgiften for det offentlige justert ytterligere opp til 25 milliarder](https://www.regjeringen.no/contentassets/9280e2181cd2495e940c7fdab4293d6f/svv/statens-vegvesen-vedlegg-3-supersider.pdf)
-(2024 kroner). Men jeg bruker første tallet her da det er under antagelsen ut
+(2024 kroner). Men jeg bruker første tallet her da det er under antagelsen at
 byggekostnaden er 46 milliarder 2023 kroner, samme som regnestykket vi finner i
 Bergensavisen.
 
@@ -78,27 +79,28 @@ lest dette. For eksempel fra side 43:
 
 Oppsummert, det Hordfast AS regnestykket har "glemt" er vesentlig to ting:
 
-1. Ja, der er riktig at Staten sitt bidrag skal være uten MVA, men man ikke bruke netto
-   beløpet, som angitt i forrige angitt. Fordi pengene som Staten bruker under bygging
-   er bundet, så skal det ha en kapitalkostnad og skal forrentes. Det gjør at Statlige
-   beløpet øker, og jo lengre byggetiden er jo dyrere blir det!
+1. Ja, det er riktig at Staten sitt bidrag skal være uten MVA, men man kan ikke bruke
+   nettobeløpet, som angitt i sitatet over. Fordi pengene som Staten bruker under
+   bygging er bundet, skal de tilordnes en kapitalkostnad og forrentes. Det gjør at det
+   statlige beløpet øker, og jo lengre byggetiden er jo dyrere blir det!
 2. Hordfast AS bruker 9 milliarder i neddiskonterte årlige fergekostnader som Staten vil
    spare, men "glemte" å nevne at dette vil motvirkes av betydelig økte kostnader til
    drift og vedlikehold.
 
 Apropos MVA, som er det noe som gjelder alle veiprosjekter. Det er ikke en reell
 "innsparing" som bare gjelder Hordfast. Hvis samferdselsbudsjettet dropper Hordfast, så
-gir det rom for en rekke andre prosjekter tl samme totalsum som og skal fratrekkes MVA.
-For statlige finanser er resultatet det samme.
+gir det rom for en rekke andre prosjekter til samme totalsum som også skal fratrekkes
+MVA. For statlige finanser er resultatet det samme.
 
 Tilbake til drift og vedlikehold - tror noen virkelig at en 55 km fire-felts motorvei
 med 8 km broer og 16 kilometer tunnel i krevende vestlandsvær ikke gir vesentlig økte
 vedlikeholdskostnader?
 
 I kommunedelplan er neddiskonterte vedlikeholdskostnader beregnet til 4,2 milliarder
-over 40 år. Nå skal brukes 75 år (ikke 40), så teknisk sett burde gi endel høyere tall,
-men det virker som SVV kun har brukt 4 milliarder. I kommundelplanen sa SVV selv at de
-mente at økte utgifter til drift og vedlikehold ville overgå fergekostnadene!
+over 40 år. Nå skal det brukes 75 år (ikke 40), så teknisk sett burde det gi en del
+høyere tall, men det virker som SVV kun har brukt 4 milliarder. I kommunedelplanen sa
+SVV selv at de mente at økte utgifter til drift og vedlikehold ville overgå
+fergekostnadene!
 
 Så hvordan blir regnestykket da? I det følgende har jeg skissert oppsettet som gir det
 tallet som SVV opererer med. Hva SVV har brukt eksakt er ukjent, men regnestykket jeg
@@ -114,7 +116,7 @@ da er den nær 28 milliarder for staten, altså det dobbelte av hva Hordfast AS 
 
 Til sist kan
 [denne artige videoen nevnes](https://www.facebook.com/roald.kvamme.9/videos/846229777323006),
-blant annet spør Norge Miljøvernforbund om Statens Vegvesen kan gå god for regnestykket
+blant annet spør Norges Miljøvernforbund om Statens vegvesen kan gå god for regnestykket
 til Hordfast AS (ca 3:54 ut i filmen). De svarer da:
 
 > Statens vegvesen kjenner ikke til tallet som Hordfast AS opererer med
@@ -126,7 +128,7 @@ Som jeg viser
 så det synger. Spesielt er kostnadene ved KVU og kommunedelplan gjennomgående altfor
 lave. Hordfast sitt kostnadsestimat (per vinter 2025) er fortsatt basert på
 kommunedelplanen, men er justert på prisstigning innen byggebransjen. Per 2024 er
-styringsrammen for Hordfast ca 50 milliarder i følge SVV. Kostandsrammen er ca 60
+styringsrammen for Hordfast ca 50 milliarder i følge SVV. Kostnadsrammen er ca 60
 milliarder.
 
 I [analysen om søsterprosjektet Rogfast](../rogfast/) ser vi at der har kostnadene nær
@@ -138,7 +140,7 @@ og Sotrasambandet, kan vi si at den virkelige kostnaden blir 94 milliarder. Mins
 
 I [analysen av bompengebidraget](../hordfast-hva-blir-bompengene/), så ser vi at et
 bompengelån på 14-15 milliarder vil kreve (minst) godt over 500 kroner i
-gjennomsnittbompenger, og trolig endel mer om byggetiden forlenges. Det er svært
+gjennomsnittbompenger, og trolig en del mer om byggetiden forlenges. Det er svært
 tvilsomt om bilistene vil akseptere så høye bompenger, så hvis de skal betale mindre, så
 må staten ut med mer. Kanskje halve beløpet i bompengelån (7 milliarder) er mer
 realistisk - det vil fortsatt gi rekordhøye bompenger.
@@ -176,8 +178,8 @@ og bompengebidrag. Her er to eksempler:
   man inkluderer OPS) og 8,3 milliarder til drift og vedlikehold (D&V) for 2022. Sum nye
   investeringer + OPS + D&V = 22,9 milliarder.
 - [Statsbudsjettet 2024](https://www.regjeringen.no/contentassets/d3a09b25308a48d792a1a366f3dffb22/no/pdfs/prp202420250001_sddddpdfs.pdf)
-  (Støre regjereringen) foreslår 10,8 milliarder til nye riksveier (17,3 milliarder om
-  man inkluderer OPS) og 10,8 milliarder til drift og vedlikehold for 2025. Sum nye
+  (Støre-regjeringen) foreslår 10,8 milliarder til nye riksveier (17,3 milliarder om man
+  inkluderer OPS) og 10,8 milliarder til drift og vedlikehold for 2025. Sum nye
   investeringer + OPS + D&V = 28,1 milliarder. (Dreiing av mer penger til drift og
   vedlikehold, samt at OPS prosjekter som Sotrasambandet tar betydelig mer midler)
 
