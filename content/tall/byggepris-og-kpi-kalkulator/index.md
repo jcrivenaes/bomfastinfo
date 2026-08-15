@@ -16,8 +16,8 @@ prisstigning (konsumprisindeks - KPI) fra ett år til et annet.
 <iframe
     src="https://jcrivenaes.github.io/bomfasttools/byggepris_calc/index.html"
     title="Kakluator for endring av kostnader"
-    width="120%"
-    height="1400"
+    width="100%"
+    height="1650"
     style="border: 0;"
     sandbox="allow-scripts allow-same-origin"
     referrerpolicy="no-referrer"
