@@ -8,9 +8,10 @@
     {{- $authorList = slice $authors -}}
   {{- end -}}
 {{- end -}}
-{{- if or .Date .Params.lastmodNotes (gt (len $authorList) 0) }}
+  {{- $showAuthors := and (not .Params.hideauthor) (gt (len $authorList) 0) -}}
+  {{- if or .Date .Params.lastmodNotes $showAuthors }}
 <div class="publication-note">
-  {{- if gt (len $authorList) 0 }}
+    {{- if $showAuthors }}
   <p class="publication-note-intro publication-note-author">
     <strong>{{ if eq (len $authorList) 1 }}Forfatter{{ else }}Forfattere{{ end }}:</strong>
     {{ delimit $authorList ", " " og " }}
