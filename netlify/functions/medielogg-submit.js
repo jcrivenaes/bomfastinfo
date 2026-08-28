@@ -42,9 +42,12 @@ exports.handler = async (event) => {
     return { statusCode: 401, body: "Feil passord" };
   }
 
+  const type = data.type === "rapporter" ? "rapporter" : "medielogg";
   const title = (data.title || "").trim();
   const date = (data.date || "").trim();
   const source = (data.source || "").trim();
+  const institusjon = (data.institusjon || "").trim();
+  const forfatter = (data.forfatter || "").trim();
   const url = (data.url || "").trim();
   const abo = Boolean(data.abo);
   const comment = (data.comment || "").trim();
@@ -60,17 +63,18 @@ exports.handler = async (event) => {
   }
 
   const slug = slugify(title) || "oppforing";
-  const path = `content/mer-lesestoff/medialogg/${date}-${slug}/index.md`;
+  const contentType = type === "rapporter" ? "rapporter" : "medialogg";
+  const path = `content/mer-lesestoff/${contentType}/${date}-${slug}/index.md`;
 
-  const frontMatterLines = [
-    "---",
-    `title: ${yamlString(title)}`,
-    `date: ${date}`,
-    `type: "medialogg"`,
-  ];
-  if (source) frontMatterLines.push(`source: ${yamlString(source)}`);
+  const frontMatterLines = ["---", `title: ${yamlString(title)}`, `date: ${date}`, `type: "${contentType}"`];
+  if (type === "rapporter") {
+    if (institusjon) frontMatterLines.push(`institusjon: ${yamlString(institusjon)}`);
+    if (forfatter) frontMatterLines.push(`forfatter: ${yamlString(forfatter)}`);
+  } else {
+    if (source) frontMatterLines.push(`source: ${yamlString(source)}`);
+    if (abo) frontMatterLines.push("abo: true");
+  }
   if (url) frontMatterLines.push(`external_url: ${yamlString(url)}`);
-  if (abo) frontMatterLines.push("abo: true");
   frontMatterLines.push("---", "", comment, "");
   const fileContent = frontMatterLines.join("\n");
 
@@ -91,7 +95,7 @@ exports.handler = async (event) => {
         "User-Agent": "bomfastinfo-medielogg-function",
       },
       body: JSON.stringify({
-        message: `Ny medieoppføring: ${title}`,
+        message: `Ny ${type === "rapporter" ? "rapport" : "medieoppføring"}: ${title}`,
         content: Buffer.from(fileContent, "utf-8").toString("base64"),
         branch: BRANCH,
       }),

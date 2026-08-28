@@ -476,6 +476,12 @@ figcaption.bf-figure-caption > p {
   opacity: 1;
 }
 
+.rapporter-institusjon {
+  color: #b5651d;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .medialogg-heading {
   margin: 0 0 0.15rem;
 }
