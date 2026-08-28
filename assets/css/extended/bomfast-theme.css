@@ -235,10 +235,17 @@ a:hover {
   display: none;
 }
 
-.kontakt-form input[type="checkbox"] {
+.kontakt-form input[type="checkbox"],
+.kontakt-form input[type="radio"] {
   width: auto;
   margin-right: 0.4rem;
   vertical-align: middle;
+}
+
+.medielogg-radio-group {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 0.3rem;
 }
 
 .medielogg-checkbox-label {
