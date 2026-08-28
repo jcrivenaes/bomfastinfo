@@ -1,5 +1,6 @@
 ---
 title: "Nyttige lenker"
+weight: 30
 draft: false
 ---
 

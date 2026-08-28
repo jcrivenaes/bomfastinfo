@@ -235,6 +235,29 @@ a:hover {
   display: none;
 }
 
+.kontakt-form input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.medielogg-checkbox-label {
+  display: flex !important;
+  align-items: center;
+  font-weight: 400 !important;
+}
+
+#medielogg-gate button {
+  padding: 0.55rem 1.1rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--primary);
+  color: var(--theme);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .rodliste-wrap {
   margin: 1rem 0 1.2rem;
   padding: 0.85rem 0.95rem;
@@ -419,3 +442,69 @@ figcaption.bf-figure-caption > p {
   font-weight: inherit;
   margin: 0;
 }
+
+.medialogg-year {
+  margin: 1.6rem 0 0.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.medialogg-entry {
+  margin: 0 0 1.1rem;
+}
+
+.medialogg-date {
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  padding: 0.05em 0.5em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--tertiary) 55%, transparent);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--content);
+}
+
+.medialogg-permalink {
+  margin-left: 0.35rem;
+  color: var(--secondary);
+  font-size: 0.85rem;
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+.medialogg-permalink:hover {
+  opacity: 1;
+}
+
+.medialogg-heading {
+  margin: 0 0 0.15rem;
+}
+
+.medialogg-heading a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.medialogg-body {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--secondary);
+}
+
+.medialogg-body p {
+  margin: 0;
+}
+
+.medialogg-abo,
+.notis-abo {
+  display: inline-block;
+  padding: 0.05em 0.45em;
+  border-radius: 4px;
+  background: color-mix(in srgb, #c0392b 18%, transparent);
+  color: #c0392b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
