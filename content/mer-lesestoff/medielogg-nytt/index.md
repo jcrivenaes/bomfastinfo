@@ -19,7 +19,7 @@ redaksjonen (krever passord).
 <form id="medielogg-gate-form" class="kontakt-form">
   <p>
     <label for="gate-passord">Passord for å låse opp skjema</label>
-    <input type="password" id="gate-passord" name="password" autocomplete="current-password" required />
+    <input type="password" id="gate-passord" name="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required />
   </p>
   <button type="submit">Lås opp</button>
   <p id="medielogg-gate-status"></p>
@@ -35,7 +35,7 @@ redaksjonen (krever passord).
 
   <p>
     <label for="hemmelig">Passord</label>
-    <input type="password" id="hemmelig" required />
+    <input type="password" id="hemmelig" autocapitalize="off" autocorrect="off" spellcheck="false" required />
   </p>
 
   <p>
@@ -172,7 +172,15 @@ redaksjonen (krever passord).
   }
 
   async function medielogsSha256Hex(text) {
-    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    // Normaliser til NFC (Nordiske tegn kan komme dekomponert på iOS) og reverser
+    // iOS' "smart punctuation" (tanke-/em-strek og krøllete anførselstegn), som
+    // ellers gir en annen hash enn på Linux selv om brukeren skrev samme tegn.
+    var normalized = text
+      .normalize("NFC")
+      .replace(/[\u2013\u2014]/g, "-")
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"');
+    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalized));
     return Array.from(new Uint8Array(buf))
       .map(function (b) {
         return b.toString(16).padStart(2, "0");
