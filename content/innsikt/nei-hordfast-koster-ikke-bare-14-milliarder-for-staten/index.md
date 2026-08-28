@@ -39,9 +39,9 @@ Eksempler på innlegg der denne påstanden kommer:
 - [I et innlegg i Teknisk Ukeblad fra januar 2024](https://www.tu.no/artikler/bt-hordfast-utsettes-i-ntp-en-katastrofe/544801)
   (Eskeland).
 
-Her er regnestykket til Hordfast AS, klippet fra innlegget i Bergenavisen:
+Her er regnestykket til Hordfast AS, klippet fra innlegget i Bergensavisen:
 
-![Hordfast AS sitt regnestykke, klippet fra Bergenavisen 6 juni 2023.](hordfast-as-regnestykke.png)
+![Hordfast AS sitt regnestykke, klippet fra Bergensavisen 6 juni 2023.](hordfast-as-regnestykke.png)
 
 I forbindelse med NTP-prosessen laget Statens vegvesen
 [såkalte supersider](https://www.regjeringen.no/contentassets/f517f097ff11468fbb8087f6bc981c43/svv/statens-vegvesen-vedlegg-rettetversjon190423.pdf),

@@ -1,5 +1,6 @@
 ---
 title: "Bevar Bårdsundet"
+weight: 40
 draft: false
 ---
 
