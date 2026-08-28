@@ -50,12 +50,14 @@ redaksjonen (krever passord).
 
   <p>
     <label>Type oppføring</label>
-    <label class="medielogg-checkbox-label">
-      <input type="radio" name="entrytype" id="type-medielogg" value="medielogg" checked /> Medielogg (nyhet)
-    </label>
-    <label class="medielogg-checkbox-label">
-      <input type="radio" name="entrytype" id="type-rapporter" value="rapporter" /> Rapport
-    </label>
+    <span class="medielogg-radio-group">
+      <label class="medielogg-checkbox-label">
+        <input type="radio" name="entrytype" id="type-medielogg" value="medielogg" checked /> Medielogg (nyhet)
+      </label>
+      <label class="medielogg-checkbox-label">
+        <input type="radio" name="entrytype" id="type-rapporter" value="rapporter" /> Rapport
+      </label>
+    </span>
   </p>
 
   <div id="felter-medielogg">
