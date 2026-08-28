@@ -164,7 +164,7 @@ redaksjonen (krever passord).
   // Enkel visningssperre - KUN obfuskering, ikke ekte tilgangskontroll (koden er
   // synlig for alle som ser på sidekilden). Erstatt hashen på egen maskin med:
   //   printf '%s' 'dittPassord' | shasum -a 256
-  var MEDIELOGG_GATE_HASH = "4ba89189d3ecca947a53efb9de0cfc95fdf1542728a279b0a28c18db2c5bf8af";
+  var MEDIELOGG_GATE_HASH = "942e4442807cfef50575643e2428f2b24d0148f5c6d2b38078871c3a2db8f355";
 
   function medielogsShowContent() {
     document.getElementById("medielogg-gate").style.display = "none";
