@@ -1,0 +1,27 @@
+{{- define "main" }}
+
+<article class="post-single notis-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+    <div class="post-meta">
+      <time>{{ .Date | time.Format ":date_long" }}</time>
+      {{- with .Params.source }} · <span class="notis-source">{{ . }}</span>{{- end }}
+      {{- if .Params.abo }} · <span class="notis-abo">Krever abonnement</span>{{- end }}
+    </div>
+  </header>
+
+  {{- if .Content }}
+  <div class="post-content md-content">
+    {{- .Content -}}
+  </div>
+  {{- end }}
+
+  {{- with .Params.external_url }}
+  <footer class="notis-kilde">
+    <a href="{{ . }}" target="_blank" rel="noopener noreferrer">→ Les originalartikkel</a>
+  </footer>
+  {{- end }}
+</article>
+
+{{- end }}
