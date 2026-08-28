@@ -1,0 +1,30 @@
+{{- define "main" }}
+
+<article class="post-single notis-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+    <div class="post-meta">
+      <time>{{ .Date | time.Format ":date_long" }}</time>
+      {{- with .Params.forfatter }} · {{ . }}{{- end }}
+      {{- with .Params.institusjon }} · <span class="notis-source">{{ . }}</span>{{- end }}
+    </div>
+  </header>
+
+  {{- if .Content }}
+  <div class="post-content md-content">
+    {{- .Content -}}
+  </div>
+  {{- end }}
+
+  {{- with .Params.external_url }}
+  <footer class="notis-kilde">
+    <a href="{{ . }}" target="_blank" rel="noopener noreferrer">→ Les originalrapport</a>
+  </footer>
+  {{- end }}
+  {{- with .Params.alt_url }}
+  <p><a href="{{ . }}" target="_blank" rel="noopener noreferrer">Alternativ lenke (arkiv)</a></p>
+  {{- end }}
+</article>
+
+{{- end }}
