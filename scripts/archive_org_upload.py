@@ -125,6 +125,7 @@ DEFAULT_RESULTS_PATH = DEFAULT_UPLOADS_DIR / "results.jsonl"
 ALLOWED_TAGS = frozenset(
     {
         # Prosjekt
+        "fergefri-e39",
         "hordfast",
         "rogfast",
         "sotrasambandet",
@@ -148,6 +149,8 @@ ALLOWED_TAGS = frozenset(
         "statsbudsjett",
         "perioderapport",
         "kostnadsprekk",
+        # tema, generisk
+        "naturvern"
     }
 )
 
