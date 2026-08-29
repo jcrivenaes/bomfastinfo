@@ -1,0 +1,9 @@
+{{- with .Params.oppsummering }}
+<details class="post-summary">
+  <summary class="post-summary-toggle">
+    Oppsummering
+    <span class="post-summary-hint">De viktigste punktene i korte trekk</span>
+  </summary>
+  <div class="post-summary-body md-content">{{ . | markdownify }}</div>
+</details>
+{{- end }}

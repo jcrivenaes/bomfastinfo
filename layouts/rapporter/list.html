@@ -11,6 +11,7 @@
 {{- range (.Pages.ByDate.Reverse.GroupByDate "2006") }}
 <h2 class="medialogg-year">{{ .Key }}</h2>
 {{- range .Pages.ByDate.Reverse }}
+{{- $page := . }}
 <article class="medialogg-entry">
   <time class="medialogg-date" datetime="{{ .Date.Format "2006-01" }}">{{ .Date.Format "2006-01" }}</time>
   <a class="medialogg-permalink" href="{{ .Permalink }}" title="Direktelenke til denne oppføringen" aria-label="Direktelenke til: {{ .Title }}">#</a>
@@ -24,7 +25,9 @@
     {{- with .Params.institusjon }} <span class="rapporter-institusjon">[{{ . }}]</span>{{- end }}
   </p>
   {{- with .Content }}
-  <div class="medialogg-body md-content">{{ . }}</div>
+  {{- $bodyId := printf "medialogg-body-%s" $page.File.UniqueID }}
+  <div class="medialogg-body md-content medialogg-clamp" id="{{ $bodyId }}">{{ . }}</div>
+  <button type="button" class="medialogg-readmore-toggle" aria-expanded="false" aria-controls="{{ $bodyId }}" hidden>Les videre …</button>
   {{- end }}
   {{- with .Params.alt_url }}
   <p class="medialogg-body"><a href="{{ . }}" target="_blank" rel="noopener noreferrer">Alternativ lenke (arkiv)</a></p>
