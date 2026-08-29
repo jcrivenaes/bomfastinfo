@@ -17,6 +17,16 @@ description:
   gjennomgang av ferdigstilte og pågående prosjekter."
 featured: true
 weight: 1
+oppsummering: |
+  - Store norske veiprosjekter sprekker **systematisk** i kostnad, ikke bare av og til
+    – gjennomgangen dekker både ferdigstilte og pågående prosjekter.
+  - Sammenligningen her er justert for pristigning og viser derfor reell endring
+  - Avviket er størst fra tidligfase/KVU-anslag, og er fra 75% til hele 1669%.
+  - Men også *etter* Stortingets vedtak sprekker de fleste prosjekter betydelig i 
+    forhold til styringsrammen, i gjennomsnitt 40%.
+  - Konsekvensen er at prosjekter som fremstår som samfunnsøkonomisk
+    lønnsomme ved vedtak, ofte blir klart ulønnsomme når alle regningene er betalt.
+  - Rogfast og Sotrasambandet er blant eksemplene som gjennomgås i detalj.
 ---
 
 Større norske veiprosjekter sprekker ikke bare litt – de sprekker systematisk!
@@ -103,7 +113,7 @@ reelle sluttkostnaden, men slik er det ikke! Vi ser at det påløper kostnader f
 etterkant. Et eksempel på det er Hålogolandsbrua, som ble åpnet i 2018. I
 [årsrapporten for 2018](https://www.vegvesen.no/globalassets/om-oss/om-organisasjonen/arsrapporter/19-0083-arsrapport-2018-til-nett.pdf?v=49901c)
 oppgir SVV et anslag for sluttkostnad på 3,965 milliarder 2018 kroner (tilsvarer 4,887
-mrd 2024 kroner). Men i påfølgende år økte dette beløpet, og i
+MRD 2024 kroner). Men i påfølgende år økte dette beløpet, og i
 [tertialrapporten fra august 2024](https://www.vegvesen.no/contentassets/1965cea0073b470eba99533aeb713576/tertialrapport-for-statens-vegvesen-per-31.-august-2024.pdf?v=4aab58)
 er beløpet 5,617 MRD 2024 kroner. Altså en netto økning på hele 15% i årene etter
 åpning! Tilsvarende kan man finne ved de fleste store prosjekter.
@@ -113,7 +123,7 @@ er beløpet 5,617 MRD 2024 kroner. Altså en netto økning på hele 15% i årene
 ### Hardangerbrua
 
 Hardangerbrua ble åpnet i 2013 til en
-[kostnad på 3.266 mrd 2018 kroner](https://www.ntnu.no/concept/rv-7-hardangerbrua) [4.03
+[kostnad på 3,266 MRD 2018 kroner](https://www.ntnu.no/concept/rv-7-hardangerbrua) [4,03
 MRD]. Opprinnelig var estimatet i 1998 (her omtalt som for "KVU", kalt "Hardangerbrua")
 på ca 1,6 milliarder 2018 kroner [1,96 MRD]. Reell kostnad økte da med 75% fra KVU
 estimatet, etter man justerer for prisstigning og endringer i momsregler. Prosjektet
@@ -141,7 +151,7 @@ ferdistillelse.
 åpnet i 2018. Formell KVU er ikke mulig å finne,
 [men en avisartikkel referer til 1,5 milliarder i 2004](https://www.fremover.no/leserinnlegg/halogalandsbrua-tenk-positivt/s/1-55-1262279)
 [2,86 MRD]. I
-[2008 (KMD?) var kostnaden anslått til 1,86 mrd](https://no.wikipedia.org/wiki/H%C3%A5logalandsbrua)
+[2008 (KMD?) var kostnaden anslått til 1,86 MRD](https://no.wikipedia.org/wiki/H%C3%A5logalandsbrua)
 2008 kroner [3,28 MRD]. Men sluttprisen endte på 5,617 MRD 2024 kroner (per
 tertialrapport aug 2024).
 
@@ -168,13 +178,13 @@ ikke sammenlignbar. Dette ble imidlertid endret
 [i den første reguleringsplan fra 2005](https://archive.org/download/bomfast-kildedokumenter/svv_2005--reguleringsplan_e39raadal_svegatjorn_2005),
 hvor prosjektet ligner veldig på det som er resultatet i dag, med mesteparten av vegen i
 tunnel og fartsgrense 100km/t (se bildet). Tar vi med kostnadene med forlengelsen mot
-Sørås, så ser man at prognosen dengang totalt var estimert til 2,8 mrd [5,27 MRD].
+Sørås, så ser man at prognosen dengang totalt var estimert til 2,8 MRD [5,27 MRD].
 
 Prosjektet ble så utsatt, men dukket opp igjen i
 [NTP 2010-2019](https://www.regjeringen.no/contentassets/76ebed1a5cb741e780ad1bdb21513ae5/no/pdfs/stm200820090016000dddpdfs.pdf)
 med en sum på 3,8 milliarder 2009 kroner [6,56 MRD]. Deretter fulgte en
 [ny reguleringsplan som etter KS2](https://kudos.dfo.no/documents/31677/files/28099.pdf)
-indikerte 6,2 mrd 2012 kroner [8,8 MRD]. I 2014 ble prosjektet vedtatt i Stortinget.
+indikerte 6,2 MRD 2012 kroner [8,8 MRD]. I 2014 ble prosjektet vedtatt i Stortinget.
 
 {{< rawhtml >}}
 
@@ -280,14 +290,14 @@ til 25 år drift og vedlikehold etter åpning er lagt til i sluttprisen.
 
 Prosjektet ble vedtatt i Stortinget i 2017,
 [der proposisjonen sier](https://www.regjeringen.no/contentassets/70f2cd375bbf45ce8ddbb285a3212383/nn-no/pdfs/prp201720180041000dddpdfs.pdf):
-"Rekna om til 2018-prisnivå er utbyggingskostnadene om lag 10,0 mrd. kr."
+"Rekna om til 2018-prisnivå er utbyggingskostnadene om lag 10,0 MRD. kr."
 
 Men
 [å få til en OPS kontrakt var ikke lett](https://www.bt.no/nyheter/lokalt/i/wP5XXo/byggenaeringen-advarer-mot-hoey-risiko-i-sotrasambandet),
 og til slutt måtte man innse at dette sprakk så det sang. I 2022 inngikk man da en
 totalkontrakt med det
 [utenlandske selskapet "Sotra link"](https://www.vegvesen.no/vegprosjekter/riksveg/sotrabergen/nyhetsarkiv/sotra-link-er-vinner-av-ops-kontrakten-pa-sotrasambandet/)
-på totalsummen på 23,1 mrd 2022 kroner. I
+på totalsummen på 23,1 MRD 2022 kroner. I
 [Statsbudsjettet fra 2024](https://www.regjeringen.no/contentassets/d3a09b25308a48d792a1a366f3dffb22/no/pdfs/prp202420250001_sddddpdfs.pdf)
 er kostnadsrammen 29 milliarder – dette inkluderer annet finansiering, risiko, samt
 drift og vedlikehold over 15-25 år. For å gjøre prosjektet sammenlignbart med
@@ -302,7 +312,7 @@ Men det ender nok ikke her.
 [I mars 2026 rapporterte NRK om nye sprekker](https://www.nrk.no/vestland/stor-kostnadssmell-pa-gigantprosjektet_-_-blir-5-milliardar-dyrare-1.17810746),
 anslagsvis 5 milliarder kroner, som vi antar må gjelde en økning i selve byggekostnaden.
 Legges dette på kostnadsrammen fra statsbudsjettet i 2024 (29 milliarder totalt,
-estimert til 18 mrd for selve byggingen) så er vi oppe i 23 milliarder for selve
+estimert til 18 MRD for selve byggingen) så er vi oppe i 23 milliarder for selve
 byggingen (34 milliarder totalt).
 
 Hva endelig sluttpris kan bli er vanskelig å si. OPS prosjekter har begrenset innsyn, og

@@ -1,0 +1,67 @@
+<script>
+(function () {
+  var EXPANDED_CLASS = "medialogg-expanded";
+
+  // Prevent tabbing/clicking into links hidden by the line-clamp while collapsed.
+  function setInert(body, isInert) {
+    body.toggleAttribute("inert", isInert);
+    body.querySelectorAll("a[href]").forEach(function (a) {
+      if (isInert) {
+        a.setAttribute("tabindex", "-1");
+      } else {
+        a.removeAttribute("tabindex");
+      }
+    });
+  }
+
+  function updateReadMore() {
+    document.querySelectorAll(".medialogg-clamp").forEach(function (body) {
+      var btn = body.nextElementSibling;
+      if (!btn || !btn.classList.contains("medialogg-readmore-toggle")) return;
+      if (body.classList.contains(EXPANDED_CLASS)) return;
+      // Only reveal the "read more" button if the text is actually truncated.
+      var overflowing = body.scrollHeight - body.clientHeight > 1;
+      btn.hidden = !overflowing;
+      setInert(body, overflowing);
+    });
+  }
+
+  function onReadMoreClick(event) {
+    var btn = event.currentTarget;
+    var body = document.getElementById(btn.getAttribute("aria-controls"));
+    if (!body) return;
+    var willExpand = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(willExpand));
+    body.classList.toggle(EXPANDED_CLASS, willExpand);
+    setInert(body, !willExpand);
+    btn.textContent = willExpand ? "Vis mindre" : "Les videre …";
+  }
+
+  function bindReadMoreButtons() {
+    document.querySelectorAll(".medialogg-readmore-toggle").forEach(function (btn) {
+      btn.addEventListener("click", onReadMoreClick);
+    });
+  }
+
+  function init() {
+    bindReadMoreButtons();
+    updateReadMore();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+  window.addEventListener("load", updateReadMore);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateReadMore);
+  }
+
+  var resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateReadMore, 150);
+  });
+})();
+</script>

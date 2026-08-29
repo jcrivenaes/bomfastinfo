@@ -12,6 +12,8 @@ Interne notater for vedlikehold av Bomfast Info-nettstedet.
 | `layouts/_markup/render-image.html`       | Render hook for markdown-bilder med zoom-lenke og figcaption                           |
 | `layouts/_partials/extend_head.html`      | Egen `<head>`-tillegg — pt. GoatCounter-snippet                                        |
 | `layouts/_partials/publication_note.html` | Boks med forfatter, publiseringsdato og lastmodNotes                                   |
+| `layouts/_partials/post_summary.html`     | Ekspanderbar "Oppsummering"-boks, styrt av `oppsummering` i front matter (kun Innsikt) |
+| `layouts/innsikt/single.html`             | Overstyrer PaperMod sin single.html for å plassere oppsummeringsboksen nær toppen      |
 | `layouts/kontakt/list.html`               | Kontaktskjema (Netlify Forms)                                                          |
 | `assets/css/extended/`                    | Egen CSS som lastes etter PaperMods kjerne-CSS                                         |
 | `i18n/nb.yaml`                            | Norske oversettelser                                                                   |
