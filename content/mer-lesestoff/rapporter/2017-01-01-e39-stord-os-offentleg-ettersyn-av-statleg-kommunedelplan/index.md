@@ -4,7 +4,7 @@ date: 2017-01-01
 type: "rapporter"
 institusjon: "Fylkesmannen i Hordaland"
 forfatter: "Flo et al"
-external_url: "https://drive.google.com/file/d/13Sw6w94zVKSepzY6dxbnGCUBJUjAkBpd/view?usp=drive_link"
+external_url: "https://archive.org/download/bomfast-kildedokumenter/fylkesmannen_2017--offentlig_ettersyn_hordfast_kommunedelplan.pdf"
 ---
 
 Høringsvaret fra Fylkesmannen (Statsforvalteren) om Kommunedeplan
