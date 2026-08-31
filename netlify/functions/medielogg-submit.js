@@ -46,7 +46,7 @@ async function githubRequest(token, method, path, body) {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
-      "Content-Type": "application/json",
+      "Content-Type": "application/json; charset=utf-8",
       "User-Agent": "bomfastinfo-medielogg-function",
     },
     body: body ? JSON.stringify(body) : undefined,
@@ -57,14 +57,48 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
+// Tekst limt inn fra PDF-er har ofte harde linjeskift midt i avsnitt (fra PDF-ens
+// tekstoppsett) og orddeling med bindestrek ved linjeslutt. Dette slår sammen slike
+// linjer til løpende avsnitt, slik man ville fått ved å skrive/lime inn manuelt uten
+// harde linjeskift, mens tomlinjer (avsnittsskift) bevares.
+function reflowInnlimtTekst(text) {
+  const normalisert = (text || "").replace(/\r\n?/g, "\n");
+  const avsnitt = normalisert.split(/\n{2,}/);
+  const reflowet = avsnitt
+    .map((stykke) =>
+      stykke
+        .replace(/([a-zA-ZæøåÆØÅ])-\n([a-zA-ZæøåÆØÅ])/g, "$1$2")
+        .replace(/\n+/g, " ")
+        .replace(/[ \t]{2,}/g, " ")
+        .trim()
+    )
+    .filter((stykke) => stykke.length > 0);
+  return reflowet.join("\n\n");
+}
+
+// Nordiske tegn kan komme dekomponert (f.eks. "a" + kombinerende ring i stedet for å)
+// fra enkelte tastatur/nettlesere, spesielt paste fra iOS/macOS eller PDF-er. Normaliser
+// til NFC (sammensatt form) før teksten lagres, slik det blir konsistent med manuelt
+// skrevet tekst.
+function normaliserTekst(value) {
+  return (value || "").normalize("NFC");
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
+  let rawBody = event.body || "{}";
+  if (event.isBase64Encoded) {
+    // Netlify/Lambda kan base64-kode requesten avhengig av proxy-oppsett; uten dette
+    // ville JSON.parse feile eller (verre) tolke UTF-8-bytes for nordiske tegn feil.
+    rawBody = Buffer.from(rawBody, "base64").toString("utf-8");
+  }
+
   let data;
   try {
-    data = JSON.parse(event.body || "{}");
+    data = JSON.parse(rawBody);
   } catch {
     return { statusCode: 400, body: "Ugyldig JSON" };
   }
@@ -79,14 +113,14 @@ exports.handler = async (event) => {
   }
 
   const type = data.type === "rapporter" ? "rapporter" : "medielogg";
-  const title = (data.title || "").trim();
+  const title = normaliserTekst((data.title || "").trim());
   const date = (data.date || "").trim();
-  const source = (data.source || "").trim();
-  const institusjon = (data.institusjon || "").trim();
-  const forfatter = (data.forfatter || "").trim();
+  const source = normaliserTekst((data.source || "").trim());
+  const institusjon = normaliserTekst((data.institusjon || "").trim());
+  const forfatter = normaliserTekst((data.forfatter || "").trim());
   const url = (data.url || "").trim();
   const abo = Boolean(data.abo);
-  const comment = (data.comment || "").trim();
+  const comment = normaliserTekst((data.comment || "").trim());
 
   if (!title || !date || !comment) {
     return { statusCode: 400, body: "Tittel, dato og kommentar er påkrevd" };
@@ -100,7 +134,7 @@ exports.handler = async (event) => {
 
   const figureName = (data.figureName || "").trim();
   const figureMime = (data.figureMime || "").trim();
-  const figureAlt = (data.figureAlt || "").trim();
+  const figureAlt = normaliserTekst((data.figureAlt || "").trim());
   const figureData = (data.figureData || "").trim();
   let figureFileName = null;
   if (figureData) {
@@ -128,10 +162,11 @@ exports.handler = async (event) => {
   }
   if (url) frontMatterLines.push(`external_url: ${yamlString(url)}`);
   frontMatterLines.push("---", "");
+  frontMatterLines.push(reflowInnlimtTekst(comment));
   if (figureFileName) {
-    frontMatterLines.push(`![${figureAlt}](${figureFileName})`, "");
+    frontMatterLines.push("", `![${figureAlt}](${figureFileName})`);
   }
-  frontMatterLines.push(comment, "");
+  frontMatterLines.push("");
   const fileContent = frontMatterLines.join("\n");
 
   const token = process.env.GITHUB_TOKEN;
@@ -220,6 +255,6 @@ exports.handler = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ ok: true, path }),
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json; charset=utf-8" },
   };
 };
