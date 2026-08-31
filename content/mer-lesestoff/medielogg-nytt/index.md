@@ -93,6 +93,16 @@ redaksjonen (krever passord).
   </p>
 
   <p>
+    <label for="figur">Figur/bilde (valgfritt, maks 4 MB)</label>
+    <input type="file" id="figur" accept="image/png,image/jpeg,image/gif,image/webp,image/avif,image/svg+xml" />
+  </p>
+
+  <p>
+    <label for="figur-tekst">Bildetekst til figuren</label>
+    <input type="text" id="figur-tekst" />
+  </p>
+
+  <p>
     <label for="kommentar">Kommentar</label>
     <textarea id="kommentar" rows="6" required></textarea>
   </p>
@@ -105,6 +115,21 @@ redaksjonen (krever passord).
 </div>
 
 <script>
+  var MAKS_FIGUR_BYTES = 4 * 1024 * 1024;
+
+  function lesFilSomBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        resolve(String(reader.result).split(",")[1] || "");
+      };
+      reader.onerror = function () {
+        reject(reader.error || new Error("Kunne ikke lese filen"));
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   document.getElementById("medielogg-form").addEventListener("submit", async function (e) {
     e.preventDefault();
     var status = document.getElementById("medielogg-status");
@@ -126,6 +151,23 @@ redaksjonen (krever passord).
     } else {
       payload.source = document.getElementById("kilde").value;
       payload.abo = document.getElementById("abo").checked;
+    }
+
+    var figurFil = document.getElementById("figur").files[0];
+    if (figurFil) {
+      if (figurFil.size > MAKS_FIGUR_BYTES) {
+        status.textContent = "Figuren er for stor (maks 4 MB)";
+        return;
+      }
+      try {
+        payload.figureName = figurFil.name;
+        payload.figureMime = figurFil.type;
+        payload.figureAlt = document.getElementById("figur-tekst").value;
+        payload.figureData = await lesFilSomBase64(figurFil);
+      } catch (err) {
+        status.textContent = "Feil ved lesing av figur: " + err.message;
+        return;
+      }
     }
 
     try {

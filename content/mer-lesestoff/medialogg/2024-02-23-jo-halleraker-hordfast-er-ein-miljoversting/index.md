@@ -7,4 +7,15 @@ external_url: "https://www.sunnhordland.no/meiningar/i/4oyGGo/jo-halleraker-hord
 abo: true
 ---
 
-Ein kan verkeleg byrje å lure på verkelegheitsforståinga til leiaren for lobbyselskapet Hordfast som hevdar i Sunnhordland 25. januar 2024 at det «ikkje stemmer at Hordfast er ein miljøversting», og at «det er få prosjekt der ein kan spare så mykje utslepp og energiforbruk»., skriver Roald Kvamme og Tom Skauge, og viser til SVV sine egne utregninger.
+Ein kan verkeleg byrje å lure på verkelegheitsforståinga til leiaren for lobbyselskapet
+Hordfast som hevdar i Sunnhordland 25. januar 2024 at det «ikkje stemmer at Hordfast er
+ein miljøversting», og at «det er få prosjekt der ein kan spare så mykje utslepp og
+energiforbruk»., skriver Roald Kvamme og Tom Skauge, og viser til SVV sine egne
+utregninger.
+
+Videre skriver de: «Å hevde at Hordfast vil vere «eit godt miljøtiltak» og «vil spare
+mykje utslepp og energi» er ikkje berre skivebom. Det bommar så totalt at leiaren i
+lobbyselskapet ikkje eingong har funne skytebanen.»
+
+Vedlagt er figuren Kvamme og Skauge viser til i innlegget.
+![Nettoutslipp av CO2 mot tid, ihht ](co2graf.avif)
