@@ -12,4 +12,6 @@ Vista analyse har laget en grundig rapport om samfunnsnytten til Hordfast. Haral
 bestillingsverk". Det sier vel mest om det skuffende lave nivået til Minge/Mæland!
 Rapporten er etter mitt syn svært grundig og nøktern.
 
-[Ekstra lenke](https://drive.google.com/file/d/1JYKNx9HFFaM7XSL20TOoyGmVlWuyWEyC/view?usp=sharing)
+Klipp fra reportasjeon
+
+![Klipp fra Bergensavisen sin reportasje om Vista Analyse sin Hordfast-rapport, 29. august 2025.](om-vista-hordfast-rapport-ba-29082025.jpg)

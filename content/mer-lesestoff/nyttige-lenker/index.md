@@ -9,6 +9,8 @@ draft: false
 - [Trafikkdata med ÅDT på kart (beta løsning!)](https://trafikkdata.atlas.vegvesen.no/beta?zoom=10.88&lat=60.1050&lon=5.3935&mapView=aadt&trafficLinkId=0.54936406%401686474-0.83911746%40804770)
 - [Ferjedatabanken](https://ferjedatabanken.no/). Viser fergetrafikken de siste årene.
 - [Trafikkindeks (trafikkutvikling) rapporter](https://www.vegvesen.no/fag/trafikk/trafikkdata/trafikkutvikling/)
+- [NVBD veikart Statens vegvesen](https://vegkart.atlas.vegvesen.no/#/@600000,7225000,4)
+  Her kan man blant annet se fartsgrenser.
 - [SSB visualisering av pendlerstrømmer](https://www.ssb.no/arbeid-og-lonn/sysselsetting/artikler/hvor-mye-pendling-er-det-mellom-kommuner).
   Se for eksempel hvor lite "integrert arbeidsmarked" det er mellom Stord og Haugesund
   til tross for fergefri forbindelse og 50 minutter reisetid!
