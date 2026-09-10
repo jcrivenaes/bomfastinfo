@@ -1,0 +1,83 @@
+{{- define "main" }}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  {{- if .Description }}
+  <div class="post-description">
+    {{ .Description | markdownify }}
+  </div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content md-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{/* Group questions by their `category` front matter param. Category order
+     follows `categoryOrder` in _index.md front matter; any categories not
+     listed there are appended afterwards in first-encountered order. */}}
+{{- $uncategorized := "Annet" }}
+{{- $groups := newScratch }}
+{{- $catOrder := slice }}
+{{- range .Pages }}
+  {{- $cat := .Params.category | default $uncategorized }}
+  {{- if $groups.Get $cat }}
+    {{- $groups.Set $cat ($groups.Get $cat | append .) }}
+  {{- else }}
+    {{- $groups.Set $cat (slice .) }}
+    {{- $catOrder = $catOrder | append $cat }}
+  {{- end }}
+{{- end }}
+
+{{- $finalOrder := slice }}
+{{- range .Params.categoryOrder }}
+  {{- if in $catOrder . }}
+    {{- $finalOrder = $finalOrder | append . }}
+  {{- end }}
+{{- end }}
+{{- range $catOrder }}
+  {{- if not (in $finalOrder .) }}
+    {{- $finalOrder = $finalOrder | append . }}
+  {{- end }}
+{{- end }}
+
+{{- $mainEntity := slice }}
+{{- range $finalOrder }}
+  {{- $cat := . }}
+  <section class="faq-group">
+    <h2 class="faq-group-title">{{ $cat }}</h2>
+    {{- range sort ($groups.Get $cat) "Weight" }}
+    <details class="faq-item" id="{{ .File.ContentBaseName }}">
+      <summary class="faq-question">
+        {{ .Title }}
+        <a class="faq-permalink" aria-label="Direktelenke til dette spørsmålet" href="#{{ .File.ContentBaseName }}">#</a>
+      </summary>
+      <div class="faq-answer md-content">{{ .Content }}</div>
+      <p class="faq-meta">Sist endret: <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod | time.Format ":date_long" }}</time></p>
+    </details>
+    {{- $mainEntity = $mainEntity | append (dict
+      "@type" "Question"
+      "name" (.Title | plainify)
+      "acceptedAnswer" (dict "@type" "Answer" "text" .Plain)
+    ) }}
+    {{- end }}
+  </section>
+{{- end }}
+
+{{- if gt (len $mainEntity) 0 }}
+{{- $faqSchema := dict
+  "@context" "https://schema.org"
+  "@type" "FAQPage"
+  "mainEntity" $mainEntity
+}}
+<script type="application/ld+json">{{ $faqSchema | jsonify | safeJS }}</script>
+{{- end }}
+
+{{- end }}{{- /* end main */ -}}

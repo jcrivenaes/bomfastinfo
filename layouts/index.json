@@ -1,7 +1,14 @@
 {{- $list := slice -}}
 {{- range site.RegularPages -}}
     {{- if and (not .Params.searchHidden) (ne .Layout `archives`) (ne .Layout `search`) }}
-    {{- $list = $list | append (dict "title" .Title "content" .Plain "permalink" .Permalink "summary" .Summary) -}}
+    {{- /* FAQ questions (content/sporsmal-og-svar) have no page of their own
+         (_build.render: false) - point search results at their accordion
+         anchor on the section page instead of their own (unrendered) permalink. */ -}}
+    {{- $permalink := .Permalink -}}
+    {{- if and (eq .Type `sporsmal-og-svar`) .Params.category -}}
+      {{- $permalink = printf "%s#%s" .Parent.Permalink .File.ContentBaseName -}}
+    {{- end -}}
+    {{- $list = $list | append (dict "title" .Title "content" .Plain "permalink" $permalink "summary" .Summary) -}}
     {{- end }}
 {{- end -}}
 {{- $list | jsonify -}}
