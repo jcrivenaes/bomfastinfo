@@ -65,3 +65,37 @@
   });
 })();
 </script>
+
+<script>
+(function () {
+  // Copied FAQ links (#slug) must open the matching accordion item, since a
+  // closed <details> stays collapsed even when its id is the scroll target.
+  function openFaqTarget(hash) {
+    if (!hash) return;
+    var id;
+    try {
+      id = decodeURIComponent(hash.replace(/^#/, ""));
+    } catch (e) {
+      return;
+    }
+    if (!id) return;
+    var target = document.getElementById(id);
+    var details = target && target.closest(".faq-item");
+    if (!details) return;
+    details.open = true;
+    target.scrollIntoView({ block: "start" });
+  }
+
+  document.querySelectorAll(".faq-permalink").forEach(function (a) {
+    // Avoid double-toggling: a click bubbles to <summary>'s native toggle too.
+    a.addEventListener("click", function (event) {
+      event.stopPropagation();
+    });
+  });
+
+  window.addEventListener("hashchange", function () {
+    openFaqTarget(window.location.hash);
+  });
+  openFaqTarget(window.location.hash);
+})();
+</script>
