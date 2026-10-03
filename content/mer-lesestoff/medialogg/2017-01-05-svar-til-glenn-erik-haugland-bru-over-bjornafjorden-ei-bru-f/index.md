@@ -28,3 +28,7 @@ Ingen støytiltak? Plan- og bygningslova stiller strenge krav til støy og tilta
 Kom gjerne med merknader E39 Stord-Os er eit stort prosjekt. Det vil påverka område vegen skal gå gjennom - på godt og vondt. Statens vegvesen er oppteken av å gjennomføra grundig fagleg arbeid og gode prosessar slik at vi saman med kommunar og innbyggjarar finn dei beste løysingane for folk flest, næringslivet og landsdelen vår. For dei som vil koma med merknader til kommunedelplanen, er fristen sett til 20.januar. Alle dokument ligg opne på www.vegvesen.no.
 
 ![Denne teksten stod og på nettsiden til SVV i 2017! Litt spesielt fra en statlig etat...](haugland2.png)
+
+![Her utklipp av selve teksten](svar_haugland.svg)
+
+[Lenke til arkivert forside i Web Archive](https://web.archive.org/web/20170321234040/http://www.vegvesen.no/Europaveg/e39stordos). Selve nyhetsaken (lenken) er dessverre ikke arkivert.
