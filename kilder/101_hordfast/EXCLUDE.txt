@@ -1,0 +1,16 @@
+# cspell:disable
+# Folders/files in 101_hordfast that should NOT be converted to text or added to kilder.yaml.
+# One pattern per line. Without / = a name anywhere in the path. With / = path from 101_hordfast.
+# See scripts/kilder.py for details. After adding a pattern, run
+# `python3 scripts/kilder.py prune 101_hordfast` to remove files that were already converted.
+
+# Own drafts and working material (hearing statements etc.)
+utkast
+hordfast_regplan/
+hordfast_regplan_backup/
+hordfast_klimarapport_2022/
+
+# Duplicate of docbase/regulerings_plan/06_naturressurser/registreringskart.pdf
+# (same SHA-256, byte-for-byte identical) — keep registreringskart.pdf
+docbase/regulerings_plan/06_naturressurser/registreringskart-naturressurser.pdf
+
