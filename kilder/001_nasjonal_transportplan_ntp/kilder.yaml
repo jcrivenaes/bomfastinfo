@@ -1,0 +1,177 @@
+# cspell:disable
+# Kildeliste. Tekniske felt (fil, sider, bytes, sha256, tekst, konvertert, ocr)
+# oppdateres av scripts/kilder.py. Øvrige felt (tittel, dokument, url, arkiv,
+# lenker, merknad, ...) redigeres her og beholdes. url/lenker hentes fra .url- og
+# _annet.txt-filer på Drive bare når feltet er tomt; rett URL-er i denne fila.
+
+- id: ntp_2002_2011
+  fil: ntp_2002_2011.pdf
+  url: https://www.nb.no/items/336ba1b53a8846ce603c3e81b22cedfa?page=0
+  sider: 391
+  bytes: 4500621
+  sha256: f925f45a701e5f57ab74e9a45da03ebcab94b2a434bc93723498ab8721b3854d
+  tekst: tekst/ntp_2002_2011.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2002_2011_stortingets_behandling
+  fil: ntp_2002_2011_stortingets_behandling.pdf
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2000-2001/inns-200001-119.pdf
+  sider: 233
+  bytes: 2249055
+  sha256: f9ff354170611e230ab1a2da17b129a267a73f1587780da84a121758124501fa
+  tekst: tekst/ntp_2002_2011_stortingets_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2006_2015
+  fil: ntp_2006_2015.pdf
+  url: https://www.regjeringen.no/no/dokumenter/stmeld-nr-024-2003-2004-/id197953/
+  sider: 203
+  bytes: 5824016
+  sha256: 1a636d66fc83dce03039d8c848ca192219fd35d0664a5459935fba360fc05529
+  tekst: tekst/ntp_2006_2015.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2006_2015_stortinget_behandling
+  fil: ntp_2006_2015_stortinget_behandling.pdf
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2003-2004/inns-200304-240.pdf
+  sider: 236
+  bytes: 4312447
+  sha256: 722d95bfc3544914aec92313e1643fa475fd4130d137c14aa2cdff0f5aadc5d6
+  tekst: tekst/ntp_2006_2015_stortinget_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2010_2019
+  fil: ntp_2010_2019.pdf
+  tittel: Nasjonal transportplan 2010–2019
+  dokument: St.meld. nr. 16 (2008-2009)
+  url: https://www.regjeringen.no/contentassets/76ebed1a5cb741e780ad1bdb21513ae5/no/pdfs/stm200820090016000dddpdfs.pdf
+  sider: 327
+  bytes: 17518213
+  sha256: 030a72d53d8d0d0bd524ee4c22731bcaa228c8be2c6ec761a4850dc9987ee45a
+  tekst: tekst/ntp_2010_2019.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2010_2019_kortversjon
+  fil: ntp_2010_2019_kortversjon.pdf
+  url: https://www.regjeringen.no/globalassets/upload/sd/vedlegg/ntp/ntp_kort_web_2009.pdf
+  sider: 36
+  bytes: 4951821
+  sha256: 22b071b065eee182645632545b458d31ecdb64c7646fc1379119d89ac21c2ba1
+  tekst: tekst/ntp_2010_2019_kortversjon.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2010_2019_stortingets_behandling
+  fil: ntp_2010_2019_stortingets_behandling.pdf
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2008-2009/inns-200809-300.pdf
+  sider: 300
+  bytes: 1482529
+  sha256: 62d434a167bcd1654a5292dbc06c41360e7e95fdeb157480afa33328a78ae48b
+  tekst: tekst/ntp_2010_2019_stortingets_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2014_2023
+  fil: ntp_2014_2023.pdf
+  tittel: Nasjonal transportplan 2014 – 2023
+  dokument: Meld. St. 26 (2012 – 2013)
+  url: https://www.regjeringen.no/no/dokumenter/meld-st-26-20122013/id722102/
+  sider: 325
+  bytes: 17332343
+  sha256: d4b6b71f54722199764091f1f6c550b060b61e65bc4d38ad990298527959a96f
+  tekst: tekst/ntp_2014_2023.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2014_2023_stortingets_behandling
+  fil: ntp_2014_2023_stortingets_behandling.pdf
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2012-2013/inns-201213-450.pdf
+  sider: 250
+  bytes: 4353472
+  sha256: 1dab6384b65616ae073638adde63cfa251d0691644b59462c3db81f2e1aa00a1
+  tekst: tekst/ntp_2014_2023_stortingets_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2018_2029
+  fil: ntp_2018_2029.pdf
+  tittel: Nasjonal transportplan 2018–2029
+  dokument: Meld. St. 33 (2016–2017)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-33-20162017/id2546287/
+  sider: 330
+  bytes: 12972607
+  sha256: b83bb32355fdbeb6f8efb26ad8f77876ad4c0ee1ac31a8bf607429c372ded9fd
+  tekst: tekst/ntp_2018_2029.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2018_2029_rettebrev
+  fil: ntp_2018_2029_rettebrev.pdf
+  url: https://www.regjeringen.no/contentassets/7c52fd2938ca42209e4286fe86bb28bd/NO/RETT/Rettebrev.pdf
+  sider: 4
+  bytes: 434121
+  sha256: ab723fae5aec69828a8f8bd45e3797b2cf8873b0d3e3c3a57ee10db298169d0a
+  tekst: tekst/ntp_2018_2029_rettebrev.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2018_2029_stortingets_behandling
+  fil: ntp_2018_2029_stortingets_behandling.pdf
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2016-2017/inns-201617-460s.pdf
+  sider: 160
+  bytes: 4659587
+  sha256: d2031da050be442166d2a8618a475557af12d0ee79a1bf11e0ebbd0e492f88db
+  tekst: tekst/ntp_2018_2029_stortingets_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2022_2033
+  fil: ntp_2022_2033.pdf
+  tittel: Nasjonal transportplan 2022–2033
+  dokument: Meld. St. 20 (2020–2021)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-20-20202021/id2839503/
+  sider: 264
+  bytes: 55416586
+  sha256: f46440b54efe1f0447ae90ab810ea83a245e62b5ca70720e4b658a99cbaad69f
+  tekst: tekst/ntp_2022_2033.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2022_2033_rettebrev
+  fil: ntp_2022_2033_rettebrev.pdf
+  url: ''
+  sider: 2
+  bytes: 159774
+  sha256: 939333411a142d1c25f0134449ddbc61b69c9abb428618039047d4f78b3ecab2
+  tekst: tekst/ntp_2022_2033_rettebrev.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2025_2036
+  fil: ntp_2025_2036.pdf
+  tittel: Nasjonal transportplan 2025–2036
+  dokument: Meld. St. 14 (2023–2024)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-14-20232024/id3030714/
+  lenker:
+  - tittel: Stortinget vedtak i korthet
+    url: https://www.stortinget.no/no/Saker-og-publikasjoner/Vedtak/Vedtak/Sak/?p=98233
+  - tittel: Fylkesvis oversikt
+    url: https://www.regjeringen.no/no/aktuelt/ntp-2025-2036-fylkesvis-oversikt/id3031420/
+  - tittel: Spørsmål i Stortinget
+    url: https://www.regjeringen.no/no/tema/transport-og-kommunikasjon/nasjonal-transportplan/ntp-2025-2036-i-arbeid/artikler-2024/sporsmal-fra-stortinget-om-nasjonal-transportplan-20252036/id3035645/
+  sider: 242
+  bytes: 25286353
+  sha256: 77f45175e1c9cb9250dcc2909ee39e6a055cd1eadcd66d185ec96f4005f12bc5
+  tekst: tekst/ntp_2025_2036.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2025_2036_rettebrev
+  fil: ntp_2025_2036_rettebrev.pdf
+  dokument: Kjente feil i Meld. St. 14 (2023-2024) Nasjonal transportplan 2025-2036
+  url: https://www.regjeringen.no/contentassets/aaee20cf5a9e468ea97fd51638c42407/no/rett/rettebrev08052024.pdf
+  sider: 2
+  bytes: 163229
+  sha256: 86fafc0d9ffcb9b30e591657877cadfdcae6b3d358aacba1b9208e18760f40da
+  tekst: tekst/ntp_2025_2036_rettebrev.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ntp_2025_2036_stortingets_behandling
+  fil: ntp_2025_2036_stortingets_behandling.pdf
+  url: https://www.stortinget.no/no/Saker-og-publikasjoner/Publikasjoner/Innstillinger/Stortinget/2023-2024/inns-202324-439s/
+  sider: 420
+  bytes: 20360010
+  sha256: 6891d752845c85fcd70856765f79e7adea7fd128457c9a1053417e39ffb7bd9b
+  tekst: tekst/ntp_2025_2036_stortingets_behandling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false

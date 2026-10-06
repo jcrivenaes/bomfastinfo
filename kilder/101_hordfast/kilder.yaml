@@ -1,0 +1,775 @@
+# cspell:disable
+# Kildeliste. Tekniske felt (fil, sider, bytes, sha256, tekst, konvertert, ocr)
+# oppdateres av scripts/kilder.py. Øvrige felt (tittel, dokument, url, arkiv,
+# lenker, merknad, ...) redigeres her og beholdes. url/lenker hentes fra .url- og
+# _annet.txt-filer på Drive bare når feltet er tomt; rett URL-er i denne fila.
+
+- id: b11876r01_natm_rap_okologisk-kompensasjon
+  fil: docbase/regulerings_plan/03_naturmangfold/b11876r01_natm_rap_okologisk-kompensasjon.pdf
+  url: ''
+  sider: 103
+  bytes: 5950281
+  sha256: f5fd36444b02ac42a05474bd1efba6ef23fc5121c09477acbd6893904415b875
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/b11876r01_natm_rap_okologisk-kompensasjon.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930.pdf
+  dokument: Oppdatert kap. 2 20220217
+  url: ''
+  sider: 142
+  bytes: 2274779
+  sha256: aa3550223326f0ae79924ffccff5a2611be74799e189d91a9f5ae96dcc362646
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0.pdf
+  url: ''
+  sider: 9
+  bytes: 186841
+  sha256: b3becb6ffa9554e560563a3b8880be61443ed940d88d1c1d8f68dc640df13294
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: delomrader
+  fil: docbase/regulerings_plan/06_naturressurser/delomrader.pdf
+  url: ''
+  sider: 20
+  bytes: 47361456
+  sha256: 5fc01f47f6013b025763c93cb1fa4ec55a9e2c36b56e227ac063b1157f191c12
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/delomrader.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: e39-adland-svegatjorn_berekraftstrategi
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_berekraftstrategi.pdf
+  url: ''
+  sider: 24
+  bytes: 2451056
+  sha256: f1f8181c36cee1c681f5307f6c2f60534ff61c0f0272c16fbf6f3e2334cda679
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_berekraftstrategi.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: e39-adland-svegatjorn_formingsrettleiar
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_formingsrettleiar.pdf
+  url: ''
+  sider: 34
+  bytes: 8473751
+  sha256: f275421db58fefdf3d1844ece0c5a47162709165e5a288e786cd5d6945319474
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_formingsrettleiar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: e39-adland-svegatjorn_planomtale
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_planomtale.pdf
+  url: ''
+  sider: 267
+  bytes: 31945106
+  sha256: efe5699ec9122eb69e81bb61914563c2b2b4ad17db283f96d7d070f18350b772
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/e39-adland-svegatjorn_planomtale.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport
+  fil: docbase/regulerings_plan/03_naturmangfold/e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport.pdf
+  dokument: E39, Stord-Os, Naturmangfald
+  url: ''
+  sider: 301
+  bytes: 18087619
+  sha256: 7031b966a7224b000df0f115e0a666cac0f7aa0920aaddad7ff49085dcbd08e0
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat-vurdering_av_vassressursar
+  fil: docbase/regulerings_plan/06_naturressurser/fagnotat-vurdering_av_vassressursar.pdf
+  url: ''
+  sider: 89
+  bytes: 5960851
+  sha256: ca5eb9860aa77c60a4546ace27b63d671d684d833c37bfa5833a45ae7b5ca587
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/fagnotat-vurdering_av_vassressursar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_friluftsliv_by-og_bygdeliv
+  fil: docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/fagnotat_friluftsliv_by-og_bygdeliv.pdf
+  url: ''
+  sider: 152
+  bytes: 18378837
+  sha256: f3f13ae086fa507d6b1b4bfd78dd08ae0896cd35bb4d875fe55ec0b5ecaa5fcd
+  tekst: tekst/docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/fagnotat_friluftsliv_by-og_bygdeliv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_klima-og-energi
+  fil: docbase/regulerings_plan/07_klima_og_energi/fagnotat_klima-og-energi.pdf
+  url: ''
+  sider: 99
+  bytes: 3643524
+  sha256: daed00146f6269a7bb9dbf1198e723bee6ee4acdc697bdd1aa10c69855e87d34
+  tekst: tekst/docbase/regulerings_plan/07_klima_og_energi/fagnotat_klima-og-energi.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_kulturarv
+  fil: docbase/regulerings_plan/05a_kulturminner/fagnotat_kulturarv.pdf
+  url: ''
+  sider: 203
+  bytes: 57709826
+  sha256: c5cac70e77a0e5d983666b8849e80c5adea5830987b338724ec43ba22c03b438
+  tekst: tekst/docbase/regulerings_plan/05a_kulturminner/fagnotat_kulturarv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_landskapsbilete
+  fil: docbase/regulerings_plan/04_landskap/fagnotat_landskapsbilete.pdf
+  url: ''
+  sider: 110
+  bytes: 58481748
+  sha256: 8bbc3b5ba8beceb7628453ba985ed3c18d76b0fe2c678d647526988be7d92d62
+  tekst: tekst/docbase/regulerings_plan/04_landskap/fagnotat_landskapsbilete.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_naturessursar
+  fil: docbase/regulerings_plan/06_naturressurser/fagnotat_naturessursar.pdf
+  url: ''
+  sider: 130
+  bytes: 8022731
+  sha256: fd221680668e0620bcf33d448057533a91d46223774d153fefbc63d0bf052f8c
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/fagnotat_naturessursar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagnotat_naturmangfald
+  fil: docbase/regulerings_plan/03_naturmangfold/fagnotat_naturmangfald.pdf
+  url: ''
+  sider: 210
+  bytes: 18338877
+  sha256: 8f8ad63fa3a229077cd92f5c31eb1ec9c2d3848e5b0e61199fbef6fb1640d3f5
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/fagnotat_naturmangfald.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-geokjemisk-undersoking
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geokjemisk-undersoking.pdf
+  url: ''
+  sider: 176
+  bytes: 8284880
+  sha256: 18972bc064d8b4964751a325e3f1d7e47b6c7275bafab7d975f46feb99db63ba
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geokjemisk-undersoking.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-geoteknikk-konstruksjon
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-konstruksjon.pdf
+  url: ''
+  sider: 279
+  bytes: 33732777
+  sha256: d84492741ffaa7ffab94061f5c52e883dbbb5a0330b0b85f7c459e5b90c4e5a9
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-konstruksjon.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-geoteknikk-masselager-og-riggomrader
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-masselager-og-riggomrader.pdf
+  url: ''
+  sider: 141
+  bytes: 10092293
+  sha256: 8380774de8f7d182412e8ea93802c1b5e58d136ebc52923ce1f3dd7352995b32
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-masselager-og-riggomrader.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-geoteknikk-veg
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-veg.pdf
+  url: ''
+  sider: 353
+  bytes: 32148690
+  sha256: 9bc711c6cc642846da7da573be03887f51eedd4ac4ed90e3e31b5795a521389e
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-geoteknikk-veg.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-ingeniorgeologi---bergskjaringer
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---bergskjaringer.pdf
+  url: ''
+  sider: 389
+  bytes: 52701976
+  sha256: 94917df0076804c3174ad4e38060dbf4f308044840b4f7f9120978ba603e80ac
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---bergskjaringer.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-ingeniorgeologi---brufundament
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---brufundament.pdf
+  url: ''
+  sider: 172
+  bytes: 21303852
+  sha256: 994c1a17ec532914cba48e1ca9b07115680b411fb2a7a35e9001df1c50740467
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---brufundament.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-ingeniorgeologi---ostunnelen
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---ostunnelen.pdf
+  dokument: Fagrapport Ingeniørgeologi  Ostunnelen
+  url: ''
+  sider: 169
+  bytes: 16969959
+  sha256: cd4257c0fbef0727f0226935802ffb9495b0faf415c19b9374352480ef21052f
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---ostunnelen.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-ingeniorgeologi---tunneler
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---tunneler.pdf
+  dokument: B11876r01_GEO-RAP-Fagrapport Ingeniørgeologi - tunneler
+  url: ''
+  sider: 280
+  bytes: 31873308
+  sha256: b054d3cf62975880256c6017af6254d328abc91694cf3f919fac789ea0634c9a
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport-ingeniorgeologi---tunneler.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-konsekvensanalyse-av-trafikktryggleiken
+  fil: docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport-konsekvensanalyse-av-trafikktryggleiken.pdf
+  dokument: Fagrapport Konsekvensanalyse av trafikktryggleiken. Versjon 6
+  url: ''
+  sider: 63
+  bytes: 1968905
+  sha256: c915bd671662b90e7e11f5e710b81c949bf8c90e4fe71b0c7ff52fb1eaa94144
+  tekst: tekst/docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport-konsekvensanalyse-av-trafikktryggleiken.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-prissette-konsekvensar
+  fil: docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport-prissette-konsekvensar.pdf
+  url: ''
+  sider: 42
+  bytes: 1530194
+  sha256: e6208671d3db701455b66c6083b77d454a9b97cd7d08d7ba728a15c480f6b0b4
+  tekst: tekst/docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport-prissette-konsekvensar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport-vatn-avlop-vassmiljo-overvasshandtering
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport-vatn-avlop-vassmiljo-overvasshandtering.pdf
+  url: ''
+  sider: 100
+  bytes: 6832862
+  sha256: b84f48160d5a27e73da00127219c4ec5cbcc0dcd511db563d72cea0d23f18229
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport-vatn-avlop-vassmiljo-overvasshandtering.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_anleggsgjennomforing
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_anleggsgjennomforing.pdf
+  url: ''
+  sider: 93
+  bytes: 9006563
+  sha256: dfe44f30dfa893faa95c3dc58183b88b25a650eee2a99c0e02ab46f9766a8495
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_anleggsgjennomforing.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_elektro
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_elektro.pdf
+  url: ''
+  sider: 43
+  bytes: 1463958
+  sha256: 95bd031c9824a56c55a814c532ca2fae083d102c4c4d577857228dff475a2d1d
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_elektro.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_hydrogeologi
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_hydrogeologi.pdf
+  url: ''
+  sider: 104
+  bytes: 13648664
+  sha256: c9d79e101145c097002e871c8246ee58a39736662aa70c8e1e9f3dab0e2ad4a4
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_hydrogeologi.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_hydrologi
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_hydrologi.pdf
+  url: ''
+  sider: 87
+  bytes: 11265297
+  sha256: 6b4adffbc20b0d9836d4c25d901c1b2977959925fd5bbef79d5b20c13741cd0a
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_hydrologi.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_konstruksjon
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_konstruksjon.pdf
+  url: ''
+  sider: 193
+  bytes: 26237065
+  sha256: 1efce5979be9f5d50ea9e7ef9ba742a438cbb03082094530ec610f06de9f55ff
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_konstruksjon.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_lokal-og-regional-utvikling
+  fil: docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport_lokal-og-regional-utvikling.pdf
+  url: ''
+  sider: 65
+  bytes: 5312658
+  sha256: 42686429260ea6baaca7eb023feff1d35d7959efd51292f38037af2cbe5838ec
+  tekst: tekst/docbase/regulerings_plan/09_trafikk_og_samfunnsokonomi/fagrapport_lokal-og-regional-utvikling.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_luftforureining
+  fil: docbase/regulerings_plan/08_stoy_og_luft/fagrapport_luftforureining.pdf
+  url: ''
+  sider: 63
+  bytes: 5942602
+  sha256: 3bdb895f037d18bd65fb1ce63ec210d1cf0d5a4a14ddb93ee6f1d4048b9cc924
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/fagrapport_luftforureining.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_massedisponering
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_massedisponering.pdf
+  url: ''
+  sider: 89
+  bytes: 8669954
+  sha256: 3b1482e131745fc53558396568e61b6415b0a8ddfb7c80737168e8d4562b55f5
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_massedisponering.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_matjordplan-for-regplan
+  fil: docbase/regulerings_plan/06_naturressurser/fagrapport_matjordplan-for-regplan.pdf
+  url: ''
+  sider: 79
+  bytes: 5637052
+  sha256: cdf9a9bd7f280135b48db09eac02f61312c7a1c0fe788b281972357b8a1a2afc
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/fagrapport_matjordplan-for-regplan.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_skred
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_skred.pdf
+  url: ''
+  sider: 145
+  bytes: 25851704
+  sha256: 5bb4a44c8e8563108822c22e46fbd7bf23e684d724895d0b99991991ad194ef9
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/fagrapport_skred.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_stoy
+  fil: docbase/regulerings_plan/08_stoy_og_luft/fagrapport_stoy.pdf
+  url: ''
+  sider: 92
+  bytes: 6218683
+  sha256: 37298a95dc9dc0fc40a73b0b6a85a93c8eaebbd85ff877e9b9a008ae8cff11f4
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/fagrapport_stoy.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_veg-dimensjoneringsforesetnadar
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/fagrapport_veg-dimensjoneringsforesetnadar.pdf
+  dokument: Fagrapport veg
+  url: ''
+  sider: 45
+  bytes: 2076376
+  sha256: c16f665f6c81f4106f4a8897f7066e2070ea0d4ca70350eded2ca1a56e7b757d
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/fagrapport_veg-dimensjoneringsforesetnadar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: fagrapport_ytre-miljoplan
+  fil: docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_ytre-miljoplan.pdf
+  url: ''
+  sider: 139
+  bytes: 3323478
+  sha256: 710cd6cf59a4c08ab894b99e69cc62ab89b84dfee477e98cab9dbac08af66fc9
+  tekst: tekst/docbase/regulerings_plan/10_anlegg_masser_teknikk/fagrapport_ytre-miljoplan.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: konsekvensutgreiing-hodnanes-beltestad_samlerapport
+  fil: docbase/regulerings_plan/12_ovrige_fagrapporter/konsekvensutgreiing-hodnanes-beltestad_samlerapport.pdf
+  url: ''
+  sider: 68
+  bytes: 3330531
+  sha256: fb8c586f41f19fbbd976a82ae90664029abdc5cf853503dbfbab2e34bb94456f
+  tekst: tekst/docbase/regulerings_plan/12_ovrige_fagrapporter/konsekvensutgreiing-hodnanes-beltestad_samlerapport.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: konsekvensutgreiing-masselager_samlerapport
+  fil: docbase/regulerings_plan/12_ovrige_fagrapporter/konsekvensutgreiing-masselager_samlerapport.pdf
+  dokument: Samanstilling KU masselager
+  url: ''
+  sider: 92
+  bytes: 5438109
+  sha256: d28c265cd8e947ae7524d3b8593ad77c9d78b8f40077059f242ffd8959a66638
+  tekst: tekst/docbase/regulerings_plan/12_ovrige_fagrapporter/konsekvensutgreiing-masselager_samlerapport.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_friluftsliv_by-og_bygdeliv
+  fil: docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/ku_temarapport_friluftsliv_by-og_bygdeliv.pdf
+  url: ''
+  sider: 114
+  bytes: 11723007
+  sha256: e1e9ec4e7da2760a76b7ca484cf875e9a065661bb07428eb4ee23ea373db7c97
+  tekst: tekst/docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/ku_temarapport_friluftsliv_by-og_bygdeliv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_kulturarv
+  fil: docbase/regulerings_plan/05a_kulturminner/ku_temarapport_kulturarv.pdf
+  url: ''
+  sider: 164
+  bytes: 33853719
+  sha256: c309ec9f68451a2145f5379e7ca63382de70678eeffc89e592220b811e433d37
+  tekst: tekst/docbase/regulerings_plan/05a_kulturminner/ku_temarapport_kulturarv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_landskapsbilete
+  fil: docbase/regulerings_plan/04_landskap/ku_temarapport_landskapsbilete.pdf
+  url: ''
+  sider: 115
+  bytes: 32556624
+  sha256: 140d07abd98c3ac1fff8787c282965c68b53fbcbe1d2f2083ca3f0f4dc1aa040
+  tekst: tekst/docbase/regulerings_plan/04_landskap/ku_temarapport_landskapsbilete.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_masselager_friluftsliv_by-og_bygdeliv
+  fil: docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/ku_temarapport_masselager_friluftsliv_by-og_bygdeliv.pdf
+  url: ''
+  sider: 129
+  bytes: 11134562
+  sha256: bd93827130bcf4cc28a2dac9ca676411a71e675dbe0183e3a542bdf6636e84c8
+  tekst: tekst/docbase/regulerings_plan/05b_friluftsliv_by_bygdeliv/ku_temarapport_masselager_friluftsliv_by-og_bygdeliv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_masselager_kulturarv
+  fil: docbase/regulerings_plan/05a_kulturminner/ku_temarapport_masselager_kulturarv.pdf
+  url: ''
+  sider: 196
+  bytes: 57901306
+  sha256: 5c2246ae2849216cbe35f3f5143b0d7b8467d67f29be721d44fdeb448e48f8a4
+  tekst: tekst/docbase/regulerings_plan/05a_kulturminner/ku_temarapport_masselager_kulturarv.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_masselager_landskapsbilete
+  fil: docbase/regulerings_plan/04_landskap/ku_temarapport_masselager_landskapsbilete.pdf
+  url: ''
+  sider: 147
+  bytes: 62038489
+  sha256: ab3ab9ba5ab50949586566a2b222d59b2bcd38a06c5728f3e9adfee7ddf9780a
+  tekst: tekst/docbase/regulerings_plan/04_landskap/ku_temarapport_masselager_landskapsbilete.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_masselager_naturmangfald
+  fil: docbase/regulerings_plan/03_naturmangfold/ku_temarapport_masselager_naturmangfald.pdf
+  url: ''
+  sider: 192
+  bytes: 22608337
+  sha256: 7a0f66d018d1a975d410df0ddaf14823284895cf6b16d1afff7a14a9dd2c1bcd
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/ku_temarapport_masselager_naturmangfald.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_masselager_naturressursar
+  fil: docbase/regulerings_plan/06_naturressurser/ku_temarapport_masselager_naturressursar.pdf
+  url: ''
+  sider: 122
+  bytes: 8111522
+  sha256: 9e55911473bd417f76bbed9c9a9dfea0273df8e55cb3da785e885c35793c859e
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/ku_temarapport_masselager_naturressursar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_naturmangfald
+  fil: docbase/regulerings_plan/03_naturmangfold/ku_temarapport_naturmangfald.pdf
+  url: ''
+  sider: 195
+  bytes: 15745088
+  sha256: 5c50c8e222fb0c34e091c947d061aeb064047bd36785914cba00c898ff2408a2
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/ku_temarapport_naturmangfald.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ku_temarapport_naturressursar
+  fil: docbase/regulerings_plan/06_naturressurser/ku_temarapport_naturressursar.pdf
+  url: ''
+  sider: 159
+  bytes: 10218718
+  sha256: cdf91aa3fd84fb1130a1460c9d3d89d13c813106742e6506873d2a319da59329
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/ku_temarapport_naturressursar.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart-flatraker-beltestad_d1
+  fil: docbase/regulerings_plan/02_plankart/plankart-flatraker-beltestad_d1.pdf
+  url: ''
+  sider: 18
+  bytes: 41233638
+  sha256: c624aa1492007cdf21cf327df841cc294868dc3a7842d3bdb5b518f6744639ac
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart-flatraker-beltestad_d1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart-flatraker-beltestad_d2
+  fil: docbase/regulerings_plan/02_plankart/plankart-flatraker-beltestad_d2.pdf
+  url: ''
+  sider: 17
+  bytes: 37413032
+  sha256: 6f0429d7505eb6c6b75470930a58bb7661ee8a97ddced04dbb6ea92231fb884b
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart-flatraker-beltestad_d2.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart-hodnanes-flatraker_c2
+  fil: docbase/regulerings_plan/02_plankart/plankart-hodnanes-flatraker_c2.pdf
+  url: ''
+  sider: 13
+  bytes: 16771585
+  sha256: 9f79ca05a89f6b1939a1e066545631ec1e677cdcbc16e0702fa7c70cbf6eaec8
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart-hodnanes-flatraker_c2.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart-hodnanes-flatraker_c3
+  fil: docbase/regulerings_plan/02_plankart/plankart-hodnanes-flatraker_c3.pdf
+  url: ''
+  sider: 13
+  bytes: 17388927
+  sha256: 2de557658c1f8831afd824dba9fd764f426c205f455f768d9a407e58e5956c85
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart-hodnanes-flatraker_c3.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart_bjornafjorden
+  fil: docbase/regulerings_plan/02_plankart/plankart_bjornafjorden.pdf
+  url: ''
+  sider: 35
+  bytes: 35644452
+  sha256: dec22ec1aad9345c44b96f285b86def59f88c3f0733f86f56b095a4f12a3976f
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart_bjornafjorden.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart_nord-pa-tysnes
+  fil: docbase/regulerings_plan/02_plankart/plankart_nord-pa-tysnes.pdf
+  url: ''
+  sider: 50
+  bytes: 61724146
+  sha256: 26f3a02957b54807df8f65a1cb1ecae33f85d0b1caf8d6f3ba8c98b13a3c809d
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart_nord-pa-tysnes.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: plankart_stord
+  fil: docbase/regulerings_plan/02_plankart/plankart_stord.pdf
+  url: ''
+  sider: 20
+  bytes: 24158942
+  sha256: 82358ab8a32f7f18cd9a1d433190d4783237f3ae90ead84fcee4c53961169f29
+  tekst: tekst/docbase/regulerings_plan/02_plankart/plankart_stord.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: planprogram-fastsatt-2023-09-26
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/planprogram-fastsatt-2023-09-26.pdf
+  url: ''
+  sider: 94
+  bytes: 5662598
+  sha256: 53ab715c89a8e6fe5b6b763424361d7e5b5d0c296a02929c805be048399191a1
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/planprogram-fastsatt-2023-09-26.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: registreringskart
+  fil: docbase/regulerings_plan/06_naturressurser/registreringskart.pdf
+  url: ''
+  sider: 20
+  bytes: 61201972
+  sha256: d10017a4a2fbda379e8cf0f9e79fe2c36de6beae0fe49a67d5599ab5d9579855
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/registreringskart.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: registreringskart__55c4c9e5
+  fil: docbase/regulerings_plan/06_naturressurser/registreringskart__55c4c9e5.pdf
+  url: ''
+  sider: 5
+  bytes: 61189022
+  sha256: 142f9d43098bb322f24016aa7a4e2c16a8edbe69452bca802af46013df49515a
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/registreringskart__55c4c9e5.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: registreringskart__ed0273ef
+  fil: docbase/regulerings_plan/06_naturressurser/registreringskart__ed0273ef.pdf
+  url: ''
+  sider: 25
+  bytes: 61245906
+  sha256: ae93bd09cb215b72b6b186a574a68d7691a931a4825621956a7df9c0c418f8ed
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/registreringskart__ed0273ef.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: reguleringsforesegner-e39-adland-svegatjorn
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/reguleringsforesegner-e39-adland-svegatjorn.pdf
+  url: ''
+  sider: 10
+  bytes: 287761
+  sha256: e26dd3b021b475a650c6cdc92d460115f14efd807f298a3a5ee98065c1e374df
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/reguleringsforesegner-e39-adland-svegatjorn.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: ros-analyse
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/ros-analyse.pdf
+  url: ''
+  sider: 99
+  bytes: 1872944
+  sha256: 4c7af6a9f7363e5d00211d1de888cf5b3bc9c1787012a5ff8c2b87a5a18b2941
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/ros-analyse.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: sbj-33-p1-amc-90-re-100_0-design-report(design_Bj.fj)
+  fil: docbase/regulerings_plan/12_ovrige_fagrapporter/sbj-33-p1-amc-90-re-100_0-design-report(design_Bj.fj).pdf
+  dokument: SBJ-33-P1-AMC-90-RE-100 Design report
+  url: ''
+  sider: 219
+  bytes: 25360197
+  sha256: 8bf78135618f73bba2d4cff6b3757a3cf4135281f549bfa0f9e2832eb886b14c
+  tekst: tekst/docbase/regulerings_plan/12_ovrige_fagrapporter/sbj-33-p1-amc-90-re-100_0-design-report(design_Bj.fj).md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal
+  fil: docbase/regulerings_plan/12_ovrige_fagrapporter/sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal.pdf
+  tittel: Teknisk forprosjektrapport - Aluminiumsalternativ LA1
+  url: ''
+  sider: 44
+  bytes: 3450810
+  sha256: 486bc903c87f25daae02f85c3472975506033ecb1a984881c5f7276ada71df8d
+  tekst: tekst/docbase/regulerings_plan/12_ovrige_fagrapporter/sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: tiltaksplan-syredannende-berg
+  fil: docbase/regulerings_plan/11_ros_geologi_hydrologi/tiltaksplan-syredannende-berg.pdf
+  url: ''
+  sider: 89
+  bytes: 10886817
+  sha256: 65b30e6e6985d3be913ee50597ff530d19ced3b36cf64250fff643fc97871058
+  tekst: tekst/docbase/regulerings_plan/11_ros_geologi_hydrologi/tiltaksplan-syredannende-berg.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: utredning-redusert-standard
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/utredning-redusert-standard.pdf
+  dokument: Alternative vegstandarder E39
+  url: ''
+  sider: 83
+  bytes: 9232231
+  sha256: 7eee3fabbaa4dc6a0c9ddd266930b093c48e80c5e71a4eae8f3228270f663eb7
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/utredning-redusert-standard.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet
+  fil: docbase/regulerings_plan/01_planomtale_og_bestemmelser/vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet.pdf
+  tittel: Oppsummering av innspel til oppstartsvarsel for utvida planområde ved Ulvenvatnet i Bjørnafjorden
+    kommune
+  dokument: E39 Ådland-Svegatjørn (Stord-Os)
+  url: ''
+  sider: 13
+  bytes: 886743
+  sha256: 2162eec7ab4feb9cfe580de9374e97931ede7bd690cd5b12d365aad56d53d02e
+  tekst: tekst/docbase/regulerings_plan/01_planomtale_og_bestemmelser/vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: verdikart
+  fil: docbase/regulerings_plan/06_naturressurser/verdikart.pdf
+  url: ''
+  sider: 25
+  bytes: 30953913
+  sha256: 8c03098827cd7a010f1ed8f1e2670357b73c5a0c1d4c26c13b50fc6db4d861c5
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/verdikart.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: verdikart__b02105cb
+  fil: docbase/regulerings_plan/06_naturressurser/verdikart__b02105cb.pdf
+  url: ''
+  sider: 5
+  bytes: 30895577
+  sha256: b8f797f430aa409ba0d70a65d748a647d442758ec18d5b48646e253936f73595
+  tekst: tekst/docbase/regulerings_plan/06_naturressurser/verdikart__b02105cb.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: vlfk_2025_arkeologiske-registreringar-e39-stord-os_2022-2024
+  fil: docbase/regulerings_plan/05a_kulturminner/vlfk_2025_arkeologiske-registreringar-e39-stord-os_2022-2024.pdf
+  url: ''
+  sider: 1780
+  bytes: 108770484
+  sha256: fa7023cb14d17a93d9b2740c9b23b7732a7e23aa8b0e2c5901b1ec0fef7477e8
+  tekst: tekst/docbase/regulerings_plan/05a_kulturminner/vlfk_2025_arkeologiske-registreringar-e39-stord-os_2022-2024.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: vurdering-av-samla-belastning-pa-boreonemoral-regnskog
+  fil: docbase/regulerings_plan/03_naturmangfold/vurdering-av-samla-belastning-pa-boreonemoral-regnskog.pdf
+  url: ''
+  sider: 65
+  bytes: 5370702
+  sha256: cdbdd74d647a11dbfa94116903cda8c6a9d5a3dd95c6d0878e67bd555662ed53
+  tekst: tekst/docbase/regulerings_plan/03_naturmangfold/vurdering-av-samla-belastning-pa-boreonemoral-regnskog.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x1-01-0---x1-03-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x1-01-0---x1-03-0.pdf
+  url: ''
+  sider: 3
+  bytes: 46687649
+  sha256: 96304da4900586f63621838f1ff777351d86ebbf5dc943b0f489ea053c06ef6f
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x1-01-0---x1-03-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x1-01-1---x1-03-1
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x1-01-1---x1-03-1.pdf
+  url: ''
+  sider: 3
+  bytes: 46528925
+  sha256: e427bae00ac6e16f614f53f77435835da471c63c7d39a1d196bb17aaae42e61b
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x1-01-1---x1-03-1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2a-11-0---x2a-15-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2a-11-0---x2a-15-0.pdf
+  url: ''
+  sider: 5
+  bytes: 33809872
+  sha256: b9c41d693e4e94f091712bd9dba419dbf921b6aee72e998a5148779154bb049f
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2a-11-0---x2a-15-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2a-11-1---x2a-15-1
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2a-11-1---x2a-15-1.pdf
+  url: ''
+  sider: 5
+  bytes: 33791038
+  sha256: b5920d02dbdac955333ab2829f0ca6e17eebd4f7623b56b7ae3a2c8a168daedf
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2a-11-1---x2a-15-1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2a-21-0---x2a-25-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2a-21-0---x2a-25-0.pdf
+  url: ''
+  sider: 5
+  bytes: 34800828
+  sha256: 3fbadc67c2e96c8eeebf8b0f4ef232395c1483ae69b7bbc97aefdf9d36b674eb
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2a-21-0---x2a-25-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2a-21-1---x2a-25-1
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2a-21-1---x2a-25-1.pdf
+  url: ''
+  sider: 5
+  bytes: 34196218
+  sha256: 908747c39e3e5b1e9f1559ba54117206e7032a2a9284d7ae28439b640ad9ec66
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2a-21-1---x2a-25-1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2b-01-0---x2b-06-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2b-01-0---x2b-06-0.pdf
+  url: ''
+  sider: 6
+  bytes: 33191833
+  sha256: 4dd1cf412faf914213fff656678703dab65775cd3fd48d69649794bfece49a10
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2b-01-0---x2b-06-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x2b-01-1---x2b-06-1
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x2b-01-1---x2b-06-1.pdf
+  url: ''
+  sider: 6
+  bytes: 33164298
+  sha256: e97b33575c28f1ee0db2d46d93115a2f66d05125af652a452e739b093caa5e70
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x2b-01-1---x2b-06-1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x3-01-0---x3-02-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x3-01-0---x3-02-0.pdf
+  url: ''
+  sider: 2
+  bytes: 7753477
+  sha256: bf96c775b0ef38cb81b922dbb8a5041dd03450c236eea5a63e41fc8a7604abc8
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x3-01-0---x3-02-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x3-01-1---x3-02-1
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x3-01-1---x3-02-1.pdf
+  url: ''
+  sider: 2
+  bytes: 7742515
+  sha256: cd84ecbc8544f6bc2f1686131547e1714b444b6c8b17d8e7af84aca09cc2353a
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x3-01-1---x3-02-1.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
+- id: x3-21-0---x3-22-0
+  fil: docbase/regulerings_plan/08_stoy_og_luft/x3-21-0---x3-22-0.pdf
+  url: ''
+  sider: 2
+  bytes: 5114796
+  sha256: 181b007fe61a25186136d669f7dd593c856486611ef14730e66db29c22f2afc2
+  tekst: tekst/docbase/regulerings_plan/08_stoy_og_luft/x3-21-0---x3-22-0.md
+  konvertert: pymupdf4llm 1.28.2, 2026-10-06
+  ocr: false
