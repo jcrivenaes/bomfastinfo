@@ -3,8 +3,10 @@
 """Convert source documents (PDF) from the Drive folder to text and maintain kilder.yaml.
 
 The originals live on Google Drive (local copy, e.g. ~/GoogleDrive/bomfast). The text
-versions and kilder.yaml go into the repo under kilder/<folder>/. Hugo does not publish
-kilder/, so this is working material, not part of the website.
+versions and kilder.yaml go into a separate PRIVATE repo (default ~/work/git/bomfast-kilder,
+one folder per Drive top folder: <sources>/<folder>/kilder.yaml and tekst/). They may hold
+paywalled articles or documents obtained via innsyn, so they never go into bomfastinfo.
+`export` writes a public list (only open fields of public entries) into bomfastinfo.
 
 Usage:
     # Convert one folder (only new or changed PDFs):
@@ -38,6 +40,10 @@ Usage:
     # Also ask Wayback to capture URLs that have no snapshot yet (slow, rate-limited):
     python3 scripts/kilder.py archive 101_hordfast --save
 
+    # Write the public source list for the website (data/kilder/<folder>.yaml in bomfastinfo):
+    python3 scripts/kilder.py export 001_nasjonal_transportplan_ntp
+    python3 scripts/kilder.py export --all --dry-run
+
 Output (what the script tells you):
     Every changed file gets one line with a status tag (`archive` and `check` use similar
     tags for entries): NEW, UPDATED (the PDF changed),
@@ -50,13 +56,13 @@ Output (what the script tells you):
     With --dry-run the same lines describe what *would* happen; nothing is written.
 
 Excluding folders:
-    Put patterns in kilder/<top folder>/EXCLUDE.txt, one per line, e.g.
+    Put patterns in <sources>/<top folder>/EXCLUDE.txt, one per line, e.g.
         utkast                               # every folder named utkast
         hordfast_regplan/90_Arbeidsmateriale # one specific folder
     Backup folders, trash folders and files ending in ~ are always skipped.
 
 Structure and ids:
-    There is one kilder.yaml per top folder (kilder/101_hordfast/kilder.yaml), also when
+    There is one kilder.yaml per top folder (<sources>/101_hordfast/kilder.yaml), also when
     you run on a subfolder. Subfolders on Drive are mirrored under tekst/.
     id = file name without extension, independent of subfolder. If you move a PDF to
     another subfolder it keeps its id, and the script moves the text file along. If you
@@ -64,8 +70,12 @@ Structure and ids:
     you, so you can update references in articles. File names must therefore be unique
     within a top folder.
 
-The Drive folder can be set with --drive or the environment variable BOMFAST_DRIVE
-(default: ~/GoogleDrive/bomfast).
+Locations:
+    Drive folder:   --drive or BOMFAST_DRIVE      (default: ~/GoogleDrive/bomfast)
+    Private repo:   --sources or BOMFAST_SOURCES  (default: ~/work/git/bomfast-kilder)
+    Public export:  --out (export only)           (default: <bomfastinfo>/data/kilder)
+    The script refuses to use a sources folder inside the bomfastinfo repo, so the private
+    texts cannot end up in the public repo by mistake.
 
 Dependencies:
     pip install pymupdf pymupdf4llm pyyaml
@@ -77,6 +87,24 @@ kilder.yaml:
     Fields you fill in yourself (tittel, dokument, url, arkiv, lenker, merknad, ...) are
     kept on every run. Comments in the YAML file are not kept.
 
+Private sources (paywalled articles, innsyn documents):
+    offentlig: nei   the entry is never exported to the public list (and `archive` skips
+                     it). Accepted "private" values: nei / no / false. Any other value
+                     than ja / yes / true is also treated as private, with a warning.
+                     Entries without the field are public.
+    arkiv: skip      `archive` never looks up or captures this url (e.g. paywalled pages,
+                     where a Wayback capture could republish the full text), and `export`
+                     leaves arkiv out.
+    hentet: <date>   when you retrieved the document/article (free field, exported).
+
+Public export:
+    `export` writes <out>/<folder>.yaml with only these fields per entry: id, tittel,
+    dokument, url, arkiv, lenker, hentet. Technical fields, merknad, file paths and your own
+    extra fields are never exported. Entries are left out if they have offentlig: nei or
+    have neither url, arkiv nor lenker. The file is only rewritten when its content
+    changes, and not created at all if nothing is public (an existing file is then
+    emptied, so no stale public entries are left behind). The public file is generated: correct things in the private kilder.yaml.
+
 Archive links (arkiv):
     `archive` looks up the closest existing Wayback snapshot of each entry's url and writes
     it to `arkiv`, but only if `arkiv` is empty: a value you wrote yourself is never
@@ -86,6 +114,7 @@ Archive links (arkiv):
     snapshot lookup reuses find_wayback() from check_links_wayback.py, which also tries
     URL variants (http/https, with/without www, ...) and rejects truncated PDF captures.
     kilder.yaml is saved after every filled-in entry, so an interrupted run loses nothing.
+    Entries with `arkiv: skip` or `offentlig: nei` are skipped.
     To use your own archive.org upload as `arkiv` instead, write that link by hand.
 
 URLs:
@@ -94,7 +123,7 @@ URLs:
     in kilder.yaml is empty, typically the first time a document is converted. To add or
     correct a URL, edit kilder.yaml. `check` reports URL MISMATCH if a .url file on Drive
     disagrees with kilder.yaml; kilder.yaml wins.
-    The field names, the folder names (kilder/, tekst/) and the page markers in the text
+    The field names, the folder names (tekst/) and the page markers in the text
     files are Norwegian on purpose: they are data that sits next to the Norwegian
     documents and articles.
 """
@@ -118,11 +147,16 @@ from pathlib import Path
 
 import yaml
 
-REPO = Path(__file__).resolve().parent.parent
-SOURCES_DIR = REPO / "kilder"
+REPO = Path(__file__).resolve().parent.parent  # bomfastinfo (public)
 DEFAULT_DRIVE = Path(
     os.environ.get("BOMFAST_DRIVE", "~/GoogleDrive/bomfast")
 ).expanduser()
+DEFAULT_SOURCES = Path(
+    os.environ.get("BOMFAST_SOURCES", "~/work/git/bomfast-kilder")
+).expanduser()
+DEFAULT_EXPORT = REPO / "data" / "kilder"
+# The private source repo (kilder.yaml + tekst/ per top folder). Set in main().
+SOURCES_DIR = DEFAULT_SOURCES
 EXCLUDE_FILE = "EXCLUDE.txt"
 SAVE_API = "https://web.archive.org/save/"  # Wayback "Save Page Now"
 WAYBACK_HOST = "web.archive.org"
@@ -142,6 +176,8 @@ FIELD_ORDER = [
     "url",
     "arkiv",
     "lenker",
+    "hentet",
+    "offentlig",
     "merknad",
     "sider",
     "bytes",
@@ -150,6 +186,13 @@ FIELD_ORDER = [
     "konvertert",
     "ocr",
 ]
+
+
+# Fields that may go into the public export. Everything else stays private.
+EXPORT_FIELDS = ["id", "tittel", "dokument", "url", "arkiv", "lenker", "hentet"]
+ARCHIVE_SKIP = "skip"
+PRIVATE_VALUES = {"nei", "no", "false"}
+PUBLIC_VALUES = {"ja", "yes", "true"}
 
 
 # --------------------------------------------------------------------------- helpers
@@ -188,6 +231,35 @@ def say(
     msg: str = "", detail: bool = False, end: str = "\n", cont: bool = False
 ) -> None:
     LOG.say(msg, detail, end, cont)
+
+
+def disp(path: Path) -> str:
+    """Path for log lines: relative to the sources repo or bomfastinfo if possible."""
+    for base in (SOURCES_DIR, REPO):
+        try:
+            return path.relative_to(base).as_posix()
+        except ValueError:
+            pass
+    return str(path)
+
+
+def public_status(entry: dict) -> tuple[bool, str]:
+    """(is public, warning). Missing `offentlig` = public. Unknown values = private."""
+    value = entry.get("offentlig")
+    if value is None or value == "" or value is True:
+        return True, ""
+    if value is False:
+        return False, ""
+    text = str(value).strip().lower()
+    if text in PUBLIC_VALUES:
+        return True, ""
+    if text in PRIVATE_VALUES:
+        return False, ""
+    return False, f"offentlig: {value!r} not understood; treated as private (use ja/nei)"
+
+
+def archive_skipped(entry: dict) -> bool:
+    return str(entry.get("arkiv") or "").strip().lower() == ARCHIVE_SKIP
 
 
 def human_size(n: int | None) -> str:
@@ -254,7 +326,7 @@ def sha256(path: Path) -> str:
 
 
 def read_exclude(top_name: str) -> list[str]:
-    """Read kilder/<top folder>/EXCLUDE.txt: one pattern per line, # for comments."""
+    """Read <sources>/<top folder>/EXCLUDE.txt: one pattern per line, # for comments."""
     path = SOURCES_DIR / top_name / EXCLUDE_FILE
     if not path.exists():
         return []
@@ -478,7 +550,9 @@ def render_yaml(entries: dict[str, dict]) -> str:
         "# Kildeliste. Tekniske felt (fil, sider, bytes, sha256, tekst, konvertert, ocr)\n"
         "# oppdateres av scripts/kilder.py. Øvrige felt (tittel, dokument, url, arkiv,\n"
         "# lenker, merknad, ...) redigeres her og beholdes. url/lenker hentes fra .url- og\n"
-        "# _annet.txt-filer på Drive bare når feltet er tomt; rett URL-er i denne fila.\n\n"
+        "# _annet.txt-filer på Drive bare når feltet er tomt; rett URL-er i denne fila.\n"
+        "# offentlig: nei = aldri med i den offentlige lista (export).\n"
+        "# arkiv: skip = archive slår aldri opp eller arkiverer url-en.\n\n"
     )
     return header + yaml.safe_dump(
         items, sort_keys=False, allow_unicode=True, width=100
@@ -496,7 +570,7 @@ def save_yaml(
     """Write kilder.yaml only if its content changes, and say what happened."""
     new_text = render_yaml(entries)
     old_text = path.read_text(encoding="utf-8") if path.exists() else None
-    rel = path.relative_to(REPO)
+    rel = disp(path)
     if new_text == old_text:
         say(f"kilder.yaml: no changes, file not rewritten ({rel})")
         return
@@ -538,7 +612,7 @@ def print_summary(
 
 
 def find_pdfs(top: Path, sub: str = "") -> list[Path]:
-    """All PDFs under top/sub, except ALWAYS_EXCLUDE and kilder/<top>/EXCLUDE.txt."""
+    """All PDFs under top/sub, except ALWAYS_EXCLUDE and <sources>/<top>/EXCLUDE.txt."""
     root = top / sub if sub else top
     extra = read_exclude(top.name)
     return sorted(
@@ -1024,6 +1098,12 @@ def cmd_check(
                     f"{Path(entry['fil']).stem}_annet.txt on Drive (kilder.yaml wins)",
                 )
 
+    for eid, entry in entries.items():
+        if in_scope(entry.get("fil", ""), sub) or not entry.get("fil"):
+            _public, warning = public_status(entry)
+            if warning:
+                report("OFFENTLIG?", eid, warning)
+
     # Text files on disk that no entry points to (e.g. left behind by older
     # versions of this script, or by entries that were removed by hand).
     referenced = {e.get("tekst") for e in entries.values()}
@@ -1090,6 +1170,7 @@ def cmd_check(
             ("URL MISMATCH", ".url on Drive differs from kilder.yaml"),
             ("LINKS MISMATCH", "_annet.txt on Drive differs from kilder.yaml"),
             ("NO URL", "entries without url (not counted as issues)"),
+            ("OFFENTLIG?", "unclear offentlig value (treated as private)"),
             ("ORPHAN", "text files not referenced by any entry"),
             ("REMOVED", "entries (and their text files) removed from kilder.yaml"),
             ("WOULD REMOVE", "entries prune would remove (dry run)"),
@@ -1158,7 +1239,16 @@ def cmd_archive(
     skipped_lines = []
     for e in scope:
         label = e["id"]
-        if e.get("arkiv"):
+        public, _warning = public_status(e)
+        if archive_skipped(e):
+            counts["SKIP"] += 1
+            skipped_lines.append(f"SKIP       {label}: arkiv: skip in kilder.yaml")
+        elif not public:
+            counts["PRIVATE"] += 1
+            skipped_lines.append(
+                f"PRIVATE    {label}: offentlig: {e.get('offentlig')} (never archived)"
+            )
+        elif e.get("arkiv"):
             counts["KEPT"] += 1
             skipped_lines.append(
                 f"KEPT       {label}: arkiv already set "
@@ -1257,6 +1347,8 @@ def cmd_archive(
             ("FAILED", "capture request failed"),
             ("NOT TRIED", "not tried because archive.org rate-limited the run"),
             ("SKIPPED", f"url already points to {WAYBACK_HOST}"),
+            ("SKIP", "arkiv: skip, never archived"),
+            ("PRIVATE", "offentlig: nei, never archived"),
             ("NO URL", "no url in kilder.yaml"),
         ],
         hint_verbose="KEPT",
@@ -1265,7 +1357,7 @@ def cmd_archive(
         say("kilder.yaml: not written (dry run)")
     elif entries == original:
         say(
-            f"kilder.yaml: no changes, file not rewritten ({yaml_file.relative_to(REPO)})"
+            f"kilder.yaml: no changes, file not rewritten ({disp(yaml_file)})"
         )
     else:
         n = sum(
@@ -1273,9 +1365,118 @@ def cmd_archive(
         )
         say(
             f"kilder.yaml: written, {n} arkiv field{'s' if n != 1 else ''} filled in "
-            f"({yaml_file.relative_to(REPO)})"
+            f"({disp(yaml_file)})"
         )
     return 1 if left else 0
+
+
+def export_entry(e: dict) -> dict:
+    """The public part of one entry: only EXPORT_FIELDS, never arkiv: skip."""
+    out = {}
+    for k in EXPORT_FIELDS:
+        v = e.get(k)
+        if v in (None, "", []) or (k == "arkiv" and archive_skipped(e)):
+            continue
+        if k == "hentet" and isinstance(v, (dt.date, dt.datetime)):
+            v = v.isoformat()
+        out[k] = v
+    return out
+
+
+def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
+    """Write the public source list <out_dir>/<top folder>.yaml from the private kilder.yaml."""
+    top_name, sub = split_folder(folder)
+    if sub:
+        sys.exit(f"export works on top folders only (got {folder}); use {top_name}")
+    yaml_file = SOURCES_DIR / top_name / "kilder.yaml"
+    entries = read_yaml(yaml_file)
+    if not entries:
+        sys.exit(f"No entries: {yaml_file} is missing or empty (run convert first)")
+    out_file = out_dir / f"{top_name}.yaml"
+    counts: Counter = Counter()
+    public: dict[str, dict] = {}
+    warnings = 0
+    say(
+        f"{folder}: export {len(entries)} entries -> {disp(out_file)}"
+        + ("   [DRY RUN: nothing will be written]" if dry_run else "")
+    )
+    for eid in sorted(entries):
+        e = entries[eid]
+        is_public, warning = public_status(e)
+        if warning:
+            warnings += 1
+            say(f"WARNING    {eid}: {warning}")
+        if not is_public:
+            counts["PRIVATE"] += 1
+            say(f"PRIVATE    {eid}: offentlig: {e.get('offentlig')}", detail=True)
+            continue
+        item = export_entry(e)
+        if not ({"url", "arkiv", "lenker"} & set(item)):
+            counts["NO LINK"] += 1
+            say(f"NO LINK    {eid}: no url, arkiv or lenker; left out", detail=True)
+            continue
+        public[eid] = item
+        counts["EXPORTED"] += 1
+        if archive_skipped(e):
+            counts["ARKIV SKIP"] += 1
+        say(f"EXPORTED   {eid}", detail=True)
+
+    header = (
+        "# cspell:disable\n"
+        "# Offentlig kildeliste, generert av scripts/kilder.py export fra den private\n"
+        f"# {top_name}/kilder.yaml. Ikke rediger her; endringer overskrives.\n\n"
+    )
+    text = header + yaml.safe_dump(
+        [public[k] for k in sorted(public)],
+        sort_keys=False,
+        allow_unicode=True,
+        width=100,
+    )
+    old = out_file.read_text(encoding="utf-8") if out_file.exists() else None
+
+    print_summary(
+        f"{folder} ({len(entries)} entries in kilder.yaml)",
+        counts,
+        [
+            (
+                "EXPORTED",
+                "public entries "
+                + ("that would be written" if dry_run else "written")
+                + " to the public list",
+            ),
+            ("PRIVATE", "offentlig: nei, left out"),
+            ("NO LINK", "no url, arkiv or lenker, left out"),
+            ("ARKIV SKIP", "exported, but arkiv left out (arkiv: skip)"),
+        ],
+        hint_verbose="EXPORTED",
+    )
+    if not public and old is None:
+        say(f"{disp(out_file)}: nothing to export, file not created")
+    elif text == old:
+        say(f"{disp(out_file)}: no changes, file not rewritten")
+    elif dry_run:
+        say(f"{disp(out_file)}: would be {'written' if old is None else 'updated'}")
+    else:
+        out_file.parent.mkdir(parents=True, exist_ok=True)
+        out_file.write_text(text, encoding="utf-8")
+        say(f"{disp(out_file)}: {'written' if old is None else 'updated'}")
+    return 1 if warnings else 0
+
+
+def check_sources_dir(sources: Path) -> None:
+    """Refuse a sources folder inside the public repo; it must exist."""
+    resolved = sources.resolve()
+    if resolved == REPO or REPO in resolved.parents:
+        sys.exit(
+            f"Refusing to use {sources} as the sources folder: it is inside the public "
+            f"repo {REPO}. Set --sources or BOMFAST_SOURCES to the private repo "
+            "(e.g. ~/work/git/bomfast-kilder)."
+        )
+    if not resolved.is_dir():
+        sys.exit(
+            f"Sources folder not found: {sources}. Clone the private repo there, or set "
+            "--sources / BOMFAST_SOURCES."
+        )
 
 
 # --------------------------------------------------------------------------- main
@@ -1290,6 +1491,13 @@ def main() -> int:
         type=Path,
         default=DEFAULT_DRIVE,
         help=f"local copy of the Drive folder (default: {DEFAULT_DRIVE})",
+    )
+    ap.add_argument(
+        "--sources",
+        type=Path,
+        default=DEFAULT_SOURCES,
+        help="private repo with kilder.yaml and tekst/ per folder "
+        f"(default: {DEFAULT_SOURCES}; env BOMFAST_SOURCES)",
     )
     commands = ap.add_subparsers(dest="command", required=True)
     common = argparse.ArgumentParser(add_help=False)
@@ -1386,8 +1594,34 @@ def main() -> int:
         "writing anything or requesting captures",
     )
 
+    e = commands.add_parser(
+        "export",
+        parents=[common],
+        help="write the public source list (public entries, open fields only) "
+        "into bomfastinfo",
+    )
+    e.add_argument("folders", nargs="*", help="top folder, e.g. 101_hordfast")
+    e.add_argument(
+        "--all", action="store_true", help="all folders that have a kilder.yaml"
+    )
+    e.add_argument(
+        "--out",
+        type=Path,
+        default=DEFAULT_EXPORT,
+        metavar="DIR",
+        help=f"folder for <folder>.yaml (default: {DEFAULT_EXPORT})",
+    )
+    e.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="show what would be exported, without writing anything",
+    )
+
     args = ap.parse_args()
-    global LOG
+    global LOG, SOURCES_DIR
+    SOURCES_DIR = args.sources.expanduser().resolve()
+    check_sources_dir(SOURCES_DIR)
     if args.log:
         args.log.parent.mkdir(parents=True, exist_ok=True)
     LOG = Log(verbose=args.verbose, path=args.log)
@@ -1397,7 +1631,7 @@ def main() -> int:
             f"{' '.join(sys.argv[1:])} ===\n"
         )
     drive = args.drive.expanduser()
-    if args.all and args.command == "archive":
+    if args.all and args.command in ("archive", "export"):
         folders = sorted(
             d.name for d in SOURCES_DIR.iterdir() if (d / "kilder.yaml").exists()
         )
@@ -1414,7 +1648,9 @@ def main() -> int:
 
     rc = 0
     for folder in folders:
-        if args.command == "archive":
+        if args.command == "export":
+            rc |= cmd_export(folder, args.out.expanduser(), args.dry_run)
+        elif args.command == "archive":
             rc |= cmd_archive(folder, args.save, args.dry_run, args.delay, args.timeout)
         elif args.command == "convert":
             cmd_convert(drive, folder, set(args.force), args.dry_run)

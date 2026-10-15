@@ -1,0 +1,70 @@
+{{- /*
+  kilde: lenke til en kilde i data/kilder/*.yaml (generert av scripts/kilder.py export).
+
+  Bruk:
+    {{< kilde "fagrapport_stoy" >}}                      lenketekst = tittel, dokument eller id
+    {{< kilde "fagrapport_stoy" "støyrapporten" >}}      egen lenketekst
+    {{< kilde id="ntp_2018_2029" side="112" >}}          hopper til PDF-side 112, legger til «s. 112»
+    {{< kilde id="verdikart" prosjekt="101_hordfast" >}} når samme id finnes i flere prosjekt
+    {{< kilde id="fagrapport_stoy" arkiv="nei" >}}       uten «(arkivert)»-lenken
+
+  Ukjent id eller tvetydig id stopper bygget, så brutte kildehenvisninger aldri publiseres.
+  Vanlige Markdown-lenker virker som før; denne shortcoden er et tillegg.
+*/ -}}
+{{- $id := "" -}}
+{{- $text := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $id = .Get "id" -}}
+  {{- $text = .Get "tekst" | default "" -}}
+{{- else -}}
+  {{- $id = .Get 0 -}}
+  {{- $text = .Get 1 | default "" -}}
+{{- end -}}
+{{- $project := cond .IsNamedParams (.Get "prosjekt" | default "") "" -}}
+{{- $page := cond .IsNamedParams (.Get "side" | default "") "" -}}
+{{- $showArchive := ne (cond .IsNamedParams (.Get "arkiv" | default "ja") "ja") "nei" -}}
+{{- if not $id -}}
+  {{- errorf "kilde: mangler id (%s)" .Position -}}
+{{- end -}}
+
+{{- $hits := slice -}}
+{{- range $name, $entries := site.Data.kilder -}}
+  {{- if or (not $project) (eq $name $project) -}}
+    {{- range $entries -}}
+      {{- if eq .id $id -}}
+        {{- $hits = $hits | append (dict "prosjekt" $name "e" .) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if not $id -}}
+  {{- /* already reported above */ -}}
+{{- else if eq (len $hits) 0 -}}
+  {{- errorf "kilde: fant ikke id %q%s i data/kilder (kjør scripts/kilder.py export?) (%s)" $id (cond (ne $project "") (printf " i prosjekt %s" $project) "") .Position -}}
+{{- else if gt (len $hits) 1 -}}
+  {{- $names := slice -}}
+  {{- range $hits -}}{{- $names = $names | append .prosjekt -}}{{- end -}}
+  {{- errorf "kilde: id %q finnes i flere prosjekt (%s); legg til prosjekt=\"...\" (%s)" $id (delimit $names ", ") .Position -}}
+{{- else -}}
+  {{- $e := (index $hits 0).e -}}
+  {{- $url := $e.url | default "" -}}
+  {{- $archive := $e.arkiv | default "" -}}
+  {{- if and (not $url) $e.lenker -}}{{- $url = (index $e.lenker 0).url -}}{{- end -}}
+  {{- $label := $text | default $e.tittel | default $e.dokument | default $id -}}
+  {{- $anchor := "" -}}
+  {{- if $page -}}
+    {{- $label = printf "%s, s. %s" $label $page -}}
+    {{- $anchor = printf "#page=%s" $page -}}
+  {{- end -}}
+  {{- $title := delimit (slice $e.dokument $e.tittel) " – " -}}
+  {{- $title = strings.Trim (replace $title "<nil>" "") " –" -}}
+  {{- if $url -}}
+    <a class="kilde" href="{{ printf "%s%s" $url (cond (strings.HasSuffix (lower (index (split $url "?") 0)) ".pdf") $anchor "") | safeURL }}"{{ with $title }} title="{{ . }}"{{ end }}>{{ $label }}</a>
+    {{- if and $archive $showArchive }} <a class="kilde-arkiv" href="{{ printf "%s%s" $archive (cond (strings.Contains (lower $archive) ".pdf") $anchor "") | safeURL }}">(arkivert)</a>{{- end -}}
+  {{- else if $archive -}}
+    <a class="kilde" href="{{ printf "%s%s" $archive (cond (strings.Contains (lower $archive) ".pdf") $anchor "") | safeURL }}">{{ $label }}</a> (arkivert)
+  {{- else -}}
+    {{- errorf "kilde: id %q har verken url, arkiv eller lenker (%s)" $id .Position -}}
+  {{- end -}}
+{{- end -}}

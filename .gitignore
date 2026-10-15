@@ -17,3 +17,6 @@ __pycache__/
 # archive_org_upload.py: ignore the local working config (may hold local file
 # paths); keep the example, README and results.jsonl audit log committed
 uploads_webarchive/config.json
+
+# Sources live in the private bomfast-kilder repo
+/kilder/
