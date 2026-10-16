@@ -576,6 +576,11 @@ def save_yaml(
     if new_text == old_text:
         say(f"kilder.yaml: no changes, file not rewritten ({rel})")
         return
+    if old_text is None and not entries:
+        # A Drive folder without PDFs should not leave an empty kilder.yaml (and folder)
+        # behind in the sources repo.
+        say(f"kilder.yaml: nothing to record, file not created ({rel})")
+        return
     added = len(set(entries) - set(original))
     removed = len(set(original) - set(entries))
     changed = sum(1 for k in set(entries) & set(original) if entries[k] != original[k])
