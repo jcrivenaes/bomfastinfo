@@ -1,0 +1,8 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 103_smiene_harestad/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: nordconsult_2024--detaljregulering_e39_smiene_harestad
+  tittel: Planbeskrivelse
+  dokument: E39 Smiene-Harestad detaljreguleringsplan, Planbeskrivelse, andregangs behandling
+  url: https://api.arealplaner.no/api/kunder/stavanger1103/dokumenter/20773/download/2551%20planbeskrivelse.PDF

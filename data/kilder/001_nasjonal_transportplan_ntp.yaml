@@ -1,0 +1,58 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 001_nasjonal_transportplan_ntp/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: ntp_2002_2011
+  url: https://www.nb.no/items/336ba1b53a8846ce603c3e81b22cedfa?page=0
+- id: ntp_2002_2011_stortingets_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2000-2001/inns-200001-119.pdf
+- id: ntp_2006_2015
+  url: https://www.regjeringen.no/no/dokumenter/stmeld-nr-024-2003-2004-/id197953/
+- id: ntp_2006_2015_stortinget_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2003-2004/inns-200304-240.pdf
+- id: ntp_2010_2019
+  tittel: Nasjonal transportplan 2010–2019
+  dokument: St.meld. nr. 16 (2008-2009)
+  url: https://www.regjeringen.no/contentassets/76ebed1a5cb741e780ad1bdb21513ae5/no/pdfs/stm200820090016000dddpdfs.pdf
+- id: ntp_2010_2019_kortversjon
+  url: https://www.regjeringen.no/globalassets/upload/sd/vedlegg/ntp/ntp_kort_web_2009.pdf
+- id: ntp_2010_2019_stortingets_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2008-2009/inns-200809-300.pdf
+- id: ntp_2014_2023
+  tittel: Nasjonal transportplan 2014 – 2023
+  dokument: Meld. St. 26 (2012 – 2013)
+  url: https://www.regjeringen.no/no/dokumenter/meld-st-26-20122013/id722102/
+- id: ntp_2014_2023_stortingets_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2012-2013/inns-201213-450.pdf
+- id: ntp_2018_2029
+  tittel: Nasjonal transportplan 2018–2029
+  dokument: Meld. St. 33 (2016–2017)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-33-20162017/id2546287/
+- id: ntp_2018_2029_rettebrev
+  url: https://www.regjeringen.no/contentassets/7c52fd2938ca42209e4286fe86bb28bd/NO/RETT/Rettebrev.pdf
+- id: ntp_2018_2029_stortingets_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2016-2017/inns-201617-460s.pdf
+- id: ntp_2022_2033
+  tittel: Nasjonal transportplan 2022–2033
+  dokument: Meld. St. 20 (2020–2021)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-20-20202021/id2839503/
+- id: ntp_2022_2033_rettebrev
+  url: https://www.regjeringen.no/contentassets/fab417af0b8e4b5694591450f7dc6969/no/rett/rettebrev.pdf
+- id: ntp_2022_2033_stortingets_behandling
+  url: https://www.stortinget.no/globalassets/pdf/innstillinger/stortinget/2020-2021/inns-202021-653s.pdf
+- id: ntp_2025_2036
+  tittel: Nasjonal transportplan 2025–2036
+  dokument: Meld. St. 14 (2023–2024)
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-14-20232024/id3030714/
+  lenker:
+  - tittel: Stortinget vedtak i korthet
+    url: https://www.stortinget.no/no/Saker-og-publikasjoner/Vedtak/Vedtak/Sak/?p=98233
+  - tittel: Fylkesvis oversikt
+    url: https://www.regjeringen.no/no/aktuelt/ntp-2025-2036-fylkesvis-oversikt/id3031420/
+  - tittel: Spørsmål i Stortinget
+    url: https://www.regjeringen.no/no/tema/transport-og-kommunikasjon/nasjonal-transportplan/ntp-2025-2036-i-arbeid/artikler-2024/sporsmal-fra-stortinget-om-nasjonal-transportplan-20252036/id3035645/
+- id: ntp_2025_2036_rettebrev
+  dokument: Kjente feil i Meld. St. 14 (2023-2024) Nasjonal transportplan 2025-2036
+  url: https://www.regjeringen.no/contentassets/aaee20cf5a9e468ea97fd51638c42407/no/rett/rettebrev08052024.pdf
+- id: ntp_2025_2036_stortingets_behandling
+  url: https://www.stortinget.no/no/Saker-og-publikasjoner/Publikasjoner/Innstillinger/Stortinget/2023-2024/inns-202324-439s/
