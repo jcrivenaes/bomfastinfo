@@ -20,9 +20,14 @@
   {{- $id = .Get 0 -}}
   {{- $text = .Get 1 | default "" -}}
 {{- end -}}
-{{- $project := cond .IsNamedParams (.Get "prosjekt" | default "") "" -}}
-{{- $page := cond .IsNamedParams (.Get "side" | default "") "" -}}
-{{- $showArchive := ne (cond .IsNamedParams (.Get "arkiv" | default "ja") "ja") "nei" -}}
+{{- $project := "" -}}
+{{- $page := "" -}}
+{{- $showArchive := true -}}
+{{- if .IsNamedParams -}}
+  {{- $project = .Get "prosjekt" | default "" -}}
+  {{- $page = .Get "side" | default "" -}}
+  {{- $showArchive = ne (.Get "arkiv" | default "ja") "nei" -}}
+{{- end -}}
 {{- if not $id -}}
   {{- errorf "kilde: mangler id (%s)" .Position -}}
 {{- end -}}
