@@ -1,0 +1,136 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 102_rogfast/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: attendemelding_fra_samferdselsdepartementet
+  tittel: 2008214174 00007 HOVEDDOKUMENT
+  dokument: Ekstern kvalitetssikring i tidligfase (KS1) Attendemelding frå Samferdselsdepartementet mai
+    2009
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/592687856-05034993.pdf?v=499073
+- id: behandling_av_merknader_m_vedlegg
+  dokument: Microsoft Word - 710410608-02813897.doc
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/kvubehmerknmvedlegg.pdf?v=499073
+- id: brosjyre_e39_kyststamvegen_boknafjordkryssingen
+  tittel: Brosjyre-s
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-2002/e39-boknafj-brosjyre.pdf?v=499071
+- id: delutredningen_kultur_og_kulturmiljo
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-2002/e39-kultur.pdf?v=499071
+- id: delutredningen_naermiljo_friluftsliv_naturmiljo_landbruk_og_fiske_georessurser_og_vannressurser
+  dokument: Delutredning natur – delutedning til konsekvensutredning
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-2002/e39-natur.pdf?v=499071
+- id: delutredningen_samfunn
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-2002/e39-samfunn.pdf?v=499072
+- id: geologisk_rapport
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/geologisk-rapport.pdf?v=49906b
+- id: horingsbrev
+  dokument: E39 Rogfast, høringsbrev
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/horingsbrev.pdf?v=499069
+- id: illustrasjonsplan_tunneler
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/200-illustrasjonsplan-e39-rogfast-tunneler.pdf?v=49906a
+- id: konsekvensutgreiing_og_kommundelplanar_for_e39_rogfast_i_kommunane_randaberg_bokn_og_kvitsoy
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-rogfast-revidert.pdf?v=499070
+- id: konsekvensutredning_e39_kyststamvegen_boknafjordkryssingen
+  dokument: Konsekvensutredninger - disposisjon og mal
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/ku-2002/e39-boknafj.pdf?v=499071
+- id: konseptvalutgreiing
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/kvu-e39boknafj-web.pdf?v=499073
+- id: konseptvalutgreiing_vedlegg
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/kvu-e39boknafjvedlegg-web.pdf?v=499074
+- id: ks1_rapport_fra_konsulent
+  dokument: Rapport KS1 Boknafjordkryssingen v1.1
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/ks1-boknafjordkryssingen.pdf?v=499073
+- id: plan_for_ytre_miljo_ym_plan
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-ym-plan.pdf?v=49906a
+- id: reguleringsplan_bokn_201404_planbeskrivelse_e39_rogfast_laupeland_knarholmen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/775
+- id: reguleringsplan_bokn_201404_planbestemmelsene_e39_rogfast_laupeland_knarholmen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/771
+- id: reguleringsplan_bokn_201404_plankart_e39_rogfast_laupeland_knarholmen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/772
+- id: reguleringsplan_bokn_201404_plankart_e39_rogfast_laupeland_knarholmen_vertikalniva_1
+  url: https://www.arealplaner.no/bokn1145/dokumenter/773
+- id: reguleringsplan_bokn_201404_plankart_e39_rogfasttunnelen_og_ventilasjonstarn_pa_kraga
+  url: https://www.arealplaner.no/bokn1145/dokumenter/776
+- id: reguleringsplan_bokn_201502_arsvagen_naeringsomrade_nv7plankart_2017
+  url: https://www.arealplaner.no/bokn1145/dokumenter/815
+- id: reguleringsplan_bokn_201502_konsekvens_utredning
+  url: https://www.arealplaner.no/bokn1145/dokumenter/825
+- id: reguleringsplan_bokn_201502_planbeskrivelse_rogfast_omraderegulering_arsvagen_naeringsomrade
+  dokument: Ergo Group
+  url: https://www.arealplaner.no/bokn1145/dokumenter/778
+- id: reguleringsplan_bokn_201502_planbestemmelser_rogfast_omraderegulering_arsvagen_naeringsomrade
+  dokument: Vedtatt Planbestemmelser for områderegulering Arsvågen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/780
+- id: reguleringsplan_bokn_201502_rogfast_omraderegulering_arsvagen_naeringsomrade
+  url: https://www.arealplaner.no/bokn1145/dokumenter/777
+- id: reguleringsplan_bokn_201502_ros
+  url: https://www.arealplaner.no/bokn1145/dokumenter/824
+- id: reguleringsplan_bokn_201608_planbeskrivelse_sidetunnel_arsvagen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/828
+- id: reguleringsplan_bokn_201608_reguleringsbestemmelser_for_sidetunnel_arsvagen
+  dokument: Reguleringsbestemmelser for Tverrslaget Tunnel på Arsvågen
+  url: https://www.arealplaner.no/bokn1145/dokumenter/809
+- id: reguleringsplan_bokn_201608_reguleringsplan_sidetunnel_arsvagen_r001
+  url: https://www.arealplaner.no/bokn1145/dokumenter/810
+- id: reguleringsplan_bokn_201608_reguleringsplan_sidetunnel_arsvagen_r002
+  url: https://www.arealplaner.no/bokn1145/dokumenter/811
+- id: reguleringsplan_bokn_201608_reguleringsplan_sidetunnel_arsvagen_r003
+  url: https://www.arealplaner.no/bokn1145/dokumenter/812
+- id: reguleringsplan_bokn_201608_reguleringsplan_sidetunnel_arsvagen_r004
+  url: https://www.arealplaner.no/bokn1145/dokumenter/813
+- id: reguleringsplan_bokn_201608_ros_sidetunnel_arsvagen
+  dokument: Risiko- og sårbarhetsanalyse
+  url: https://www.arealplaner.no/bokn1145/dokumenter/829
+- id: reguleringsplan_bokn_201608_sakspapir_bokn_kommune
+  dokument: E39 ROGFAST detaljregulering  for tverrslag (tunnel) og ventilasjonstårn ved Arsvågen i Bokn
+    kommune.
+  url: https://www.arealplaner.no/bokn1145/dokumenter/814
+- id: reguleringsplan_kvitsoy_bestemmelser
+  dokument: Microsoft Word - Bestemmelser
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/bestemmelser-plan-11442016002-detaljregulering-for-veg-i-dagen-kvitsoy-kommune.pdf?v=499064
+- id: reguleringsplan_kvitsoy_planbeskrivelse
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/planbeskrivelse-plan-11442016002-detaljregulering-for-veg-i-dagen-kvitsoy-kommune.pdf?v=499065
+- id: reguleringsplan_kvitsoy_reguleringsplan_kvitsoy_r601
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/reguleringsplan-kvitsoy-r601.pdf?v=499065
+- id: reguleringsplan_kvitsoy_reguleringsplan_kvitsoy_r602
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/reguleringsplan-kvitsoy-r602.pdf?v=499065
+- id: reguleringsplan_kvitsoy_reguleringsplan_kvitsoy_r603
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/reguleringsplan-kvitsoy-r603.pdf?v=499065
+- id: reguleringsplan_kvitsoy_ros_analyse
+  dokument: Risiko- og sårbarhetsanalyse
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/ros-analyse-plan-11442016002-detaljregulering-for-veg-i-dagen-kvitsoy-kommune.pdf?v=499066
+- id: reguleringsplan_kvitsoy_tegningshefte_illustrasjonsplan
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/regpl-kvitsoy-2016/tegningshefte-illustrasjonsplan-plan-11442016002-detaljregulering-for-veg-i-dagen-kvitsoy-kommune.pdf?v=499065
+- id: reguleringsplan_randaberg_melding_om_vedtatt_plan
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/oppsumm-merknader/rogfast-brev-melding-om-vedtatt-plan.pdf?v=499068
+- id: reguleringsplan_randaberg_oppsummering_av_merknader_til_offentlig_ettersyn
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/oppsumm-merknader/oppsummering-av-merknader-til-offentlig-ettersyn.pdf?v=499068
+- id: reguleringsplan_randaberg_oppsummering_av_merknader_til_planoppstart
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/oppsumm-merknader/oppsummering-av-merknader-til-planoppstart.pdf?v=499068
+- id: reguleringsplan_randaberg_reguleringsbestemmelser_for_tunnel_randaberg
+  dokument: Randaberg - tunnel
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/rogfast-bestemmelser-210313.pdf?v=499067
+- id: reguleringsplan_randaberg_saksprotokoll
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/oppsumm-merknader/kst-sak-17-13.pdf?v=499068
+- id: reguleringsplan_randaberg_tunnel_i_randaberg_kommune_plan_nr_11272011005_plankart_r201_r202_og_r203
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/dpl-rogfast-210313.pdf?v=499067
+- id: reguleringsplan_rogfast_e39_rogfast_felles_planbeskrivelse
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-planbeskrivelse.pdf?v=499069
+- id: reguleringsplan_rogfast_geologiske_forhold_e39_rogfast_oyvind_riste
+  dokument: Geologiske forhold - E39 Rogfast
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/presentasjonar/geologiske-forhold-e39-rogfast-oyvind-riste.pdf?v=49906c
+- id: reguleringsplan_rogfast_informasjon_om_e39_rogfast_tor_geir_espedal
+  dokument: E39 Rogfast informasjon om prosjektet
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/presentasjonar/informasjon-om-e39-rogfast-tor-geir-espedal.pdf?v=49906c
+- id: reguleringsplan_rogfast_kvitsoy_kontraktene_e15_og_e02_sveinung_brude
+  dokument: E39 Rogfast - Kvitsøy-kontraktene E15 og E02
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/presentasjonar/kvitsoy-kontraktene-e15-og-e02-sveinung-brude.pdf?v=49906c
+- id: ros_analyse_dagstrekninger
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-ros-analyse-dagstrekninger.pdf?v=49906a
+- id: ros_analyse_tunnel
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-rosanalyse-tunnel.pdf?v=49906a
+- id: stoyberegninger
+  dokument: (E39 Rogfast - Vedlegg A - Generelt om støy)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/stoyberegninger.pdf?v=49906a
+- id: tunnelventilasjon_og_luftkvalitet
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-tunnelventilasjon-og-luftkvalitet.pdf?v=49906b
