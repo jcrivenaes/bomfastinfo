@@ -1392,8 +1392,8 @@ def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
         sys.exit(f"export works on top folders only (got {folder}); use {top_name}")
     yaml_file = SOURCES_DIR / top_name / "kilder.yaml"
     entries = read_yaml(yaml_file)
-    if not entries:
-        sys.exit(f"No entries: {yaml_file} is missing or empty (run convert first)")
+    if not yaml_file.exists():
+        sys.exit(f"Source list not found: {yaml_file} (run convert first)")
     out_file = out_dir / f"{top_name}.yaml"
     counts: Counter = Counter()
     public: dict[str, dict] = {}
