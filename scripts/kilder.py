@@ -245,8 +245,10 @@ def disp(path: Path) -> str:
 
 def public_status(entry: dict) -> tuple[bool, str]:
     """(is public, warning). Missing `offentlig` = public. Unknown values = private."""
-    value = entry.get("offentlig")
-    if value is None or value == "" or value is True:
+    if "offentlig" not in entry:
+        return True, ""
+    value = entry["offentlig"]
+    if value is True:
         return True, ""
     if value is False:
         return False, ""
