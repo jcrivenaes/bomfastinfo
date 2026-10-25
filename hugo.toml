@@ -18,6 +18,9 @@ ShowToc = true
 TocOpen = false
 hideMeta = true
 
+[params.assets]
+favicon = "favicon.svg"
+
 [params.homeInfoParams]
 Title = ""
 Content = """
