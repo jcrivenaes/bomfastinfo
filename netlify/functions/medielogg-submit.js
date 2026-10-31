@@ -57,23 +57,125 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
+const MD_LISTEPUNKT = /^\s*([-*+]|\d+[.)])\s+/;
+const MD_STRUKTUR = /^\s*(\||#{1,6}\s|>|[-*_=]{3,}\s*$)/;
+
+// Kodegjerder: åpner med minst tre ` eller ~ (evt. med infostreng), og lukkes først av en
+// linje med samme tegn, minst like mange, og ingenting annet enn mellomrom etter. Linjer
+// som ligner på gjerder inne i en kodeblokk (annet tegn, kortere, eller med infostreng)
+// er vanlig kode. Returnerer ny gjerdetilstand (null = utenfor kodeblokk).
+function oppdaterGjerde(linje, gjerde) {
+  if (gjerde) {
+    const lukk = linje.match(/^ {0,3}(`{3,}|~{3,})\s*$/);
+    return lukk && lukk[1][0] === gjerde.tegn && lukk[1].length >= gjerde.lengde ? null : gjerde;
+  }
+  const aapne = linje.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+  if (!aapne || (aapne[1][0] === "`" && aapne[2].includes("`"))) return gjerde;
+  return { tegn: aapne[1][0], lengde: aapne[1].length };
+}
+
+// Skilletegnlinje i en tabell, med eller uten ytre rør (f.eks. "--- | ---" eller "|:-:|--:|").
+const MD_TABELLSKILLE = /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?\s*$/;
+
+// Finner linjer som er del av en tabell: skilletegnlinjen, overskriftslinjen over den og
+// radene under (til første tomlinje). Rør rundt tabellen er valgfrie i Markdown, så
+// tabellrader kan ikke gjenkjennes på ledende rør alene.
+function finnTabellinjer(linjer) {
+  const tabell = new Set();
+  let gjerde = null;
+  for (let i = 0; i < linjer.length; i++) {
+    const forrigeGjerde = gjerde;
+    gjerde = oppdaterGjerde(linjer[i], gjerde);
+    if (forrigeGjerde || gjerde) continue;
+    if (!linjer[i].includes("|") || !MD_TABELLSKILLE.test(linjer[i])) continue;
+    if (i === 0 || !linjer[i - 1].includes("|") || tabell.has(i - 1)) continue;
+    tabell.add(i - 1);
+    let j = i;
+    while (j < linjer.length && linjer[j].trim() && oppdaterGjerde(linjer[j], null) === null) {
+      tabell.add(j++);
+    }
+    i = j - 1;
+  }
+  return tabell;
+}
+
 // Tekst limt inn fra PDF-er har ofte harde linjeskift midt i avsnitt (fra PDF-ens
 // tekstoppsett) og orddeling med bindestrek ved linjeslutt. Dette slår sammen slike
 // linjer til løpende avsnitt, slik man ville fått ved å skrive/lime inn manuelt uten
-// harde linjeskift, mens tomlinjer (avsnittsskift) bevares.
+// harde linjeskift, mens tomlinjer (avsnittsskift) bevares. Markdown-struktur (listepunkter,
+// tabellrader, overskrifter, sitater og kodeblokker) beholdes linje for linje, ellers
+// havner f.eks. alle listepunkter og tabellrader på én linje og rendres feil.
 function reflowInnlimtTekst(text) {
-  const normalisert = (text || "").replace(/\r\n?/g, "\n");
-  const avsnitt = normalisert.split(/\n{2,}/);
-  const reflowet = avsnitt
-    .map((stykke) =>
-      stykke
-        .replace(/([a-zA-ZæøåÆØÅ])-\n([a-zA-ZæøåÆØÅ])/g, "$1$2")
-        .replace(/\n+/g, " ")
-        .replace(/[ \t]{2,}/g, " ")
-        .trim()
-    )
-    .filter((stykke) => stykke.length > 0);
-  return reflowet.join("\n\n");
+  const linjer = (text || "").replace(/\r\n?/g, "\n").split("\n");
+  const tabellinjer = finnTabellinjer(linjer);
+  const ut = [];
+  let gjerde = null;
+  // Forrige linje i ut er vanlig løpende tekst (eller et listepunkt) som en vanlig
+  // fortsettelseslinje kan slås sammen med.
+  let kanSlaaSammen = false;
+  // Innrykket kodeblokk (4+ mellomrom/tab) kan ikke avbryte et avsnitt, og innrykk etter
+  // en tomlinje i en liste er listefortsettelse, ikke kode.
+  let forrigeTom = true;
+  let iInnrykketKode = false;
+  let iListe = false;
+  const komprimer = (t) => t.replace(/(\S)[ \t]{2,}/g, "$1 ");
+
+  for (let i = 0; i < linjer.length; i++) {
+    const rå = linjer[i];
+    const forrigeGjerde = gjerde;
+    gjerde = oppdaterGjerde(rå, gjerde);
+    if (forrigeGjerde || gjerde) {
+      // Gjerdelinjer og kodelinjer beholdes ordrett, inkludert innrykk.
+      ut.push(forrigeGjerde ? rå : rå.replace(/\s+$/, ""));
+      kanSlaaSammen = false;
+      forrigeTom = false;
+      iInnrykketKode = false;
+      continue;
+    }
+    const linje = rå.trim();
+    if (!linje) {
+      // Tomlinjer inne i innrykket kode beholdes; ellers slås flere tomlinjer sammen til én.
+      if (iInnrykketKode || ut[ut.length - 1] !== "") ut.push("");
+      kanSlaaSammen = false;
+      forrigeTom = true;
+      continue;
+    }
+    const innrykk = /^( {4}|\t)/.test(rå);
+    if (innrykk && !iListe && (forrigeTom || iInnrykketKode)) {
+      ut.push(rå.replace(/\s+$/, ""));
+      iInnrykketKode = true;
+      kanSlaaSammen = false;
+      forrigeTom = false;
+      continue;
+    }
+    if (innrykk && iListe && forrigeTom) {
+      ut.push(komprimer(rå.replace(/\s+$/, "")));
+      kanSlaaSammen = true;
+      forrigeTom = false;
+      continue;
+    }
+    iInnrykketKode = false;
+    const erListepunkt = MD_LISTEPUNKT.test(rå);
+    if (erListepunkt) iListe = true;
+    else if (forrigeTom && !innrykk) iListe = false;
+    forrigeTom = false;
+    const erStruktur = erListepunkt || MD_STRUKTUR.test(rå) || tabellinjer.has(i);
+    if (!erStruktur && kanSlaaSammen) {
+      const forrige = ut.length - 1;
+      ut[forrige] = /[a-zA-ZæøåÆØÅ]-$/.test(ut[forrige]) && /^[a-zA-ZæøåÆØÅ]/.test(linje)
+        ? ut[forrige].slice(0, -1) + komprimer(linje)
+        : `${ut[forrige]} ${komprimer(linje)}`;
+    } else {
+      ut.push(erListepunkt ? komprimer(rå.replace(/\s+$/, "")) : komprimer(linje));
+      kanSlaaSammen = erListepunkt || !erStruktur;
+    }
+  }
+
+  // Fjern bare ledende tomlinjer og avsluttende blanke tegn, så innrykk på første linje består.
+  return ut
+    .join("\n")
+    .replace(/^(\s*\n)+/, "")
+    .replace(/\s+$/, "");
 }
 
 // Nordiske tegn kan komme dekomponert (f.eks. "a" + kombinerende ring i stedet for å)
@@ -120,7 +222,7 @@ exports.handler = async (event) => {
   const forfatter = normaliserTekst((data.forfatter || "").trim());
   const url = (data.url || "").trim();
   const abo = Boolean(data.abo);
-  const comment = normaliserTekst((data.comment || "").trim());
+  const comment = normaliserTekst((data.comment || "").replace(/^(\s*\n)+/, "").trimEnd());
 
   if (!title || !date || !comment) {
     return { statusCode: 400, body: "Tittel, dato og kommentar er påkrevd" };
