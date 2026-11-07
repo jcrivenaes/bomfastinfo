@@ -55,6 +55,15 @@ Output (what the script tells you):
         --log FILE      append the full (verbose) output, with a timestamp, to FILE
     With --dry-run the same lines describe what *would* happen; nothing is written.
 
+Duplicates:
+    Entries with the same sha256 (the same PDF) are reported as DUPLICATE, across all
+    top folders and also against entries from ppkilder.py: by `check`/`prune` for every
+    group with an entry in scope, and by `convert` when a new or changed PDF matches an
+    existing entry. Only a notice, never an issue (a report can be filed under two
+    topics on purpose); nothing is merged or removed. To get rid of a copy, delete it
+    on Drive (or add it to EXCLUDE.txt) and run `prune`. PDFs that have never been
+    converted have no checksum yet, so they show up after their first `convert`.
+
 Excluding folders:
     Put patterns in <sources>/<top folder>/EXCLUDE.txt, one per line, e.g.
         utkast                               # every folder named utkast
@@ -750,6 +759,56 @@ def split_folder(folder: str) -> tuple[str, str]:
     return top_name, sub
 
 
+# --------------------------------------------------------------------------- duplicates
+
+Member = tuple[str, dict]  # (top folder, entry)
+
+
+def checksum_index(
+    current: dict[str, dict[str, dict]] | None = None,
+) -> dict[str, list[Member]]:
+    """{sha256: [(top folder, entry), ...]} over every kilder.yaml in the sources repo,
+    from both kilder.py and ppkilder.py. `current` ({top: entries}) replaces what is on
+    disk for those top folders, e.g. the entries a command is working on."""
+    lists = {p.parent.name: read_yaml(p) for p in SOURCES_DIR.glob("*/kilder.yaml")}
+    lists.update(current or {})
+    index: dict[str, list[Member]] = {}
+    for top in sorted(lists):
+        for eid in sorted(lists[top]):
+            entry = lists[top][eid]
+            if entry.get("sha256"):
+                index.setdefault(entry["sha256"], []).append((top, entry))
+    return index
+
+
+def duplicate_groups(index: dict[str, list[Member]]) -> list[list[Member]]:
+    """The groups of entries that have the same PDF (two or more per group)."""
+    return [group for _sha, group in sorted(index.items()) if len(group) > 1]
+
+
+def other_copies(
+    index: dict[str, list[Member]], checksum: str, top: str, entry: dict
+) -> list[Member]:
+    """The entries other than `entry` that currently have this checksum."""
+    return [
+        (t, e)
+        for t, e in index.get(checksum, [])
+        if e is not entry
+        and (t, e.get("id")) != (top, entry.get("id"))
+        and e.get("sha256") == checksum  # the index may hold entries updated since
+    ]
+
+
+def dup_label(member: Member) -> str:
+    top, entry = member
+    origin = "Paperpile" if "paperpile" in entry else "Drive"
+    return f"{entry.get('id')} ({top}, {origin})"
+
+
+def same_pdf_as(members: list[Member]) -> str:
+    return "same PDF as " + ", ".join(dup_label(m) for m in members)
+
+
 # --------------------------------------------------------------------------- commands
 
 
@@ -780,6 +839,7 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
     if unknown:
         say(f"WARNING    --force: no such id in {folder}: {', '.join(sorted(unknown))}")
         force = force - unknown
+    index = checksum_index({top_name: entries})
     counts: Counter = Counter()
 
     def outcome(kind: str, rel: str, msg: str = "", detail: bool = False) -> None:
@@ -902,6 +962,12 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
         else:
             kind, why = "REBUILT", "text file was missing (PDF unchanged)"
 
+        if kind in ("NEW", "UPDATED"):
+            if dups := other_copies(index, checksum, top_name, entry):
+                outcome("DUPLICATE", rels, same_pdf_as(dups) + "; kept as its own entry")
+            # so that a second copy converted later in this run is noticed too
+            index.setdefault(checksum, []).append((top_name, {"id": eid, "sha256": checksum}))
+
         if dry_run:
             outcome(kind, rels, why + "; text would be (re)written")
             continue
@@ -983,6 +1049,7 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
             ("WARNING", "skipped, see the lines above"),
             ("EXCLUDED", "skipped because of EXCLUDE.txt / backup / trash folders"),
             ("GONE", "in kilder.yaml, but no longer on Drive"),
+            ("DUPLICATE", "converted, but the same PDF is already in another entry"),
         ],
         hint_verbose="UNCHANGED",
     )
@@ -1109,6 +1176,20 @@ def cmd_check(
             if warning:
                 report("OFFENTLIG?", eid, warning)
 
+    # The same PDF in several entries, in any kilder.yaml (also from ppkilder.py). A
+    # notice, not an issue: the same report can be filed under two topics on purpose.
+    # Entries that prune removes are left out, so they do not show up as duplicates.
+    current = {eid: e for eid, e in entries.items() if eid not in to_remove}
+    for group in duplicate_groups(checksum_index({top_name: current})):
+        mine = [
+            e
+            for t, e in group
+            if t == top_name and e.get("fil") and in_scope(e["fil"], sub)
+        ]
+        if mine:
+            others = [m for m in group if m[1] is not mine[0]]
+            report("DUPLICATE", mine[0]["id"], same_pdf_as(others), issue=False)
+
     # Text files on disk that no entry points to (e.g. left behind by older
     # versions of this script, or by entries that were removed by hand).
     referenced = {e.get("tekst") for e in entries.values()}
@@ -1176,6 +1257,7 @@ def cmd_check(
             ("LINKS MISMATCH", "_annet.txt on Drive differs from kilder.yaml"),
             ("NO URL", "entries without url (not counted as issues)"),
             ("OFFENTLIG?", "unclear offentlig value (treated as private)"),
+            ("DUPLICATE", "same PDF as another entry (not counted as issues)"),
             ("ORPHAN", "text files not referenced by any entry"),
             ("REMOVED", "entries (and their text files) removed from kilder.yaml"),
             ("WOULD REMOVE", "entries prune would remove (dry run)"),
