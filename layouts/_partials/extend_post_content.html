@@ -1,3 +1,6 @@
-{{- if .Param "wide" }}
+{{- with .Param "wide" }}
 <div class="wide-page-marker" hidden aria-hidden="true"></div>
+{{- if eq . "extra" }}
+<div class="extra-wide-page-marker" hidden aria-hidden="true"></div>
+{{- end }}
 {{- end }}
