@@ -72,6 +72,11 @@ Living next to kilder.py:
     entries with `paperpile`. Both can therefore use the same kilder.yaml. An id already
     used by an entry from kilder.py gives a warning, and that source is skipped.
 
+Duplicates:
+    The same PDF (same sha256) in several entries is reported as DUPLICATE by check,
+    prune and convert, also against entries from kilder.py, just like in kilder.py (see
+    `Duplicates` there). A notice, not an issue; nothing is merged or removed.
+
 Copy of the .bib file:
     convert and prune copy the .bib file to <sources>/paperpile.bib when it has changed, so
     git shows what changed in Paperpile between runs. Only a file that was read without
@@ -599,6 +604,7 @@ def cmd_convert(
     unknown = force - {s.id for s in scope}
     if unknown:
         say(f"WARNING    --force: no such id in scope: {', '.join(sorted(unknown))}")
+    index = kilder.checksum_index(lists.entries)
 
     def outcome(kind: str, eid: str, msg: str = "", detail: bool = False) -> None:
         counts[kind] += 1
@@ -716,6 +722,17 @@ def cmd_convert(
             kind, why = "REBUILT", "text file was missing (PDF unchanged)"
 
         entry = entry or lists.top(src.top).setdefault(src.id, {"id": src.id})
+        if kind in ("NEW", "UPDATED"):
+            if dups := kilder.other_copies(index, checksum, src.top, entry):
+                outcome(
+                    "DUPLICATE",
+                    src.id,
+                    kilder.same_pdf_as(dups) + "; kept as its own entry",
+                )
+            # so that a second copy converted later in this run is noticed too
+            index.setdefault(checksum, []).append(
+                (src.top, {"id": src.id, "sha256": checksum, MARKER: src.pdf})
+            )
         if dry_run:
             apply_metadata(entry, src)
             outcome(kind, src.id, why + "; text would be (re)written")
@@ -774,6 +791,7 @@ def cmd_convert(
                 ("MISSING", "the PDF is not in the mirror, metadata only"),
                 ("WARNING", "skipped, see the lines above"),
                 ("IGNORED", "neither a top folder label nor bomfast-kilder"),
+                ("DUPLICATE", "converted, but the same PDF is already in another entry"),
                 (
                     "GONE",
                     "in kilder.yaml, but no longer in the .bib file (prune removes it)",
@@ -932,6 +950,29 @@ def cmd_check(
             if has_text and not dry_run:
                 text.unlink()
 
+    # The same PDF in several entries, in any kilder.yaml (also from kilder.py). A
+    # notice, not an issue. Entries that are gone from the .bib file are left out:
+    # prune removes them, so they are not copies anyone has to deal with.
+    current = {
+        top: {
+            eid: e
+            for eid, e in entries.items()
+            if MARKER not in e or eid in in_bib or eid in renamed
+        }
+        for top, entries in lists.entries.items()
+    }
+    for group in kilder.duplicate_groups(kilder.checksum_index(current)):
+        mine = [
+            (t, e)
+            for t, e in group
+            if MARKER in e and selected(entry_folder(t, e), folders)
+        ]
+        if mine:
+            others = [m for m in group if m[1] is not mine[0][1]]
+            report(
+                "DUPLICATE", mine[0][1]["id"], kilder.same_pdf_as(others), issue=False
+            )
+
     print_summary(
         f"{disp(bib)} ({len(scope)} sources)",
         counts,
@@ -947,6 +988,7 @@ def cmd_check(
             ("RENAMED", "the citekey changed, convert carries the entry over"),
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
+            ("DUPLICATE", "same PDF as another entry (not counted as issues)"),
             ("WARNING", "entries in the .bib file that cannot be used"),
             ("IGNORED", "neither a top folder label nor bomfast-kilder"),
             ("REMOVED", "entries (and their text files) removed from kilder.yaml"),
