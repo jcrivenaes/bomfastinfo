@@ -16,6 +16,11 @@
   max-width: calc(1000px + var(--gap) * 2);
 }
 
+/* wide: "extra" i front matter - for brede, innebygde kalkulatorer */
+.main:has(.extra-wide-page-marker) {
+  max-width: calc(1200px + var(--gap) * 2);
+}
+
 :root[data-theme="dark"] {
   --theme: rgb(28, 35, 29);
   --entry: rgb(34, 43, 36);
