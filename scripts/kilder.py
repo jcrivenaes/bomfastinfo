@@ -81,6 +81,7 @@ Dependencies:
     pip install pymupdf pymupdf4llm pyyaml
     # Only for scanned PDFs without a text layer:
     sudo apt install tesseract-ocr tesseract-ocr-nor
+    # Tests (for kilder.py and ppkilder.py): pip install pytest; python3 -m pytest scripts
 
 kilder.yaml:
     The script fills in the technical fields (fil, sha256, sider, tekst, konvertert, ocr).
@@ -775,12 +776,10 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
         f"{folder}: {len(pdfs)} PDFs"
         + ("   [DRY RUN: nothing will be written]" if dry_run else "")
     )
-    force = force - set(ids.values())
-    if (
-        force
-    ):  # leftover after discarding matched ids below would go unnoticed otherwise
-        say(f"WARNING    --force: no such id in {folder}: {', '.join(sorted(force))}")
-        force = set()
+    unknown = force - set(ids.values())
+    if unknown:
+        say(f"WARNING    --force: no such id in {folder}: {', '.join(sorted(unknown))}")
+        force = force - unknown
     counts: Counter = Counter()
 
     def outcome(kind: str, rel: str, msg: str = "", detail: bool = False) -> None:
@@ -794,7 +793,6 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
         text = target / "tekst" / rel.with_suffix(".md")
         entry = entries.get(eid)
         before = copy.deepcopy(entry)
-        force.discard(eid)
 
         # Fast path: same path, same size, and the PDF is not newer than the text
         # file -> don't hash the PDF.
