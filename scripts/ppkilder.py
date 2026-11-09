@@ -51,6 +51,17 @@ How a .bib entry is read:
                 No subfolders. None or several such labels give a warning, and the
                 source is skipped (but never removed by prune).
               - bomfast-kilder only selects what Paperpile exports, and is not stored.
+              - labels starting with _ are control labels, never topics (any case):
+                    _PRIVAT   offentlig: nei + arkiv: skip: not in the public list
+                              (export), never sent to archive.org
+                    _ABO      arkiv: skip: paywalled; in the public list with its
+                              url, but never archived (a Wayback capture could
+                              republish the full text)
+                    _other    arkiv: skip as well, with a warning (unknown label)
+                Removing a label does NOT undo it: edit offentlig/arkiv in
+                kilder.yaml for that; check reports the mismatch (NO LABEL). Run
+                convert after adding a label, before export/archive. A near miss
+                (PRIVAT, privat, _PRIVATE, ABO) gives a warning.
               - all other labels (NTP, Rogfast, ...) go to `emneord` in kilder.yaml.
               Entries without a top folder label or bomfast-kilder are ignored.
     file      paths in the mirror, separated by ";". The first is converted, the others
@@ -107,6 +118,7 @@ from __future__ import annotations
 import argparse
 import copy
 import datetime as dt
+import difflib
 import os
 import re
 import sys
@@ -152,6 +164,14 @@ TOP_LABEL = re.compile(r"\d{3}_[^\s/\\]+")  # e.g. 005_statsbudsjett_samferdsel
 # which would write a nested kilder.yaml no later run finds) is skipped, not a topic.
 TOP_LABEL_LIKE = re.compile(r"\d{3}_\S+")
 COLLECTION_LABEL = "bomfast-kilder"
+# Control labels start with "_" and are never topics. Every one of them keeps the source
+# away from archive.org (arkiv: skip); _PRIVAT also keeps it out of the public list
+# (offentlig: nei). Matched without regard to case. Removing a label never undoes what it
+# set (that takes an edit in kilder.yaml), so a lost label cannot publish anything.
+CONTROL_PREFIX = "_"
+PRIVATE_LABEL = "_PRIVAT"  # private: not in the public list, not archived
+SUBSCRIPTION_LABEL = "_ABO"  # paywalled: in the public list, but never archived
+KNOWN_CONTROL_LABELS = (PRIVATE_LABEL, SUBSCRIPTION_LABEL)
 MIRROR_CHECK = "All Papers"  # always in the mirror; missing = the mount is not up
 MARKER = "paperpile"  # the kilder.yaml field that marks an entry as ours
 PP_TECH_FIELDS = TECH_FIELDS | {MARKER, "vedlegg", "mappe"}
@@ -305,6 +325,8 @@ class Source:
     attachments: list[str] = field(default_factory=list)
     topics: list[str] = field(default_factory=list)
     meta: dict = field(default_factory=dict)
+    private: bool = False  # has the _PRIVAT label
+    no_archive: bool = False  # has any control label (_PRIVAT, _ABO, ...)
 
     @property
     def folder(self) -> str:
@@ -330,6 +352,27 @@ def bib_metadata(fields: dict[str, str]) -> dict:
         "aar": int(year) if year.isdigit() else year,
         "url": url if url.startswith("http") else "",  # Paperpile can write "undefined"
     }
+
+
+def is_label(label: str, wanted: str) -> bool:
+    return label.casefold() == wanted.casefold()
+
+
+def is_control_label(label: str) -> bool:
+    return label.startswith(CONTROL_PREFIX)
+
+
+def resembles_control_label(label: str) -> str | None:
+    """The known control label this is a near miss of (PRIVAT, privat, _PRIVATE, ABO),
+    or None. A near miss would silently leave the source public or archivable."""
+    if any(is_label(label, known) for known in KNOWN_CONTROL_LABELS):
+        return None
+    base = label.casefold().lstrip(CONTROL_PREFIX)
+    for known in KNOWN_CONTROL_LABELS:
+        name = known.casefold().lstrip(CONTROL_PREFIX)
+        if difflib.SequenceMatcher(None, base, name).ratio() >= 0.8:
+            return known
+    return None
 
 
 def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
@@ -380,7 +423,27 @@ def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
         elif files and not files[0].lower().endswith(".pdf"):
             skip(key, f"the first file is not a PDF: {files[0]}")
         else:
-            topics = [k for k in keywords if k not in (tops[0], COLLECTION_LABEL)]
+            controls = [k for k in keywords if is_control_label(k)]
+            topics = [
+                k
+                for k in keywords
+                if k not in (tops[0], COLLECTION_LABEL) and not is_control_label(k)
+            ]
+            for k in controls:
+                if not any(is_label(k, known) for known in KNOWN_CONTROL_LABELS):
+                    hint = resembles_control_label(k)
+                    say(
+                        f"WARNING    {key}: unknown label {k!r}"
+                        + (f" (did you mean {hint}?)" if hint else "")
+                        + f"; like every label starting with {CONTROL_PREFIX} it keeps "
+                        "the source from archive.org, but it does nothing else"
+                    )
+            for k in topics:
+                if hint := resembles_control_label(k):
+                    say(
+                        f"WARNING    {key}: the label {k!r} looks like {hint}, but is "
+                        f"not; treated as a topic, so it has no effect"
+                    )
             sources[key] = Source(
                 key,
                 tops[0],
@@ -388,6 +451,8 @@ def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
                 files[1:],
                 list(dict.fromkeys(topics)),
                 bib_metadata(fields),
+                private=any(is_label(k, PRIVATE_LABEL) for k in controls),
+                no_archive=bool(controls),
             )
     if not sources:
         # A broken or empty export must never look like "all sources were removed".
@@ -483,6 +548,11 @@ def apply_metadata(entry: dict, src: Source) -> None:
             entry[key] = value
         else:
             entry.pop(key, None)
+    # Without the labels, offentlig and arkiv are left as they are.
+    if src.private:
+        entry["offentlig"] = "nei"
+    if src.no_archive:
+        entry["arkiv"] = kilder.ARCHIVE_SKIP
 
 
 def describe_meta(changes: dict) -> str:
@@ -901,6 +971,24 @@ def cmd_check(
             problems += 1
         if not wanted.get("url"):
             report("NO URL", src.id, "no url (add it in Paperpile)", issue=False)
+        if not src.private and not kilder.public_status(wanted)[0]:
+            report(
+                "NO LABEL",
+                src.id,
+                f"offentlig: {wanted.get('offentlig')} in kilder.yaml, but no "
+                f"{PRIVATE_LABEL} label in Paperpile; stays private (add the label, or "
+                "set offentlig: ja in kilder.yaml to make it public)",
+                issue=False,
+            )
+        elif not src.no_archive and kilder.archive_skipped(wanted):
+            report(
+                "NO LABEL",
+                src.id,
+                f"arkiv: skip in kilder.yaml, but no {SUBSCRIPTION_LABEL} (or other "
+                f"{CONTROL_PREFIX}) label in Paperpile; stays skip (add the label, or "
+                "remove arkiv: skip from kilder.yaml to allow archiving)",
+                issue=False,
+            )
         if not problems:
             report(
                 "IN SYNC",
@@ -988,6 +1076,7 @@ def cmd_check(
             ("RENAMED", "the citekey changed, convert carries the entry over"),
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
+            ("NO LABEL", "private or arkiv: skip, but no label in Paperpile (not issues)"),
             ("DUPLICATE", "same PDF as another entry (not counted as issues)"),
             ("WARNING", "entries in the .bib file that cannot be used"),
             ("IGNORED", "neither a top folder label nor bomfast-kilder"),

@@ -352,3 +352,102 @@ def test_kilder_py_leaves_paperpile_entries_alone(sources, drive, pp, conversion
     assert set(e) == {"k", "d"}
     assert e["k"] == before
     assert check(pp) == 0
+
+
+
+# --------------------------------------------------------------------------- control labels
+
+
+def test_private_label(sources, pp, conversions):
+    pp.add("artikkel", labels=[r"\_PRIVAT", "NTP"], url="https://avis.example/betalingsmur")
+    pp.add("rapport", labels=["NTP"], url="https://example.no/r")
+
+    convert(pp)
+
+    e = entries(sources)
+    assert (e["artikkel"]["offentlig"], e["artikkel"]["arkiv"]) == ("nei", "skip")
+    assert e["artikkel"]["emneord"] == ["NTP"]  # control labels are not topics
+    assert "offentlig" not in e["rapport"] and "arkiv" not in e["rapport"]
+    text = (sources / "001_ntp" / "tekst" / "artikkel.md").read_text()
+    assert "_privat" not in text.lower()
+
+    out_dir = sources.parent / "data"
+    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    public = (out_dir / "001_ntp.yaml").read_text()
+    assert "rapport" in public and "artikkel" not in public and "avis.example" not in public
+
+
+def test_subscription_label_exports_without_archive(sources, pp, conversions):
+    pp.add("abo", labels=["_abo"], url="https://avis.example/sak")
+
+    convert(pp)
+
+    abo = entries(sources)["abo"]
+    assert abo["arkiv"] == "skip" and "offentlig" not in abo
+    out_dir = sources.parent / "data"
+    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    assert "https://avis.example/sak" in (out_dir / "001_ntp.yaml").read_text()
+    assert "skip" not in (out_dir / "001_ntp.yaml").read_text()
+
+
+def test_label_overrides_kilder_yaml(sources, pp, conversions, capsys):
+    pp.add("k", url="https://x")
+    convert(pp)
+    e = entries(sources)
+    e["k"].update(offentlig="ja", arkiv="https://web.archive.org/web/2020/https://x")
+    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    pp.items["k"]["keywords"] += "; _PRIVAT"
+    pp.write()
+    capsys.readouterr()
+
+    assert check(pp) == 1
+    out = capsys.readouterr().out
+    assert "METADATA       k: arkiv: https://web.archive.org" in out
+    assert "offentlig: ja -> nei (run convert)" in out
+    convert(pp)
+    k = entries(sources)["k"]
+    assert (k["offentlig"], k["arkiv"]) == ("nei", "skip")
+    assert len(conversions) == 1  # metadata only, no new conversion
+
+
+def test_removing_labels_changes_nothing(sources, pp, conversions, capsys):
+    pp.add("p", labels=["_PRIVAT"], url="https://x")
+    pp.add("a", labels=["_ABO"], url="https://x")
+    convert(pp)
+    for key in ("p", "a"):
+        pp.items[key]["keywords"] = pp.items[key]["keywords"].split("; _")[0]
+    pp.write()
+    capsys.readouterr()
+
+    convert(pp)
+    e = entries(sources)
+    assert (e["p"]["offentlig"], e["p"]["arkiv"], e["a"]["arkiv"]) == ("nei", "skip", "skip")
+
+    assert check(pp) == 0  # notices, not issues
+    out = capsys.readouterr().out
+    assert "NO LABEL       p: offentlig: nei in kilder.yaml, but no _PRIVAT label" in out
+    assert "NO LABEL       a: arkiv: skip in kilder.yaml, but no _ABO" in out
+
+    e["p"]["offentlig"] = "ja"  # making it public is a deliberate edit in kilder.yaml
+    del e["a"]["arkiv"]
+    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    convert(pp)
+    e = entries(sources)
+    assert e["p"]["offentlig"] == "ja" and "arkiv" not in e["a"]
+    check(pp)
+    assert "NO LABEL       a" not in capsys.readouterr().out
+
+
+def test_unknown_and_near_miss_labels_warn(sources, pp, conversions, capsys):
+    pp.add("k", labels=["_PRIVATE", "_annet", "Privat", "abo", "privatisering"], url="https://x")
+    convert(pp)
+    out = capsys.readouterr().out
+    assert "unknown label '_PRIVATE' (did you mean _PRIVAT?); like every label" in out
+    assert "unknown label '_annet'; like every label starting with _" in out
+    assert "the label 'Privat' looks like _PRIVAT, but is not" in out
+    assert "the label 'abo' looks like _ABO, but is not" in out
+    assert "'privatisering'" not in out
+    k = entries(sources)["k"]
+    assert k["arkiv"] == "skip"  # any _ label: no archive.org
+    assert "offentlig" not in k  # but only _PRIVAT makes it private
+    assert k["emneord"] == ["Privat", "abo", "privatisering"]

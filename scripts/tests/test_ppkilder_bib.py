@@ -346,3 +346,26 @@ def test_default_bib(monkeypatch, tmp_path):
     assert ppkilder.default_bib(tmp_path) == tmp_path / "bomfast-kilder.bib"
     monkeypatch.setenv("BOMFAST_BIB", "~/x.bib")
     assert ppkilder.default_bib(tmp_path) == Path("~/x.bib").expanduser()
+
+
+
+@pytest.mark.parametrize(
+    "label, control, resembles",
+    [
+        ("_PRIVAT", True, None),
+        ("_privat", True, None),
+        ("_ABO", True, None),
+        ("_PRIVATE", True, "_PRIVAT"),
+        ("_annet", True, None),
+        ("PRIVAT", False, "_PRIVAT"),
+        ("private", False, "_PRIVAT"),
+        ("prvat", False, "_PRIVAT"),
+        ("ABO", False, "_ABO"),
+        ("privatisering", False, None),
+        ("abonnement", False, None),
+        ("NTP", False, None),
+    ],
+)
+def test_control_labels(label, control, resembles):
+    assert ppkilder.is_control_label(label) is control
+    assert ppkilder.resembles_control_label(label) == resembles
