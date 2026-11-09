@@ -698,12 +698,16 @@ def move_text(target: Path, old: str, new: Path, new_file: str) -> None:
     )
     new.write_text(content, encoding="utf-8")
     if src != new:
-        src.unlink()
-        # Remove empty folders left behind by the move.
-        for d in src.parents:
-            if d == target / "tekst" or any(d.iterdir()):
-                break
-            d.rmdir()
+        remove_text(target, src)
+
+
+def remove_text(target: Path, text: Path) -> None:
+    """Delete a text file, and the folders under tekst/ that it leaves empty."""
+    text.unlink()
+    for d in text.parents:
+        if d == target / "tekst" or d == target or any(d.iterdir()):
+            break
+        d.rmdir()
 
 
 def drive_url(pdf: Path) -> str | None:
@@ -1079,6 +1083,12 @@ def cmd_check(
         f"{folder}: {'prune' if prune else 'check'}"
         + ("   [DRY RUN: nothing will be written]" if dry_run and prune else "")
     )
+    if not top.is_dir():
+        # main() has checked that Drive is mounted, so the folder really is gone.
+        say(
+            f"{top_name} is not on Drive (deleted or renamed?): "
+            "all its entries from Drive are GONE"
+        )
 
     def report(
         kind: str, ref: str, msg: str, issue: bool = True, detail: bool = False
@@ -1218,7 +1228,7 @@ def cmd_check(
                 + " (the PDF on Drive is untouched)"
             )
             if has_text and not dry_run:
-                (target / entry["tekst"]).unlink()
+                remove_text(target, target / entry["tekst"])
             removed += 1
             counts["WOULD REMOVE" if dry_run else "REMOVED"] += 1
         # Removing the entries resolves exactly the issues that belonged to them
@@ -1233,7 +1243,7 @@ def cmd_check(
                 f"{md.relative_to(target).as_posix()}: orphaned text file"
             )
             if not dry_run:
-                md.unlink()
+                remove_text(target, md)
             counts["WOULD DELETE" if dry_run else "DELETED"] += 1
         issues -= len(orphans)
     if moved_to and prune:
@@ -1550,6 +1560,32 @@ def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
     return 1 if warnings else 0
 
 
+def drive_folders(drive: Path) -> list[str]:
+    """The top folders on Drive (001_..., 101_...)."""
+    return sorted(
+        d.name for d in drive.iterdir() if d.is_dir() and re.match(r"\d{3}_", d.name)
+    )
+
+
+def sources_with_drive_entries() -> list[str]:
+    """Top folders whose kilder.yaml has entries from this script (with `fil`)."""
+    return sorted(
+        p.parent.name
+        for p in SOURCES_DIR.glob("*/kilder.yaml")
+        if any(e.get("fil") for e in read_yaml(p).values())
+    )
+
+
+def check_drive(drive: Path) -> None:
+    """A Drive mount that is down looks like an empty folder, and every entry would look
+    GONE to check and prune. Refuse to go on unless Drive has top folders."""
+    if not drive.is_dir() or not drive_folders(drive):
+        sys.exit(
+            f"Drive folder not found or empty: {drive} (no 001_... folders). Is it "
+            "mounted? Set --drive or BOMFAST_DRIVE."
+        )
+
+
 def check_sources_dir(sources: Path) -> None:
     """Refuse a sources folder inside the public repo; it must exist."""
     resolved = sources.resolve()
@@ -1718,16 +1754,18 @@ def main() -> int:
             f"{' '.join(sys.argv[1:])} ===\n"
         )
     drive = args.drive.expanduser()
+    if args.command in ("convert", "check", "prune"):
+        check_drive(drive)
     if args.all and args.command in ("archive", "export"):
         folders = sorted(
             d.name for d in SOURCES_DIR.iterdir() if (d / "kilder.yaml").exists()
         )
     elif args.all:
-        folders = sorted(
-            d.name
-            for d in drive.iterdir()
-            if d.is_dir() and re.match(r"\d{3}_", d.name)
-        )
+        folders = drive_folders(drive)
+        if args.command != "convert":
+            # Also folders deleted from Drive: their entries are GONE, and prune
+            # must get the chance to remove them.
+            folders = sorted(set(folders) | set(sources_with_drive_entries()))
     else:
         folders = args.folders
     if not folders:

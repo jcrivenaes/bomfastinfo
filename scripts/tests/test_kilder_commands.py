@@ -338,3 +338,60 @@ def test_export_rejects_subfolder_and_missing_list(sources, tmp_path):
         kilder.cmd_export(f"{TOP}/sub", tmp_path, dry_run=True)
     with pytest.raises(SystemExit, match="not found"):
         kilder.cmd_export("999_none", tmp_path, dry_run=True)
+
+
+# --------------------------------------------------------------------------- deleted folders
+
+
+def run_main(monkeypatch, drive, sources, *args):
+    monkeypatch.setattr("sys.argv", ["kilder.py", "--drive", str(drive), "--sources", str(sources), *args])
+    return kilder.main()
+
+
+def test_prune_all_includes_top_folders_deleted_from_drive(
+    sources, drive, conversions, monkeypatch, capsys
+):
+    import shutil
+
+    write_pdf(drive / "001_ntp" / "b.pdf")
+    write_pdf(drive / "006_div" / "sub" / "a.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    shutil.rmtree(drive / "006_div")
+    # a folder with only Paperpile entries is not one of ours: left alone
+    kilder.write_yaml(sources / "007_pp" / "kilder.yaml", {"p": {"id": "p", "paperpile": "x"}})
+    capsys.readouterr()
+
+    assert run_main(monkeypatch, drive, sources, "check", "--all") == 1
+    out = capsys.readouterr().out
+    assert "006_div is not on Drive (deleted or renamed?)" in out
+    assert "GONE           a: sub/a.pdf" in out
+    assert "007_pp" not in out
+
+    assert run_main(monkeypatch, drive, sources, "prune", "--all") == 0
+    assert kilder.read_yaml(sources / "006_div" / "kilder.yaml") == {}
+    assert not (sources / "006_div" / "tekst" / "sub").exists()  # no empty folders left
+    assert set(kilder.read_yaml(sources / "001_ntp" / "kilder.yaml")) == {"b"}
+
+
+def test_refuses_to_run_when_drive_is_not_mounted(sources, drive, conversions, monkeypatch):
+    write_pdf(drive / "001_ntp" / "b.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    empty = drive.parent / "unmounted"
+    empty.mkdir()
+    for command in (["prune", "--all"], ["prune", "001_ntp"], ["check", "001_ntp"]):
+        with pytest.raises(SystemExit, match="Is it mounted"):
+            run_main(monkeypatch, empty, sources, *command)
+    assert set(kilder.read_yaml(sources / "001_ntp" / "kilder.yaml")) == {"b"}
+
+
+def test_prune_removes_empty_text_folders(sources, drive, top, conversions):
+    write_pdf(top / "a" / "b" / "x.pdf")
+    write_pdf(top / "keep.pdf")
+    convert(drive)
+    (sources / TOP / "tekst" / "o" / "orphan.md").parent.mkdir()
+    (sources / TOP / "tekst" / "o" / "orphan.md").write_text("x")
+    (top / "a" / "b" / "x.pdf").unlink()
+
+    kilder.cmd_check(drive, TOP, prune=True)
+
+    assert sorted(p.name for p in (sources / TOP / "tekst").iterdir()) == ["keep.md"]
