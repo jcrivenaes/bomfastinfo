@@ -377,6 +377,47 @@ def test_private_label(sources, pp, conversions):
     assert "rapport" in public and "artikkel" not in public and "avis.example" not in public
 
 
+@pytest.mark.parametrize("private_first", [True, False])
+@pytest.mark.parametrize("folders", [(), ("002_web",)])
+def test_private_label_on_a_duplicate_citekey_still_counts(
+    sources, pp, conversions, capsys, private_first, folders
+):
+    """Entry order (and the folders convert runs on) must not leave the entry public."""
+    pp.add("artikkel", url="https://avis.example/sak")
+    pp.add("web", top="002_web", pdf=False, url="https://example.no")
+    convert(pp)
+    assert "offentlig" not in entries(sources)["artikkel"]
+    copy = "@misc{artikkel,\n  keywords = {bomfast-kilder; 001\\_ntp; \\_PRIVAT}\n}\n\n"
+    text = pp.bib.read_text(encoding="utf-8")
+    pp.bib.write_text(copy + text if private_first else text + copy, encoding="utf-8")
+    capsys.readouterr()
+
+    convert(pp, folders)
+
+    e = entries(sources)["artikkel"]
+    assert (e["offentlig"], e["arkiv"]) == ("nei", "skip")
+    assert e["url"] == "https://avis.example/sak"  # otherwise left as it was
+    out = capsys.readouterr().out
+    assert "WARNING    artikkel: the citekey is used 2 times" in out
+    assert "METADATA   artikkel: citekey used twice" in out
+    out_dir = sources.parent / "data"
+    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    assert not (out_dir / "001_ntp.yaml").exists()  # nothing public left
+
+
+def test_duplicate_citekey_without_labels_changes_nothing(sources, pp, conversions):
+    pp.add("artikkel")
+    pp.add("other")
+    convert(pp)
+    before = entries(sources)
+    with pp.bib.open("a", encoding="utf-8") as f:
+        f.write("@misc{artikkel,\n  keywords = {bomfast-kilder; 001\\_ntp}\n}\n")
+
+    convert(pp)
+
+    assert entries(sources) == before
+
+
 def test_subscription_label_exports_without_archive(sources, pp, conversions):
     pp.add("abo", labels=["_abo"], url="https://avis.example/sak")
 
