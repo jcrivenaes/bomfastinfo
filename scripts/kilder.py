@@ -33,6 +33,12 @@ Usage:
     # (or later added to EXCLUDE.txt):
     python3 scripts/kilder.py prune 101_hordfast
 
+    # A top folder renamed on Drive: move its kilder.yaml, tekst/ and public export
+    # along (check/prune/convert point this out when they see it):
+    python3 scripts/kilder.py rename-folder 006_div 006_diverse
+    # A top folder deleted on Drive: prune keeps its entries unless you confirm:
+    python3 scripts/kilder.py prune 006_div --forget-folder 006_div
+
     # Fill in empty `arkiv` fields with Wayback Machine snapshots of each `url`
     # (reads kilder.yaml only, does not need the Drive folder):
     python3 scripts/kilder.py archive 001_nasjonal_transportplan_ntp
@@ -698,12 +704,16 @@ def move_text(target: Path, old: str, new: Path, new_file: str) -> None:
     )
     new.write_text(content, encoding="utf-8")
     if src != new:
-        src.unlink()
-        # Remove empty folders left behind by the move.
-        for d in src.parents:
-            if d == target / "tekst" or any(d.iterdir()):
-                break
-            d.rmdir()
+        remove_text(target, src)
+
+
+def remove_text(target: Path, text: Path) -> None:
+    """Delete a text file, and the folders under tekst/ that it leaves empty."""
+    text.unlink()
+    for d in text.parents:
+        if d == target / "tekst" or d == target or any(d.iterdir()):
+            break
+        d.rmdir()
 
 
 def drive_url(pdf: Path) -> str | None:
@@ -757,6 +767,55 @@ def split_folder(folder: str) -> tuple[str, str]:
     """'101_hordfast/a/b' -> ('101_hordfast', 'a/b')."""
     top_name, _, sub = folder.strip("/").partition("/")
     return top_name, sub
+
+
+# --------------------------------------------------------------------------- renamed top folders
+
+
+def drive_checksums(entries: dict[str, dict]) -> set[str]:
+    """Checksums of the entries from this script (with `fil`; not Paperpile entries)."""
+    return {e["sha256"] for e in entries.values() if e.get("fil") and e.get("sha256")}
+
+
+def missing_tops(drive: Path) -> list[str]:
+    """Top folders with Drive entries in the sources repo that are not on Drive."""
+    return [t for t in sources_with_drive_entries() if not (drive / t).is_dir()]
+
+
+def renamed_to(drive: Path, old: str, entries: dict[str, dict]) -> list[tuple[str, int]]:
+    """Top folders on Drive that hold PDFs of the missing top folder `old`, as
+    [(folder, number of its PDFs found there)], most matches first. Folders that have a
+    kilder.yaml are compared by checksum in it; others are hashed."""
+    sums = drive_checksums(entries)
+    if not sums:
+        return []
+    registered = set(sources_with_drive_entries())
+    found = []
+    for name in drive_folders(drive):
+        if name == old:
+            continue
+        if name in registered:
+            other = drive_checksums(read_yaml(SOURCES_DIR / name / "kilder.yaml"))
+        else:
+            other = {sha256(p) for p in find_pdfs(drive / name)}
+        if n := len(sums & other):
+            found.append((name, n))
+    return sorted(found, key=lambda x: (-x[1], x[0]))
+
+
+def renamed_from(drive: Path, new: str) -> list[tuple[str, int]]:
+    """Missing top folders whose PDFs are in the (not yet registered) Drive folder `new`,
+    as [(old folder, number of its PDFs found in new)], most matches first."""
+    old_tops = missing_tops(drive)
+    if not old_tops:
+        return []
+    here = {sha256(p) for p in find_pdfs(drive / new)}
+    found = []
+    for old in old_tops:
+        sums = drive_checksums(read_yaml(SOURCES_DIR / old / "kilder.yaml"))
+        if n := len(sums & here):
+            found.append((old, n))
+    return sorted(found, key=lambda x: (-x[1], x[0]))
 
 
 # --------------------------------------------------------------------------- duplicates
@@ -821,6 +880,19 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
     yaml_file = target / "kilder.yaml"
     entries = read_yaml(yaml_file)
     original = copy.deepcopy(entries)
+
+    if not yaml_file.exists() and (old := renamed_from(drive, top_name)):
+        # Converting would register every PDF again under the new name (new text
+        # files, duplicates of the old entries), and the hand-edited fields of the old
+        # entries would be left behind. Migrate the old sources folder instead.
+        name, n = old[0]
+        say(
+            f"{folder}: SKIPPED, looks like {name} renamed on Drive ({n} of its PDFs "
+            f"are here). Run `kilder.py rename-folder {name} {top_name}` first. If it "
+            f"is a new folder, remove {name} with `kilder.py prune {name} "
+            f"--forget-folder {name}`."
+        )
+        return
 
     # Ids are computed from the whole top folder, so they are the same regardless of
     # which subfolder you run on.
@@ -1059,7 +1131,11 @@ def cmd_convert(drive: Path, folder: str, force: set[str], dry_run: bool) -> Non
 
 
 def cmd_check(
-    drive: Path, folder: str, prune: bool = False, dry_run: bool = False
+    drive: Path,
+    folder: str,
+    prune: bool = False,
+    dry_run: bool = False,
+    forget: frozenset[str] = frozenset(),
 ) -> int:
     top_name, sub = split_folder(folder)
     top = drive / top_name
@@ -1079,6 +1155,26 @@ def cmd_check(
         f"{folder}: {'prune' if prune else 'check'}"
         + ("   [DRY RUN: nothing will be written]" if dry_run and prune else "")
     )
+    # A top folder that is missing as a whole is more likely renamed (or not synced
+    # yet) than deleted, so prune only removes its entries with --forget-folder.
+    top_missing = not top.is_dir()
+    keep_missing = top_missing and top_name not in forget
+    if top_missing:
+        say(
+            f"{top_name} is not on Drive (deleted or renamed?): "
+            "all its entries from Drive are GONE"
+        )
+        n_all = len(drive_checksums(entries))
+        for name, n in renamed_to(drive, top_name, entries):
+            say(
+                f"RENAMED?       {top_name}: {n} of its {n_all} PDFs are in {name} "
+                f"on Drive (if renamed: kilder.py rename-folder {top_name} {name})"
+            )
+        if prune and keep_missing:
+            say(
+                f"{top_name}: entries and text files are kept. If the folder really "
+                f"was deleted, run again with --forget-folder {top_name}"
+            )
 
     def report(
         kind: str, ref: str, msg: str, issue: bool = True, detail: bool = False
@@ -1208,7 +1304,7 @@ def cmd_check(
                 )
 
     removed = 0
-    if prune and to_remove:
+    if prune and to_remove and not keep_missing:
         for eid in to_remove:
             entry = entries.pop(eid)
             has_text = entry.get("tekst") and (target / entry["tekst"]).exists()
@@ -1218,7 +1314,7 @@ def cmd_check(
                 + " (the PDF on Drive is untouched)"
             )
             if has_text and not dry_run:
-                (target / entry["tekst"]).unlink()
+                remove_text(target, target / entry["tekst"])
             removed += 1
             counts["WOULD REMOVE" if dry_run else "REMOVED"] += 1
         # Removing the entries resolves exactly the issues that belonged to them
@@ -1226,14 +1322,14 @@ def cmd_check(
         # extra issues reported for the entry while checking are discounted too.
         issues -= len(to_remove) + sum(removal_issues.values())
         save_yaml(yaml_file, entries, original, dry_run)
-    if prune and orphans:
+    if prune and orphans and not keep_missing:
         for md in orphans:
             say(
                 f"{'WOULD DELETE' if dry_run else 'DELETED':<14} "
                 f"{md.relative_to(target).as_posix()}: orphaned text file"
             )
             if not dry_run:
-                md.unlink()
+                remove_text(target, md)
             counts["WOULD DELETE" if dry_run else "DELETED"] += 1
         issues -= len(orphans)
     if moved_to and prune:
@@ -1550,6 +1646,75 @@ def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
     return 1 if warnings else 0
 
 
+def cmd_rename_folder(
+    drive: Path, old: str, new: str, export_dir: Path, dry_run: bool
+) -> int:
+    """Follow a top folder renamed on Drive: move <sources>/old (kilder.yaml, tekst/,
+    EXCLUDE.txt) to <sources>/new, and the public export <old>.yaml to <new>.yaml. Paths
+    in kilder.yaml are relative to the top folder, so the entries stay as they are."""
+    for name in (old, new):
+        if split_folder(name)[1]:
+            sys.exit(f"rename-folder works on top folders only (got {name})")
+    src, dst = SOURCES_DIR / old, SOURCES_DIR / new
+    if (drive / old).is_dir():
+        sys.exit(f"{old} is still on Drive ({drive / old}); rename it there first")
+    if not (drive / new).is_dir():
+        sys.exit(f"Not found on Drive: {drive / new}")
+    if not (src / "kilder.yaml").exists():
+        sys.exit(f"Source list not found: {src / 'kilder.yaml'}")
+    if dst.exists():
+        sys.exit(
+            f"{disp(dst)} already exists (did convert run on {new}?). If it holds only "
+            f"what convert made from the same PDFs, delete it and run again; otherwise "
+            "merge by hand."
+        )
+    moves = [(src, dst)]
+    out_old, out_new = export_dir / f"{old}.yaml", export_dir / f"{new}.yaml"
+    if out_old.exists():
+        if out_new.exists():
+            sys.exit(f"{disp(out_new)} already exists; delete it and run again")
+        moves.append((out_old, out_new))
+    entries = read_yaml(src / "kilder.yaml")
+    found = len(drive_checksums(entries) & {sha256(p) for p in find_pdfs(drive / new)})
+    say(
+        f"{old} -> {new}: {found} of {len(drive_checksums(entries))} PDFs in kilder.yaml "
+        f"are in {new} on Drive"
+        + ("   [DRY RUN: nothing will be written]" if dry_run else "")
+    )
+    for a, b in moves:
+        say(f"{'WOULD MOVE' if dry_run else 'MOVED':<14} {disp(a)} -> {disp(b)}")
+        if not dry_run:
+            a.rename(b)
+    say(f"Next: kilder.py check {new} (and commit the move in both repos)")
+    return 0
+
+
+def drive_folders(drive: Path) -> list[str]:
+    """The top folders on Drive (001_..., 101_...)."""
+    return sorted(
+        d.name for d in drive.iterdir() if d.is_dir() and re.match(r"\d{3}_", d.name)
+    )
+
+
+def sources_with_drive_entries() -> list[str]:
+    """Top folders whose kilder.yaml has entries from this script (with `fil`)."""
+    return sorted(
+        p.parent.name
+        for p in SOURCES_DIR.glob("*/kilder.yaml")
+        if any(e.get("fil") for e in read_yaml(p).values())
+    )
+
+
+def check_drive(drive: Path) -> None:
+    """A Drive mount that is down looks like an empty folder, and every entry would look
+    GONE to check and prune. Refuse to go on unless Drive has top folders."""
+    if not drive.is_dir() or not drive_folders(drive):
+        sys.exit(
+            f"Drive folder not found or empty: {drive} (no 001_... folders). Is it "
+            "mounted? Set --drive or BOMFAST_DRIVE."
+        )
+
+
 def check_sources_dir(sources: Path) -> None:
     """Refuse a sources folder inside the public repo; it must exist."""
     resolved = sources.resolve()
@@ -1643,6 +1808,36 @@ def main() -> int:
         action="store_true",
         help="show what would be removed, without writing anything",
     )
+    p.add_argument(
+        "--forget-folder",
+        action="append",
+        default=[],
+        metavar="FOLDER",
+        help="remove the entries of this top folder although the whole folder is "
+        "missing on Drive (without it, prune keeps them: renamed or not synced?)",
+    )
+
+    r = commands.add_parser(
+        "rename-folder",
+        parents=[common],
+        help="follow a top folder renamed on Drive: move its kilder.yaml, tekst/ and "
+        "public export to the new name",
+    )
+    r.add_argument("old", help="old name of the top folder")
+    r.add_argument("new", help="new name of the top folder on Drive")
+    r.add_argument(
+        "--out",
+        type=Path,
+        default=DEFAULT_EXPORT,
+        metavar="DIR",
+        help=f"folder of the public export (default: {DEFAULT_EXPORT})",
+    )
+    r.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="show what would be moved, without moving anything",
+    )
 
     a = commands.add_parser(
         "archive",
@@ -1718,16 +1913,22 @@ def main() -> int:
             f"{' '.join(sys.argv[1:])} ===\n"
         )
     drive = args.drive.expanduser()
+    if args.command in ("convert", "check", "prune", "rename-folder"):
+        check_drive(drive)
+    if args.command == "rename-folder":
+        return cmd_rename_folder(
+            drive, args.old, args.new, args.out.expanduser(), args.dry_run
+        )
     if args.all and args.command in ("archive", "export"):
         folders = sorted(
             d.name for d in SOURCES_DIR.iterdir() if (d / "kilder.yaml").exists()
         )
     elif args.all:
-        folders = sorted(
-            d.name
-            for d in drive.iterdir()
-            if d.is_dir() and re.match(r"\d{3}_", d.name)
-        )
+        folders = drive_folders(drive)
+        if args.command != "convert":
+            # Also folders deleted from Drive: their entries are GONE, and prune
+            # must get the chance to remove them.
+            folders = sorted(set(folders) | set(sources_with_drive_entries()))
     else:
         folders = args.folders
     if not folders:
@@ -1747,6 +1948,7 @@ def main() -> int:
                 folder,
                 prune=(args.command == "prune"),
                 dry_run=getattr(args, "dry_run", False),
+                forget=frozenset(getattr(args, "forget_folder", [])),
             )
     return rc
 

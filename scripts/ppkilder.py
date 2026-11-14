@@ -33,6 +33,11 @@ Usage:
     # Remove entries and text files for sources that are no longer in the .bib file:
     python3 scripts/ppkilder.py prune -n
 
+    # Send the PDFs of some sources to archive.org (item bomfast-kildedokumenter) and
+    # write the link to arkiv. A dry run unless --upload; needs `ia configure` once:
+    python3 scripts/ppkilder.py upload regjeringen_2017--ntp_2018_2029
+    python3 scripts/ppkilder.py upload regjeringen_2017--ntp_2018_2029 --upload
+
     # archive and export read kilder.yaml only, so use kilder.py for those:
     python3 scripts/kilder.py archive 001_nasjonal_transportplan_ntp
     python3 scripts/kilder.py export --all
@@ -43,7 +48,11 @@ Output:
 
 How a .bib entry is read:
     citekey   the id, and the name of the text file: <citekey>.md. Used in the kilde
-              shortcode, so it must be unique across all folders.
+              shortcode, so it must be unique across all folders. A citekey used by
+              several .bib entries is skipped in all of them, with a warning. Its
+              entry in kilder.yaml is kept, but the control labels of every copy
+              still apply to it (_PRIVAT on one copy is enough), and upload
+              refuses it.
     keywords  the Paperpile labels, in no particular order:
               - exactly one top folder label, three digits and _, is the destination:
                     005_statsbudsjett_samferdsel
@@ -51,6 +60,17 @@ How a .bib entry is read:
                 No subfolders. None or several such labels give a warning, and the
                 source is skipped (but never removed by prune).
               - bomfast-kilder only selects what Paperpile exports, and is not stored.
+              - labels starting with _ are control labels, never topics (any case):
+                    _PRIVAT   offentlig: nei + arkiv: skip: not in the public list
+                              (export), never sent to archive.org
+                    _ABO      arkiv: skip: paywalled; in the public list with its
+                              url, but never archived (a Wayback capture could
+                              republish the full text)
+                    _other    arkiv: skip as well, with a warning (unknown label)
+                Removing a label does NOT undo it: edit offentlig/arkiv in
+                kilder.yaml for that; check reports the mismatch (NO LABEL). Run
+                convert after adding a label, before export/archive. A near miss
+                (PRIVAT, privat, _PRIVATE, ABO) gives a warning.
               - all other labels (NTP, Rogfast, ...) go to `emneord` in kilder.yaml.
               Entries without a top folder label or bomfast-kilder are ignored.
     file      paths in the mirror, separated by ";". The first is converted, the others
@@ -76,6 +96,19 @@ Duplicates:
     The same PDF (same sha256) in several entries is reported as DUPLICATE by check,
     prune and convert, also against entries from kilder.py, just like in kilder.py (see
     `Duplicates` there). A notice, not an issue; nothing is merged or removed.
+
+Uploading to archive.org (upload):
+    For PDFs that are gone or may disappear from the publisher. Refused, per source, for:
+    offentlig: nei, arkiv: skip, arkiv already set, a control label (_PRIVAT, _ABO, ...)
+    in the .bib file even if convert has not run since, and a PDF that changed since the
+    last convert. A PDF with the same sha256 as an earlier upload in
+    uploads_webarchive/results.jsonl (also uploads made by hand with
+    archive_org_upload.py) is not uploaded again: that link is written to arkiv, but only
+    if archive.org still has that file with the same md5 (results.jsonl is history; a
+    file replaced or removed since is reported STALE and the PDF is uploaded as usual).
+    A file with the same name already in the item is only reused if its md5 matches. Each upload
+    is appended to results.jsonl, and the url is recorded as original_url on archive.org.
+    Commit kilder.yaml and results.jsonl afterwards. Uploads are public and permanent.
 
 Copy of the .bib file:
     convert and prune copy the .bib file to <sources>/paperpile.bib when it has changed, so
@@ -107,15 +140,22 @@ from __future__ import annotations
 import argparse
 import copy
 import datetime as dt
+import difflib
+import hashlib
+import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 import unicodedata
+import urllib.parse
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import archive_org_upload as ia
 import kilder
 from kilder import (
     TECH_FIELDS,
@@ -137,7 +177,9 @@ from kilder import (
 DEFAULT_PAPERPILE = Path(
     os.environ.get("BOMFAST_PAPERPILE", "~/GoogleDrive/Paperpile")
 ).expanduser()
-BIB_NAME = "bomfast-kilder.bib"  # in the mirror, unless --bib or BOMFAST_BIB says otherwise
+BIB_NAME = (
+    "bomfast-kilder.bib"  # in the mirror, unless --bib or BOMFAST_BIB says otherwise
+)
 
 
 def default_bib(paperpile: Path) -> Path:
@@ -152,6 +194,14 @@ TOP_LABEL = re.compile(r"\d{3}_[^\s/\\]+")  # e.g. 005_statsbudsjett_samferdsel
 # which would write a nested kilder.yaml no later run finds) is skipped, not a topic.
 TOP_LABEL_LIKE = re.compile(r"\d{3}_\S+")
 COLLECTION_LABEL = "bomfast-kilder"
+# Control labels start with "_" and are never topics. Every one of them keeps the source
+# away from archive.org (arkiv: skip); _PRIVAT also keeps it out of the public list
+# (offentlig: nei). Matched without regard to case. Removing a label never undoes what it
+# set (that takes an edit in kilder.yaml), so a lost label cannot publish anything.
+CONTROL_PREFIX = "_"
+PRIVATE_LABEL = "_PRIVAT"  # private: not in the public list, not archived
+SUBSCRIPTION_LABEL = "_ABO"  # paywalled: in the public list, but never archived
+KNOWN_CONTROL_LABELS = (PRIVATE_LABEL, SUBSCRIPTION_LABEL)
 MIRROR_CHECK = "All Papers"  # always in the mirror; missing = the mount is not up
 MARKER = "paperpile"  # the kilder.yaml field that marks an entry as ours
 PP_TECH_FIELDS = TECH_FIELDS | {MARKER, "vedlegg", "mappe"}
@@ -241,7 +291,9 @@ def parse_bib(text: str) -> list[tuple[str, dict[str, str]]]:
         if stray:
             at = pos + stray.start()
             snippet = text[at:].split("\n", 1)[0][:60]
-            raise BibError(f"line {line_of(text, at)}: not a complete entry: {snippet!r}")
+            raise BibError(
+                f"line {line_of(text, at)}: not a complete entry: {snippet!r}"
+            )
         if not m:
             return entries
         fields, pos = parse_fields(text, m.end())
@@ -268,7 +320,9 @@ LATEX_ACCENT = re.compile(
     rf"""|([uvHckrdb])\s+{_BASE})"""  # \c c
 )
 LATEX_LETTER = re.compile(
-    r"\\(" + "|".join(sorted(LATEX_LETTERS, key=len, reverse=True)) + r")(?![a-zA-Z])\s*"
+    r"\\("
+    + "|".join(sorted(LATEX_LETTERS, key=len, reverse=True))
+    + r")(?![a-zA-Z])\s*"
 )
 
 
@@ -305,6 +359,8 @@ class Source:
     attachments: list[str] = field(default_factory=list)
     topics: list[str] = field(default_factory=list)
     meta: dict = field(default_factory=dict)
+    private: bool = False  # has the _PRIVAT label
+    no_archive: bool = False  # has any control label (_PRIVAT, _ABO, ...)
 
     @property
     def folder(self) -> str:
@@ -313,6 +369,15 @@ class Source:
     @property
     def tekst(self) -> str:
         return f"tekst/{self.id}.md"
+
+
+@dataclass
+class Held:
+    """A citekey used by several .bib entries: no source is made from it, but the
+    control labels of every copy still count (the strictest wins)."""
+
+    private: bool = False  # some copy has _PRIVAT
+    no_archive: bool = False  # some copy has a control label
 
 
 def bib_metadata(fields: dict[str, str]) -> dict:
@@ -332,9 +397,39 @@ def bib_metadata(fields: dict[str, str]) -> dict:
     }
 
 
-def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
+def is_label(label: str, wanted: str) -> bool:
+    return label.casefold() == wanted.casefold()
+
+
+def is_control_label(label: str) -> bool:
+    return label.startswith(CONTROL_PREFIX)
+
+
+def resembles_control_label(label: str) -> str | None:
+    """The known control label this is a near miss of (PRIVAT, privat, _PRIVATE, ABO),
+    or None. A near miss would silently leave the source public or archivable."""
+    if any(is_label(label, known) for known in KNOWN_CONTROL_LABELS):
+        return None
+    base = label.casefold().lstrip(CONTROL_PREFIX)
+    for known in KNOWN_CONTROL_LABELS:
+        name = known.casefold().lstrip(CONTROL_PREFIX)
+        if difflib.SequenceMatcher(None, base, name).ratio() >= 0.8:
+            return known
+    return None
+
+
+def bib_keywords(fields: dict[str, str]) -> list[str]:
+    """The Paperpile labels of a .bib entry."""
+    keywords = [k.strip() for k in unlatex(fields.get("keywords", "")).split(";")]
+    return [k for k in keywords if k]
+
+
+def read_sources(
+    bib: Path,
+) -> tuple[list[Source], set[str], Counter, bytes, dict[str, Held]]:
     """The usable sources in the .bib file, every citekey that must not count as gone,
-    counts of what was left out, and the file as read. Warns on the way."""
+    counts of what was left out, the file as read, and the strictest control labels of
+    each citekey that is used twice (see Held). Warns on the way."""
     if not bib.is_file():
         sys.exit(
             f"BibTeX file not found: {bib}. Set up the Paperpile workflow, or use --bib "
@@ -355,9 +450,27 @@ def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
         unusable.add(key)
         say(f"WARNING    {key}: {why}; skipped")
 
+    # A citekey used twice is rejected in every occurrence: keeping one of them would
+    # let entry order decide whether _PRIVAT/_ABO on the other one counts.
+    key_count = Counter(key for key, _fields in entries)
+    duplicates = {key for key, n in key_count.items() if n > 1}
+    held = {key: Held() for key in duplicates}
     for key, fields in entries:
-        keywords = [k.strip() for k in unlatex(fields.get("keywords", "")).split(";")]
-        keywords = [k for k in keywords if k]
+        if key in held:
+            controls = [k for k in bib_keywords(fields) if is_control_label(k)]
+            held[key].private |= any(is_label(k, PRIVATE_LABEL) for k in controls)
+            held[key].no_archive |= bool(controls)
+    for key in sorted(duplicates):
+        skip(
+            key,
+            f"the citekey is used {key_count[key]} times in the .bib file (give each "
+            "entry its own citekey in Paperpile)",
+        )
+
+    for key, fields in entries:
+        if key in duplicates:
+            continue
+        keywords = bib_keywords(fields)
         tops = [k for k in keywords if TOP_LABEL_LIKE.fullmatch(k)]
         if not tops and COLLECTION_LABEL not in keywords:
             skipped["IGNORED"] += 1
@@ -373,14 +486,32 @@ def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
             skip(key, f"bad top folder label {tops[0]!r}")
         elif "/" in key or key.startswith("."):
             skip(key, "the citekey cannot be used as a file name")
-        elif key in sources:
-            skip(key, "the citekey is used twice in the .bib file")
         elif not all(safe_parts(f) for f in files):
             skip(key, f"bad file path in {fields['file']!r}")
         elif files and not files[0].lower().endswith(".pdf"):
             skip(key, f"the first file is not a PDF: {files[0]}")
         else:
-            topics = [k for k in keywords if k not in (tops[0], COLLECTION_LABEL)]
+            controls = [k for k in keywords if is_control_label(k)]
+            topics = [
+                k
+                for k in keywords
+                if k not in (tops[0], COLLECTION_LABEL) and not is_control_label(k)
+            ]
+            for k in controls:
+                if not any(is_label(k, known) for known in KNOWN_CONTROL_LABELS):
+                    hint = resembles_control_label(k)
+                    say(
+                        f"WARNING    {key}: unknown label {k!r}"
+                        + (f" (did you mean {hint}?)" if hint else "")
+                        + f"; like every label starting with {CONTROL_PREFIX} it keeps "
+                        "the source from archive.org, but it does nothing else"
+                    )
+            for k in topics:
+                if hint := resembles_control_label(k):
+                    say(
+                        f"WARNING    {key}: the label {k!r} looks like {hint}, but is "
+                        f"not; treated as a topic, so it has no effect"
+                    )
             sources[key] = Source(
                 key,
                 tops[0],
@@ -388,11 +519,13 @@ def read_sources(bib: Path) -> tuple[list[Source], set[str], Counter, bytes]:
                 files[1:],
                 list(dict.fromkeys(topics)),
                 bib_metadata(fields),
+                private=any(is_label(k, PRIVATE_LABEL) for k in controls),
+                no_archive=bool(controls),
             )
     if not sources:
         # A broken or empty export must never look like "all sources were removed".
         sys.exit(f"No sources with a top folder label in {bib}; nothing done.")
-    return list(sources.values()), set(sources) | unusable, skipped, raw
+    return list(sources.values()), set(sources) | unusable, skipped, raw, held
 
 
 def copy_bib(bib: Path, raw: bytes, write: bool) -> None:
@@ -483,6 +616,16 @@ def apply_metadata(entry: dict, src: Source) -> None:
             entry[key] = value
         else:
             entry.pop(key, None)
+    apply_controls(entry, src.private, src.no_archive)
+
+
+def apply_controls(entry: dict, private: bool, no_archive: bool) -> None:
+    """The effect of the control labels. Without them, offentlig and arkiv are left as
+    they are: removing a label never makes a source public again."""
+    if private:
+        entry["offentlig"] = "nei"
+    if no_archive:
+        entry["arkiv"] = kilder.ARCHIVE_SKIP
 
 
 def describe_meta(changes: dict) -> str:
@@ -594,7 +737,7 @@ def cmd_convert(
 ) -> int:
     check_mirror(paperpile)
     say(f"{disp(bib)}{'   [DRY RUN: nothing will be written]' if dry_run else ''}")
-    sources, in_bib, counts, raw = read_sources(bib)
+    sources, in_bib, counts, raw, held = read_sources(bib)
     copy_bib(bib, raw, write=not dry_run)
     lists = Lists()
     owned = lists.owned()
@@ -767,7 +910,24 @@ def cmd_convert(
             cont=True,
         )
 
+    def restrict(eid: str, labels: Held) -> None:
+        """Apply the labels of a citekey used twice to its existing entry, in every
+        folder: entry order in the .bib file must not leave it public."""
+        _top, entry = owned[eid]
+        before = copy.deepcopy(entry)
+        apply_controls(entry, labels.private, labels.no_archive)
+        if meta := changed_fields(before, entry):
+            outcome(
+                "METADATA",
+                eid,
+                "citekey used twice, the labels of every copy count; kilder.yaml: "
+                + describe_meta(meta),
+            )
+
     try:
+        for eid, labels in sorted(held.items()):
+            if eid in owned:
+                restrict(eid, labels)
         for src in scope:
             handle(src)
     finally:  # also on Ctrl-C: keep what was converted, conversions are slow
@@ -791,7 +951,10 @@ def cmd_convert(
                 ("MISSING", "the PDF is not in the mirror, metadata only"),
                 ("WARNING", "skipped, see the lines above"),
                 ("IGNORED", "neither a top folder label nor bomfast-kilder"),
-                ("DUPLICATE", "converted, but the same PDF is already in another entry"),
+                (
+                    "DUPLICATE",
+                    "converted, but the same PDF is already in another entry",
+                ),
                 (
                     "GONE",
                     "in kilder.yaml, but no longer in the .bib file (prune removes it)",
@@ -815,7 +978,7 @@ def cmd_check(
         f"{disp(bib)}: {'prune' if prune else 'check'}"
         + ("   [DRY RUN: nothing will be written]" if dry_run and prune else "")
     )
-    sources, in_bib, counts, raw = read_sources(bib)
+    sources, in_bib, counts, raw, _held = read_sources(bib)
     copy_bib(bib, raw, write=prune and not dry_run)
     issues = counts["WARNING"]
     lists = Lists()
@@ -901,6 +1064,24 @@ def cmd_check(
             problems += 1
         if not wanted.get("url"):
             report("NO URL", src.id, "no url (add it in Paperpile)", issue=False)
+        if not src.private and not kilder.public_status(wanted)[0]:
+            report(
+                "NO LABEL",
+                src.id,
+                f"offentlig: {wanted.get('offentlig')} in kilder.yaml, but no "
+                f"{PRIVATE_LABEL} label in Paperpile; stays private (add the label, or "
+                "set offentlig: ja in kilder.yaml to make it public)",
+                issue=False,
+            )
+        elif not src.no_archive and kilder.archive_skipped(wanted):
+            report(
+                "NO LABEL",
+                src.id,
+                f"arkiv: skip in kilder.yaml, but no {SUBSCRIPTION_LABEL} (or other "
+                f"{CONTROL_PREFIX}) label in Paperpile; stays skip (add the label, or "
+                "remove arkiv: skip from kilder.yaml to allow archiving)",
+                issue=False,
+            )
         if not problems:
             report(
                 "IN SYNC",
@@ -988,6 +1169,10 @@ def cmd_check(
             ("RENAMED", "the citekey changed, convert carries the entry over"),
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
+            (
+                "NO LABEL",
+                "private or arkiv: skip, but no label in Paperpile (not issues)",
+            ),
             ("DUPLICATE", "same PDF as another entry (not counted as issues)"),
             ("WARNING", "entries in the .bib file that cannot be used"),
             ("IGNORED", "neither a top folder label nor bomfast-kilder"),
@@ -1000,6 +1185,279 @@ def cmd_check(
         lists.save(dry_run)
     say("OK" if issues == 0 else f"{issues} issue{'s' if issues != 1 else ''}")
     return 1 if issues else 0
+
+
+# --------------------------------------------------------------------------- upload
+
+UPLOAD_RESULTS = (
+    kilder.REPO / ia.DEFAULT_RESULTS_PATH
+)  # also written by archive_org_upload.py
+
+
+def uploaded_by_sha(results: Path) -> dict[str, list[str]]:
+    """{sha256: [file_url, ...]} of earlier uploads in results.jsonl, also the manual
+    ones, oldest first. The log is append-only history: a file may have been replaced
+    or removed on archive.org since, so check with remote_matches() before linking."""
+    found: dict[str, list[str]] = {}
+    if results.is_file():
+        for line in results.read_text(encoding="utf-8").splitlines():
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(rec, dict) and rec.get("sha256") and rec.get("file_url"):
+                urls = found.setdefault(rec["sha256"], [])
+                if rec["file_url"] not in urls:
+                    urls.append(rec["file_url"])
+    return found
+
+
+ARCHIVE_DOWNLOAD = "https://archive.org/download/"
+
+
+def remote_matches(file_url: str, pdf: Path) -> str | None:
+    """None if file_url is on archive.org now with the content of pdf, otherwise why
+    not. Raises OSError/ValueError when archive.org cannot be asked."""
+    if not file_url.startswith(ARCHIVE_DOWNLOAD):
+        return "not an archive.org download link, cannot be checked"
+    item, _, remote = file_url.removeprefix(ARCHIVE_DOWNLOAD).partition("/")
+    if not item or not remote:
+        return "not a link to a file in an item, cannot be checked"
+    info = remote_file(item, urllib.parse.unquote(remote))
+    if info is None:
+        return "no longer on archive.org"
+    if info.get("md5") != md5(pdf):
+        return "has other content on archive.org now (replaced?)"
+    return None
+
+
+def upload_refusal(
+    entry: dict | None, src: Source | None, in_bib: bool = False
+) -> str | None:
+    """Why this source must not go to archive.org, or None. Both kilder.yaml and the
+    .bib file must allow it, so a label added after the last convert still counts.
+    in_bib: the citekey is in the .bib file, but unusable (e.g. used twice)."""
+    if entry is None:
+        return "not in kilder.yaml (run convert first)" if src else "no such id"
+    if "paperpile" not in entry:
+        return "not from Paperpile (a kilder.py entry); upload only handles Paperpile"
+    public, _warning = kilder.public_status(entry)
+    if not public:
+        return (
+            f"offentlig: {entry.get('offentlig')}; private sources are never uploaded"
+        )
+    if kilder.archive_skipped(entry):
+        return "arkiv: skip in kilder.yaml; never uploaded"
+    if entry.get("arkiv"):
+        return f"arkiv already set ({entry['arkiv']}); never overwritten"
+    if src is None:
+        if in_bib:
+            return "unusable in the .bib file (see the WARNING above); never uploaded"
+        return "not in the .bib file any more"
+    if src.no_archive:
+        what = PRIVATE_LABEL if src.private else "a label starting with _"
+        return f"has {what} in Paperpile; never uploaded (run convert)"
+    if not src.pdf:
+        return "no PDF in Paperpile"
+    if src.pdf != entry["paperpile"]:
+        return "the .bib file and kilder.yaml disagree about the PDF; run convert first"
+    return None
+
+
+def md5(path: Path) -> str:
+    digest = hashlib.md5()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def remote_file(item: str, remote: str) -> dict | None:
+    for info in ia.item_metadata(item).get("files", []):
+        if info.get("name") == remote:
+            return info
+    return None
+
+
+def upload_pdf(pdf: Path, remote: str, item: str, entry: dict, checksum: str) -> dict:
+    """Upload one PDF with the ia CLI, or find it already there. Returns the record for
+    results.jsonl. Raises SystemExit when it cannot be done (yet), and OSError or
+    ValueError when archive.org cannot be reached or answers with something unreadable."""
+    ia.validate_pdf(pdf)
+    file_url = f"https://archive.org/download/{item}/{urllib.parse.quote(remote)}"
+    existing = remote_file(item, remote)
+    # ia runs for the upload, and for original_url also when the file is already there.
+    if (existing is None or entry.get("url")) and not shutil.which("ia"):
+        raise SystemExit(
+            "ia CLI not found. Install it with: python3 -m pip install --user "
+            "internetarchive, then run: ia configure"
+        )
+    if existing is not None:
+        # E.g. a run that timed out while archive.org was still processing the upload.
+        if existing.get("md5") != md5(pdf):
+            raise SystemExit(
+                f"{remote} is already in {item}, with other content; not replaced "
+                "(write arkiv by hand, or remove it there first)"
+            )
+        say(f"           {remote} is already in {item} with the same content")
+    else:
+        opts = argparse.Namespace(
+            item=item,
+            retries=10,
+            metadata=[],
+            file_metadata=[],
+            no_backup_on_replace=False,
+        )
+        subprocess.run(ia.build_ia_command(opts, pdf, remote), check=True)
+        if not ia.wait_for_uploaded_file(item, remote, timeout=120):
+            raise SystemExit(
+                "uploaded, but not visible in the item yet; run the same command again "
+                "later to write arkiv"
+            )
+    if entry.get("url"):
+        ia.record_original_url_metadata(item, remote, entry["url"])
+    return {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "item": item,
+        "document_id": entry["id"],
+        "title": entry.get("tittel", ""),
+        "source_name": entry.get("forfatter", ""),
+        "source": f"paperpile:{entry['paperpile']}",
+        "original_url": entry.get("url", ""),
+        "remote_name": remote,
+        "file_url": file_url,
+        "size_bytes": pdf.stat().st_size,
+        "sha256": checksum,
+        "checked": dt.datetime.now(dt.timezone.utc).date().isoformat(),
+        "notes": "uploaded by ppkilder.py upload",
+        "tags": [],
+    }
+
+
+def cmd_upload(
+    paperpile: Path,
+    bib: Path,
+    ids: list[str],
+    upload: bool,
+    item: str = ia.DEFAULT_ITEM,
+    results: Path = UPLOAD_RESULTS,
+) -> int:
+    """Send the PDFs of these Paperpile sources to archive.org and write the link to
+    `arkiv`. Without upload=True, only shows what would be done."""
+    check_mirror(paperpile)
+    found, in_bib, _counts, _raw, _held = read_sources(bib)
+    sources = {s.id: s for s in found}
+    lists = {
+        p.parent.name: (p, read_yaml(p))
+        for p in sorted(kilder.SOURCES_DIR.glob("*/kilder.yaml"))
+    }
+    # Every top folder that has the id: an id in several kilder.yaml files is
+    # ambiguous, and picking one by folder order could judge or update the wrong entry.
+    where: dict[str, list[str]] = {}
+    for top, (_p, entries) in lists.items():
+        for eid in entries:
+            where.setdefault(eid, []).append(top)
+    done = uploaded_by_sha(results)
+    counts: Counter = Counter()
+
+    def record_arkiv(top: str, eid: str, url: str) -> None:
+        path, entries = lists[top]
+        entries[eid]["arkiv"] = url
+        kilder.write_yaml(path, entries)  # after every source: safe to interrupt
+
+    for eid in dict.fromkeys(ids):
+        tops = where.get(eid, [])
+        if len(tops) > 1:
+            counts["REFUSED"] += 1
+            say(
+                f"REFUSED    {eid}: in several kilder.yaml files ({', '.join(tops)}); "
+                "keep it in one of them (or give the sources different ids) first"
+            )
+            continue
+        top = tops[0] if tops else None
+        entry = lists[top][1][eid] if top else None
+        reason = upload_refusal(entry, sources.get(eid), eid in in_bib)
+        pdf = paperpile / entry["paperpile"] if reason is None else None
+        if pdf is not None and not pdf.is_file():
+            reason = f"the PDF is not in the mirror: {entry['paperpile']}"
+        checksum = sha256(pdf) if reason is None else ""
+        if reason is None and checksum != entry.get("sha256"):
+            reason = "the PDF changed since the last convert; run convert first"
+        if reason is not None:
+            counts["REFUSED"] += 1
+            say(f"REFUSED    {eid}: {reason}")
+            continue
+
+        # Uploaded before, e.g. by hand with archive_org_upload.py: link the newest
+        # earlier upload that archive.org still has with this content.
+        url = None
+        try:
+            for old in reversed(done.get(checksum, [])):
+                if (why := remote_matches(old, pdf)) is None:
+                    url = old
+                    break
+                counts["STALE"] += 1
+                say(f"STALE      {eid}: {old} in {results.name} {why}; not linked")
+        except (OSError, ValueError) as err:
+            counts["FAILED"] += 1
+            say(
+                f"FAILED     {eid}: cannot check the earlier upload on archive.org: {err}"
+            )
+            continue
+        if url:
+            if upload:
+                record_arkiv(top, eid, url)
+                counts["LINKED"] += 1
+                say(f"LINKED     {eid}: already uploaded, {url}; written to arkiv")
+            else:
+                counts["WOULD LINK"] += 1
+                say(f"WOULD LINK {eid}: already uploaded, {url}")
+            continue
+
+        remote = f"{eid}.pdf"
+        if not upload:
+            counts["WOULD UPLOAD"] += 1
+            size = human_size(pdf.stat().st_size)
+            say(f"WOULD UPLOAD {eid}: {entry['paperpile']} ({size}) -> {item}/{remote}")
+            continue
+        try:
+            record = upload_pdf(pdf, remote, item, entry, checksum)
+        except (SystemExit, subprocess.CalledProcessError) as err:
+            counts["FAILED"] += 1
+            say(f"FAILED     {eid}: {err}")
+            continue
+        except (OSError, ValueError) as err:
+            # Network errors, timeouts, unreadable metadata (JSONDecodeError), ia that
+            # cannot be started: this source failed, the others still get their turn.
+            # Nothing is recorded, so the same command retries it; a file that did
+            # reach archive.org is then found by its md5 and not uploaded again.
+            counts["FAILED"] += 1
+            say(f"FAILED     {eid}: {type(err).__name__}: {err} (run again to retry)")
+            continue
+        ia.append_result(results, record)
+        record_arkiv(top, eid, record["file_url"])
+        done.setdefault(checksum, []).append(record["file_url"])
+        counts["UPLOADED"] += 1
+        say(f"UPLOADED   {eid}: {record['file_url']}; written to arkiv")
+
+    print_summary(
+        f"upload to {item} ({len(set(ids))} sources)",
+        counts,
+        [
+            ("UPLOADED", "uploaded, link written to arkiv"),
+            ("LINKED", "uploaded before (results.jsonl), link written to arkiv"),
+            ("WOULD UPLOAD", "would be uploaded (dry run, add --upload)"),
+            ("WOULD LINK", "uploaded before, link would be written to arkiv"),
+            ("STALE", "earlier upload in results.jsonl no longer matches, not linked"),
+            ("REFUSED", "not allowed or not ready, see above"),
+            ("FAILED", "upload failed, see above"),
+        ],
+    )
+    if not upload and (counts["WOULD UPLOAD"] or counts["WOULD LINK"]):
+        say("Dry run: nothing uploaded or written. Add --upload to do it.")
+    bad = counts["REFUSED"] + counts["FAILED"]
+    say("OK" if bad == 0 else f"{bad} not done")
+    return 1 if bad else 0
 
 
 # --------------------------------------------------------------------------- main
@@ -1084,6 +1542,25 @@ def main() -> int:
         help="show what would be removed, without writing anything",
     )
 
+    u = commands.add_parser(
+        "upload",
+        help="send the PDFs of these sources to archive.org and write arkiv "
+        "(dry run unless --upload)",
+    )
+    u.add_argument("ids", nargs="+", metavar="ID", help="citekeys to upload")
+    u.add_argument(
+        "--upload",
+        action="store_true",
+        help="really upload and write arkiv; without it, only show what would be done",
+    )
+    u.add_argument(
+        "--item",
+        default=ia.DEFAULT_ITEM,
+        help=f"archive.org item (default: {ia.DEFAULT_ITEM})",
+    )
+    u.add_argument("-v", "--verbose", action="store_true", help=argparse.SUPPRESS)
+    u.add_argument("--log", type=Path, metavar="FILE", help="append the output to FILE")
+
     args = ap.parse_args()
     kilder.SOURCES_DIR = args.sources.expanduser().resolve()
     check_sources_dir(kilder.SOURCES_DIR)
@@ -1098,6 +1575,8 @@ def main() -> int:
     paperpile = args.paperpile.expanduser()
     bib = args.bib.expanduser() if args.bib else default_bib(paperpile)
 
+    if args.command == "upload":
+        return cmd_upload(paperpile, bib, args.ids, args.upload, args.item)
     if args.command == "convert":
         return cmd_convert(paperpile, bib, args.folders, set(args.force), args.dry_run)
     return cmd_check(

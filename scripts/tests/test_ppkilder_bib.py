@@ -167,11 +167,12 @@ def test_read_sources(tmp_path, capsys):
         + bib_entry("nested", r"001\_ntp/sub")
         + bib_entry("badfile", r"001\_ntp", "../outside.pdf")
         + bib_entry("notpdf", r"001\_ntp", "All Papers/x.docx")
-        + bib_entry("good", r"001\_ntp")  # citekey used twice
+        + bib_entry("twice", r"001\_ntp")  # citekey used twice: both rejected
+        + bib_entry("twice", r"001\_ntp", "All Papers/t.pdf")
         + bib_entry("web", r"002\_web", url="https://example.no"),
         encoding="utf-8",
     )
-    sources, in_bib, skipped, raw = ppkilder.read_sources(bib)
+    sources, in_bib, skipped, raw, held = ppkilder.read_sources(bib)
 
     assert [s.id for s in sources] == ["good", "web"]
     good = sources[0]
@@ -184,12 +185,37 @@ def test_read_sources(tmp_path, capsys):
     assert good.tekst == "tekst/good.md"
     assert sources[1].pdf == ""
     # unusable entries still count as "in the .bib file", so prune keeps them
-    assert in_bib == {"good", "web", "notop", "two", "nested", "badfile", "notpdf"}
+    assert in_bib == {
+        "good", "web", "notop", "two", "nested", "badfile", "notpdf", "twice"
+    }
     assert skipped == {"WARNING": 6, "IGNORED": 1}
     assert raw == bib.read_bytes()
     out = capsys.readouterr().out
     assert "several top folder labels: 001_a, 002_b" in out
-    assert "the citekey is used twice" in out
+    assert "the citekey is used 2 times" in out
+    assert held == {"twice": ppkilder.Held()}
+
+
+@pytest.mark.parametrize("private_first", [True, False])
+def test_read_sources_rejects_every_occurrence_of_a_duplicate_citekey(
+    tmp_path, capsys, private_first
+):
+    """Entry order must not decide whether _PRIVAT on one of the copies counts."""
+    public = bib_entry("dup", r"001\_ntp", "All Papers/d.pdf")
+    private = bib_entry("dup", r"001\_ntp; \_PRIVAT", "All Papers/d.pdf")
+    bib = tmp_path / "x.bib"
+    bib.write_text(
+        (private + public if private_first else public + private)
+        + bib_entry("other", r"001\_ntp"),
+        encoding="utf-8",
+    )
+    sources, in_bib, skipped, _raw, held = ppkilder.read_sources(bib)
+
+    assert [s.id for s in sources] == ["other"]
+    assert in_bib == {"dup", "other"}  # prune keeps the existing entry
+    assert skipped == {"WARNING": 1}
+    assert "dup: the citekey is used 2 times" in capsys.readouterr().out
+    assert held == {"dup": ppkilder.Held(private=True, no_archive=True)}
 
 
 @pytest.mark.parametrize(
@@ -346,3 +372,26 @@ def test_default_bib(monkeypatch, tmp_path):
     assert ppkilder.default_bib(tmp_path) == tmp_path / "bomfast-kilder.bib"
     monkeypatch.setenv("BOMFAST_BIB", "~/x.bib")
     assert ppkilder.default_bib(tmp_path) == Path("~/x.bib").expanduser()
+
+
+
+@pytest.mark.parametrize(
+    "label, control, resembles",
+    [
+        ("_PRIVAT", True, None),
+        ("_privat", True, None),
+        ("_ABO", True, None),
+        ("_PRIVATE", True, "_PRIVAT"),
+        ("_annet", True, None),
+        ("PRIVAT", False, "_PRIVAT"),
+        ("private", False, "_PRIVAT"),
+        ("prvat", False, "_PRIVAT"),
+        ("ABO", False, "_ABO"),
+        ("privatisering", False, None),
+        ("abonnement", False, None),
+        ("NTP", False, None),
+    ],
+)
+def test_control_labels(label, control, resembles):
+    assert ppkilder.is_control_label(label) is control
+    assert ppkilder.resembles_control_label(label) == resembles
