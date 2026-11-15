@@ -49,10 +49,11 @@ Output:
 How a .bib entry is read:
     citekey   the id, and the name of the text file: <citekey>.md. Used in the kilde
               shortcode, so it must be unique across all folders. A citekey used by
-              several .bib entries is skipped in all of them, with a warning. Its
-              entry in kilder.yaml is kept, but the control labels of every copy
-              still apply to it (_PRIVAT on one copy is enough), and upload
-              refuses it.
+              several .bib entries is skipped in all of them, with a warning.
+              Control labels always count, also on entries that are skipped (used
+              twice, bad labels or file path, ...; _PRIVAT on one copy is enough),
+              and in every kilder.yaml that has the id: convert applies them to
+              existing entries before anything else, whatever folders it runs on.
     keywords  the Paperpile labels, in no particular order:
               - exactly one top folder label, three digits and _, is the destination:
                     005_statsbudsjett_samferdsel
@@ -373,8 +374,8 @@ class Source:
 
 @dataclass
 class Held:
-    """A citekey used by several .bib entries: no source is made from it, but the
-    control labels of every copy still count (the strictest wins)."""
+    """The control labels of a citekey that gave no source (used twice, a bad label or
+    file path, ...): they still apply to its entries in kilder.yaml."""
 
     private: bool = False  # some copy has _PRIVAT
     no_archive: bool = False  # some copy has a control label
@@ -425,11 +426,12 @@ def bib_keywords(fields: dict[str, str]) -> list[str]:
 
 
 def read_sources(
-    bib: Path,
+    bib: Path, need_sources: bool = True
 ) -> tuple[list[Source], set[str], Counter, bytes, dict[str, Held]]:
     """The usable sources in the .bib file, every citekey that must not count as gone,
-    counts of what was left out, the file as read, and the strictest control labels of
-    each citekey that is used twice (see Held). Warns on the way."""
+    counts of what was left out, the file as read, and the control labels of the
+    citekeys that gave no source (see Held). Warns on the way. Exits if there are no
+    usable sources, unless need_sources is False (convert still applies Held then)."""
     if not bib.is_file():
         sys.exit(
             f"BibTeX file not found: {bib}. Set up the Paperpile workflow, or use --bib "
@@ -454,12 +456,6 @@ def read_sources(
     # let entry order decide whether _PRIVAT/_ABO on the other one counts.
     key_count = Counter(key for key, _fields in entries)
     duplicates = {key for key, n in key_count.items() if n > 1}
-    held = {key: Held() for key in duplicates}
-    for key, fields in entries:
-        if key in held:
-            controls = [k for k in bib_keywords(fields) if is_control_label(k)]
-            held[key].private |= any(is_label(k, PRIVATE_LABEL) for k in controls)
-            held[key].no_archive |= bool(controls)
     for key in sorted(duplicates):
         skip(
             key,
@@ -522,10 +518,26 @@ def read_sources(
                 private=any(is_label(k, PRIVATE_LABEL) for k in controls),
                 no_archive=bool(controls),
             )
-    if not sources:
-        # A broken or empty export must never look like "all sources were removed".
-        sys.exit(f"No sources with a top folder label in {bib}; nothing done.")
+    # Citekeys that gave no source (used twice, a bad label or path, ...): their control
+    # labels still count for an entry already in kilder.yaml. With several copies, the
+    # strictest wins.
+    held: dict[str, Held] = {}
+    for key, fields in entries:
+        if key in sources:
+            continue
+        controls = [k for k in bib_keywords(fields) if is_control_label(k)]
+        if controls:
+            h = held.setdefault(key, Held())
+            h.private |= any(is_label(k, PRIVATE_LABEL) for k in controls)
+            h.no_archive = True
+    if not sources and need_sources:
+        sys.exit(no_sources_message(bib))
     return list(sources.values()), set(sources) | unusable, skipped, raw, held
+
+
+def no_sources_message(bib: Path) -> str:
+    # A broken or empty export must never look like "all sources were removed".
+    return f"No sources with a top folder label in {bib}; nothing done."
 
 
 def copy_bib(bib: Path, raw: bytes, write: bool) -> None:
@@ -581,6 +593,15 @@ class Lists:
                     found[eid] = (top, entry)
         return found
 
+    def copies(self, eid: str) -> list[tuple[str, dict]]:
+        """Every entry from this script with this id, in all lists: an id in several
+        kilder.yaml files is a mistake, but a restriction must reach every copy."""
+        return [
+            (top, entries[eid])
+            for top, entries in self.entries.items()
+            if eid in entries and MARKER in entries[eid]
+        ]
+
     def foreign(self) -> dict[str, str]:
         """{id: top folder} for the entries that are not ours (from kilder.py)."""
         return {
@@ -626,6 +647,36 @@ def apply_controls(entry: dict, private: bool, no_archive: bool) -> None:
         entry["offentlig"] = "nei"
     if no_archive:
         entry["arkiv"] = kilder.ARCHIVE_SKIP
+
+
+def restrict_all(
+    lists: Lists,
+    held: dict[str, Held],
+    sources: list[Source] | dict,
+    counts: Counter,
+    dry_run: bool,
+) -> None:
+    """Apply the control labels in the .bib file to every Paperpile entry with that id,
+    in every list and whatever folders convert runs on: privacy must not depend on
+    entry order, folder selection, or an entry that could not be used."""
+    labels = dict(held)
+    for src in sources:
+        if src.no_archive:
+            labels[src.id] = Held(src.private, src.no_archive)
+    for eid in sorted(labels):
+        copies = lists.copies(eid)
+        for top, entry in copies:
+            before = copy.deepcopy(entry)
+            apply_controls(entry, labels[eid].private, labels[eid].no_archive)
+            if meta := changed_fields(before, entry):
+                counts["METADATA"] += 1
+                where = f" ({top})" if len(copies) > 1 else ""
+                why = (
+                    "skipped in the .bib file, but its control labels still count"
+                    if eid in held
+                    else "control labels in the .bib file"
+                )
+                say(f"{'METADATA':<10} {eid}{where}: {why}; kilder.yaml: {describe_meta(meta)}")
 
 
 def describe_meta(changes: dict) -> str:
@@ -737,9 +788,16 @@ def cmd_convert(
 ) -> int:
     check_mirror(paperpile)
     say(f"{disp(bib)}{'   [DRY RUN: nothing will be written]' if dry_run else ''}")
-    sources, in_bib, counts, raw, held = read_sources(bib)
-    copy_bib(bib, raw, write=not dry_run)
+    sources, in_bib, counts, raw, held = read_sources(bib, need_sources=False)
     lists = Lists()
+    if not sources:
+        # Nothing to convert, and the export may be broken: do not touch the copy of
+        # the .bib file. But restrictions only ever make entries more private, so
+        # apply them first (e.g. a _PRIVAT copy of the only citekey).
+        restrict_all(lists, held, {}, counts, dry_run)
+        lists.save(dry_run)
+        sys.exit(no_sources_message(bib))
+    copy_bib(bib, raw, write=not dry_run)
     owned = lists.owned()
     foreign = lists.foreign()
     scope = [s for s in sources if selected(s.folder, folders)]
@@ -910,24 +968,8 @@ def cmd_convert(
             cont=True,
         )
 
-    def restrict(eid: str, labels: Held) -> None:
-        """Apply the labels of a citekey used twice to its existing entry, in every
-        folder: entry order in the .bib file must not leave it public."""
-        _top, entry = owned[eid]
-        before = copy.deepcopy(entry)
-        apply_controls(entry, labels.private, labels.no_archive)
-        if meta := changed_fields(before, entry):
-            outcome(
-                "METADATA",
-                eid,
-                "citekey used twice, the labels of every copy count; kilder.yaml: "
-                + describe_meta(meta),
-            )
-
     try:
-        for eid, labels in sorted(held.items()):
-            if eid in owned:
-                restrict(eid, labels)
+        restrict_all(lists, held, sources, counts, dry_run)
         for src in scope:
             handle(src)
     finally:  # also on Ctrl-C: keep what was converted, conversions are slow
@@ -1314,8 +1356,15 @@ def upload_pdf(pdf: Path, remote: str, item: str, entry: dict, checksum: str) ->
                 "uploaded, but not visible in the item yet; run the same command again "
                 "later to write arkiv"
             )
-    if entry.get("url"):
-        ia.record_original_url_metadata(item, remote, entry["url"])
+    if entry.get("url") and not ia.record_original_url_metadata(
+        item, remote, entry["url"]
+    ):
+        # Not logged and no arkiv yet: the next run finds the file by its md5, reuses
+        # it, and tries the metadata again.
+        raise SystemExit(
+            f"{remote} is in {item}, but recording original_url failed; run the same "
+            "command again later"
+        )
     return {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "item": item,
