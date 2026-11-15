@@ -354,6 +354,32 @@ def test_reusing_a_remote_file_without_ia_fails_one_source(
     assert archive.commands == []  # ia was never run
 
 
+def test_failed_original_url_metadata_fails_the_source_and_is_retried(
+    sources, pp, conversions, archive, results, monkeypatch, capsys
+):
+    add(pp, "a", url="https://example.no/a.pdf")
+    convert(pp)
+    tries = []
+
+    def metadata_once_failing(item, remote, url):
+        tries.append((remote, url))
+        return len(tries) > 1
+
+    monkeypatch.setattr(ia, "record_original_url_metadata", metadata_once_failing)
+    capsys.readouterr()
+
+    assert upload(pp, ["a"], results) == 1
+    assert "FAILED     a: a.pdf is in test-item, but recording original_url failed" in (
+        capsys.readouterr().out
+    )
+    assert "arkiv" not in entries(sources)["a"] and not results.exists()
+
+    assert upload(pp, ["a"], results) == 0  # reuses the file, retries the metadata
+    assert len(archive.uploads()) == 1
+    assert tries == [("a.pdf", "https://example.no/a.pdf")] * 2
+    assert entries(sources)["a"]["arkiv"].endswith("/a.pdf")
+
+
 def test_not_visible_yet_then_rerun(sources, pp, conversions, archive, results, monkeypatch, capsys):
     add(pp, "a")
     convert(pp)

@@ -193,7 +193,7 @@ def test_read_sources(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "several top folder labels: 001_a, 002_b" in out
     assert "the citekey is used 2 times" in out
-    assert held == {"twice": ppkilder.Held()}
+    assert held == {}  # no control labels on the skipped entries
 
 
 @pytest.mark.parametrize("private_first", [True, False])

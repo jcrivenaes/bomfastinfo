@@ -456,7 +456,138 @@ def test_rename_folder_refuses_unsafe_moves(sources, drive, conversions, monkeyp
     with pytest.raises(SystemExit, match="still on Drive"):
         run_main(monkeypatch, drive, sources, "rename-folder", "006_div", "006_x")
     (drive / "006_div").rename(drive / "006_x")
-    (sources / "006_x").mkdir()
-    with pytest.raises(SystemExit, match="already exists"):
+    kilder.write_yaml(sources / "006_x" / "kilder.yaml", {"z": {"id": "z", "fil": "z.pdf"}})
+    with pytest.raises(SystemExit, match="already has Drive entries"):
+        run_main(monkeypatch, drive, sources, "rename-folder", "006_div", "006_x")
+    # same id or text file in the destination: nothing is moved
+    kilder.write_yaml(sources / "006_x" / "kilder.yaml", {"a": {"id": "a", "paperpile": "p"}})
+    with pytest.raises(SystemExit, match="already there: a"):
+        run_main(monkeypatch, drive, sources, "rename-folder", "006_div", "006_x")
+    kilder.write_yaml(sources / "006_x" / "kilder.yaml", {"p": {"id": "p", "paperpile": "p"}})
+    (sources / "006_x" / "tekst").mkdir()
+    (sources / "006_x" / "tekst" / "a.md").write_text("ppkilder text")
+    with pytest.raises(SystemExit, match="already there: .*tekst/a.md"):
         run_main(monkeypatch, drive, sources, "rename-folder", "006_div", "006_x")
     assert set(kilder.read_yaml(sources / "006_div" / "kilder.yaml")) == {"a"}
+    assert (sources / "006_div" / "tekst" / "a.md").exists()
+    # only ppkilder.py entries: nothing to move
+    kilder.write_yaml(sources / "007_pp" / "kilder.yaml", {"p": {"id": "p", "paperpile": "p"}})
+    (drive / "007_new").mkdir()
+    with pytest.raises(SystemExit, match="no Drive entries"):
+        run_main(monkeypatch, drive, sources, "rename-folder", "007_pp", "007_new")
+
+
+def pp_entry(eid, top):
+    """A ppkilder.py entry (no `fil`) with its text file."""
+    return {"id": eid, "paperpile": f"All Papers/{eid}.pdf", "mappe": top,
+            "tekst": f"tekst/{eid}.md", "sha256": f"sha-{eid}", "url": f"https://pp/{eid}"}
+
+
+def test_rename_folder_leaves_ppkilder_entries_in_place(
+    sources, drive, conversions, tmp_path, monkeypatch, capsys
+):
+    """Their folder comes from the Paperpile label, which did not change."""
+    write_pdf(drive / "006_div" / "sub" / "a.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    e = kilder.read_yaml(sources / "006_div" / "kilder.yaml")
+    e["a"]["url"] = "https://example.no/a"
+    e["p"] = pp_entry("p", "006_div")
+    kilder.write_yaml(sources / "006_div" / "kilder.yaml", e)
+    (sources / "006_div" / "tekst" / "p.md").write_text("paperpile text")
+    (sources / "006_div" / "EXCLUDE.txt").write_text("utkast\n")
+    out_dir = tmp_path / "export"
+    kilder.cmd_export("006_div", out_dir, dry_run=False)
+    (drive / "006_div").rename(drive / "006_diverse")
+
+    assert run_main(monkeypatch, drive, sources, "rename-folder", "006_div",
+                    "006_diverse", "--out", str(out_dir)) == 0
+
+    assert set(kilder.read_yaml(sources / "006_div" / "kilder.yaml")) == {"p"}
+    assert (sources / "006_div" / "tekst" / "p.md").exists()
+    assert not (sources / "006_div" / "tekst" / "sub").exists()  # emptied, removed
+    assert set(kilder.read_yaml(sources / "006_diverse" / "kilder.yaml")) == {"a"}
+    assert (sources / "006_diverse" / "tekst" / "sub" / "a.md").exists()
+    assert (sources / "006_diverse" / "EXCLUDE.txt").read_text() == "utkast\n"
+    # both public lists rewritten
+    assert set(e["id"] for e in yaml.safe_load((out_dir / "006_div.yaml").read_text())) == {"p"}
+    assert set(e["id"] for e in yaml.safe_load((out_dir / "006_diverse.yaml").read_text())) == {"a"}
+    capsys.readouterr()
+    assert run_main(monkeypatch, drive, sources, "check", "--all") == 0
+
+
+def test_renamed_into_a_list_with_only_ppkilder_entries(
+    sources, drive, conversions, tmp_path, monkeypatch, capsys
+):
+    write_pdf(drive / "006_div" / "a.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    (drive / "006_div").rename(drive / "006_diverse")
+    kilder.write_yaml(sources / "006_diverse" / "kilder.yaml", {"p": pp_entry("p", "006_diverse")})
+    capsys.readouterr()
+
+    # convert still sees the rename (the list there has no Drive entries)
+    assert run_main(monkeypatch, drive, sources, "convert", "--all") == 1
+    assert "006_diverse: SKIPPED, looks like 006_div renamed" in capsys.readouterr().out
+    assert set(kilder.read_yaml(sources / "006_diverse" / "kilder.yaml")) == {"p"}
+
+    assert run_main(monkeypatch, drive, sources, "rename-folder", "006_div",
+                    "006_diverse", "--out", str(tmp_path / "export")) == 0
+
+    assert set(kilder.read_yaml(sources / "006_diverse" / "kilder.yaml")) == {"a", "p"}
+    assert (sources / "006_diverse" / "tekst" / "a.md").exists()
+    assert not (sources / "006_div").exists()
+    capsys.readouterr()
+    assert run_main(monkeypatch, drive, sources, "check", "--all") == 0
+
+
+def test_new_folder_sharing_a_pdf_with_a_missing_folder(
+    sources, drive, conversions, monkeypatch, capsys
+):
+    """Not a rename: --new-folder converts it, and the missing folder is left alone."""
+    write_pdf(drive / "006_div" / "a.pdf", "shared")
+    write_pdf(drive / "006_div" / "b.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    import shutil
+
+    shutil.rmtree(drive / "006_div")
+    write_pdf(drive / "008_new" / "same.pdf", "shared")
+    write_pdf(drive / "008_new" / "c.pdf")
+    capsys.readouterr()
+
+    assert run_main(monkeypatch, drive, sources, "convert", "008_new") == 1
+    out = capsys.readouterr().out
+    assert "SKIPPED, looks like 006_div renamed on Drive (1 of its PDFs" in out
+    assert "convert 008_new --new-folder 008_new" in out
+    assert not (sources / "008_new").exists()
+
+    assert run_main(monkeypatch, drive, sources, "convert", "008_new",
+                    "--new-folder", "008_new") == 0
+    assert set(kilder.read_yaml(sources / "008_new" / "kilder.yaml")) == {"same", "c"}
+    assert set(kilder.read_yaml(sources / "006_div" / "kilder.yaml")) == {"a", "b"}
+    # registered now, so no flag is needed any more
+    capsys.readouterr()
+    assert run_main(monkeypatch, drive, sources, "convert", "008_new") == 0
+
+
+def test_prune_forget_folder_works_on_an_empty_drive_root(
+    sources, drive, conversions, monkeypatch, capsys
+):
+    """The last top folder deleted: only the folders named are forgotten."""
+    write_pdf(drive / "006_div" / "a.pdf")
+    write_pdf(drive / "007_other" / "b.pdf")
+    run_main(monkeypatch, drive, sources, "convert", "--all")
+    import shutil
+
+    shutil.rmtree(drive / "006_div")
+    shutil.rmtree(drive / "007_other")
+    with pytest.raises(SystemExit, match="Is it mounted"):
+        run_main(monkeypatch, drive, sources, "prune", "--all")
+    capsys.readouterr()
+
+    run_main(monkeypatch, drive, sources, "prune", "--all", "--forget-folder", "006_div")
+
+    assert "no top folders on Drive" in capsys.readouterr().out
+    assert kilder.read_yaml(sources / "006_div" / "kilder.yaml") == {}
+    assert set(kilder.read_yaml(sources / "007_other" / "kilder.yaml")) == {"b"}
+    with pytest.raises(SystemExit, match="Drive folder not found"):
+        run_main(monkeypatch, drive / "nope", sources, "prune", "--all",
+                 "--forget-folder", "006_div")

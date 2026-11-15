@@ -399,10 +399,69 @@ def test_private_label_on_a_duplicate_citekey_still_counts(
     assert e["url"] == "https://avis.example/sak"  # otherwise left as it was
     out = capsys.readouterr().out
     assert "WARNING    artikkel: the citekey is used 2 times" in out
-    assert "METADATA   artikkel: citekey used twice" in out
+    assert "METADATA   artikkel: skipped in the .bib file, but its control labels" in out
     out_dir = sources.parent / "data"
     kilder.cmd_export("001_ntp", out_dir, dry_run=False)
     assert not (out_dir / "001_ntp.yaml").exists()  # nothing public left
+
+
+def test_private_label_counts_when_the_only_source_is_a_duplicate(
+    sources, pp, conversions, capsys
+):
+    """No usable source left: convert stops as before, but applies the labels first."""
+    pp.add("artikkel", url="https://avis.example/sak")
+    convert(pp)
+    bib_copy = (sources / ppkilder.BIB_COPY).read_bytes()
+    with pp.bib.open("a", encoding="utf-8") as f:
+        f.write("@misc{artikkel,\n  keywords = {bomfast-kilder; 001\\_ntp; \\_PRIVAT}\n}\n")
+
+    with pytest.raises(SystemExit, match="No sources with a top folder label"):
+        convert(pp)
+
+    e = entries(sources)["artikkel"]
+    assert (e["offentlig"], e["arkiv"]) == ("nei", "skip")
+    assert (sources / ppkilder.BIB_COPY).read_bytes() == bib_copy  # not updated
+    with pytest.raises(SystemExit):
+        check(pp, prune=True)  # prune still refuses an export without sources
+    assert "artikkel" in entries(sources)
+
+
+@pytest.mark.parametrize(
+    "keywords",
+    [
+        r"bomfast-kilder; 001\_ntp; 002\_web; \_PRIVAT",  # two top folder labels
+        r"bomfast-kilder; \_PRIVAT",  # no top folder label
+        r"\_PRIVAT",  # not even bomfast-kilder: ignored
+    ],
+)
+def test_private_label_counts_on_an_unusable_entry(sources, pp, conversions, keywords):
+    pp.add("artikkel", url="https://avis.example/sak")
+    pp.add("other")
+    convert(pp)
+    pp.items["artikkel"]["keywords"] = keywords
+    pp.write()
+
+    convert(pp)
+
+    e = entries(sources)["artikkel"]
+    assert (e["offentlig"], e["arkiv"]) == ("nei", "skip")
+
+
+def test_private_label_reaches_every_copy_of_an_id(sources, pp, conversions, capsys):
+    pp.add("artikkel", url="https://avis.example/sak")
+    convert(pp)
+    copy = dict(entries(sources)["artikkel"])
+    kilder.write_yaml(sources / "000_copy" / "kilder.yaml", {"artikkel": copy})
+    pp.items["artikkel"]["keywords"] += r"; \_ABO"
+    pp.write()
+    capsys.readouterr()
+
+    convert(pp)
+
+    for top in ("000_copy", "001_ntp"):
+        assert entries(sources, top)["artikkel"]["arkiv"] == "skip"
+    out = capsys.readouterr().out
+    assert "METADATA   artikkel (000_copy): control labels in the .bib file" in out
 
 
 def test_duplicate_citekey_without_labels_changes_nothing(sources, pp, conversions):
