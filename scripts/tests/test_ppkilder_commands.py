@@ -477,6 +477,22 @@ def test_duplicate_citekey_without_labels_changes_nothing(sources, pp, conversio
     assert entries(sources) == before
 
 
+def test_innsyn_label_is_private(sources, pp, conversions, capsys):
+    pp.add("innsyn", labels=["_innsyn", "Rogfast"], url="https://example.no/i")
+    pp.add("rapport", url="https://example.no/r")
+
+    convert(pp)
+
+    e = entries(sources)["innsyn"]
+    assert (e["offentlig"], e["arkiv"]) == ("nei", "skip")
+    assert e["emneord"] == ["Rogfast"]
+    assert "unknown label" not in capsys.readouterr().out
+    out_dir = sources.parent / "data"
+    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    public = (out_dir / "001_ntp.yaml").read_text()
+    assert "rapport" in public and "innsyn" not in public
+
+
 def test_subscription_label_exports_without_archive(sources, pp, conversions):
     pp.add("abo", labels=["_abo"], url="https://avis.example/sak")
 
@@ -525,7 +541,7 @@ def test_removing_labels_changes_nothing(sources, pp, conversions, capsys):
 
     assert check(pp) == 0  # notices, not issues
     out = capsys.readouterr().out
-    assert "NO LABEL       p: offentlig: nei in kilder.yaml, but no _PRIVAT label" in out
+    assert "NO LABEL       p: offentlig: nei in kilder.yaml, but no _PRIVAT/_INNSYN label" in out
     assert "NO LABEL       a: arkiv: skip in kilder.yaml, but no _ABO" in out
 
     e["p"]["offentlig"] = "ja"  # making it public is a deliberate edit in kilder.yaml
@@ -536,6 +552,34 @@ def test_removing_labels_changes_nothing(sources, pp, conversions, capsys):
     assert e["p"]["offentlig"] == "ja" and "arkiv" not in e["a"]
     check(pp)
     assert "NO LABEL       a" not in capsys.readouterr().out
+
+
+def test_no_url_label_silences_no_url(sources, pp, conversions, capsys):
+    pp.add("intern", labels=["_NO_URL"])
+    pp.add("mangler")
+    convert(pp)
+    capsys.readouterr()
+
+    assert check(pp) == 0
+
+    out = capsys.readouterr().out
+    assert "NO URL         mangler: no url (add it in Paperpile, or the label _NO_URL" in out
+    assert "intern" not in out.split("Summary")[0]  # no line for it without -v
+    assert "NO URL OK        1   entries without url, marked with _NO_URL" in out
+    intern = entries(sources)["intern"]
+    # not kept from archive.org, and not a topic
+    assert "arkiv" not in intern and "offentlig" not in intern
+    assert "emneord" not in intern
+
+
+def test_no_url_label_with_other_labels(sources, pp, conversions):
+    pp.add("abo", labels=["_no_url", "_ABO"])
+    pp.add("other")
+    convert(pp)
+    assert entries(sources)["abo"]["arkiv"] == "skip"  # _ABO still counts
+    # on an unusable entry, _NO_URL alone restricts nothing
+    pp.add("two", top="001_ntp", labels=[r"002\_x", "_NO_URL"])
+    assert "two" not in ppkilder.read_sources(pp.bib)[4]
 
 
 def test_unknown_and_near_miss_labels_warn(sources, pp, conversions, capsys):

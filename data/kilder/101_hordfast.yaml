@@ -2,33 +2,12 @@
 # Offentlig kildeliste, generert av scripts/kilder.py export fra den private
 # 101_hordfast/kilder.yaml. Ikke rediger her; endringer overskrives.
 
-- id: b11876r01_natm_rap_okologisk-kompensasjon
-  tittel: Utgreiing og vurdering av økologisk kompensasjon
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/b11876r01_natm_rap_okologisk-kompensasjon.pdf
-- id: b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930
-  tittel: E39 Ådland-Svegatjørn - Oppsummering av innspel til planoppstart
-  dokument: Oppdatert kap. 2 20220217
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/innspill/b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930.pdf
-- id: brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0
-  tittel: 'Brev: Reguleringsplan E39 Ådland-Svegatjørn (Stord-Os) - Oversending av forslag til statleg
-    reguleringsplan'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0.pdf
+- id: asplan_2021--hfast_pre_regplan_naturmangfold
+  tittel: E39, Stord-Os, Naturmangfald
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport.pdf
 - id: delomrader
   tittel: Naturressurser delområder
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/f.notat/delomrader.pdf
-- id: e39-adland-svegatjorn_berekraftstrategi
-  tittel: E39 Ådland-Svegatjørn - Berekraftstrategi
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/e39-adland-svegatjorn_berekraftstrategi.pdf
-- id: e39-adland-svegatjorn_formingsrettleiar
-  tittel: E39 Ådland-Svegatjørn - Formingsrettleiar
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/e39-adland-svegatjorn_formingsrettleiar.pdf
-- id: e39-adland-svegatjorn_planomtale
-  tittel: Planomtale E39 Ådland-Svegatjørn
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/e39-adland-svegatjorn_planomtale_.pdf
-- id: e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport
-  tittel: Verdivurdering naturmangfald E39 Stord-Os, Asplan Viak (2021)
-  dokument: E39, Stord-Os, Naturmangfald
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/e39-stord-os-verdivurdering-naturmangfald-22.03.2021-endelig-rapport.pdf
 - id: fagnotat-vurdering_av_vassressursar
   tittel: 'Fagnotat: Vurdering av vassressursar'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagnotat-vurdering_av_vassressursar.pdf
@@ -47,9 +26,6 @@
 - id: fagnotat_naturessursar
   tittel: 'Fagnotat: Naturressursar'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/f.notat/fagnotat_naturessursar.pdf
-- id: fagnotat_naturmangfald
-  tittel: 'Fagnotat: Naturmangfald'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/f.notat/fagnotat_naturmangfald.pdf
 - id: fagrapport-geokjemisk-undersoking
   tittel: 'Fagrapport: Geokjemisk undersøking'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/geo/fagrapport-geokjemisk-undersoking.pdf
@@ -76,13 +52,6 @@
   tittel: 'Fagrapport: Ingeniørgeologi - Tunneler'
   dokument: B11876r01_GEO-RAP-Fagrapport Ingeniørgeologi - tunneler
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/geo/fagrapport-ingeniorgeologi---tunneler.pdf
-- id: fagrapport-konsekvensanalyse-av-trafikktryggleiken
-  tittel: 'Fagrapport: Konsekvensanalyse av trafikktryggleiken'
-  dokument: Fagrapport Konsekvensanalyse av trafikktryggleiken. Versjon 6
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport-konsekvensanalyse-av-trafikktryggleiken.pdf
-- id: fagrapport-prissette-konsekvensar
-  tittel: 'Fagrapport: Prissette konsekvensar'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport-prissette-konsekvensar.pdf
 - id: fagrapport-vatn-avlop-vassmiljo-overvasshandtering
   tittel: 'Fagrapport: Vatn, avløp, vassmiljø-overvasshandtering'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport-vatn-avlop-vassmiljo-overvasshandtering.pdf
@@ -98,12 +67,6 @@
 - id: fagrapport_hydrologi
   tittel: 'Fagrapport: Hydrologi'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_hydrologi.pdf
-- id: fagrapport_konstruksjon
-  tittel: 'Fagrapport: Konstruksjon'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_konstruksjon.pdf
-- id: fagrapport_lokal-og-regional-utvikling
-  tittel: 'Fagrapport: Lokal og regional utvikling'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_lokal-og-regional-utvikling.pdf
 - id: fagrapport_luftforureining
   tittel: 'Fagrapport: Luftforureining'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_luftforureining.pdf
@@ -119,20 +82,12 @@
 - id: fagrapport_stoy
   tittel: 'Fagrapport: Støy'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_stoy.pdf
-- id: fagrapport_veg-dimensjoneringsforesetnadar
-  tittel: 'Fagrapport: Veg-dimensjoneringsføresetnadar'
-  dokument: Fagrapport veg
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_veg-dimensjoneringsforesetnadar.pdf
 - id: fagrapport_ytre-miljoplan
   tittel: 'Fagrapport: Ytre miljøplan'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_ytre-miljoplan.pdf
-- id: konsekvensutgreiing-hodnanes-beltestad_samlerapport
-  tittel: Konsekvensutgreiing Hodnanes-Beltestad - Samlerapport
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/konsekvensutgreiing-hodnanes-beltestad_samlerapport.pdf
-- id: konsekvensutgreiing-masselager_samlerapport
-  tittel: Konsekvensutgreiing Masselager - Samlerapport
-  dokument: Samanstilling KU masselager
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/konsekvensutgreiing-masselager_samlerapport.pdf
+- id: gaarder_heggland_2024--hfast_regplan_samla_belastn_regnskog
+  tittel: Vurdering av samla belastning på boreonemoral regnskog. (Reguleringsplan E39 Ådland-Svegatjørn)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/vurdering-av-samla-belastning-pa-boreonemoral-regnskog.pdf
 - id: ku_temarapport_friluftsliv_by-og_bygdeliv
   tittel: 'KU - Temarapport: Friluftsliv, by- og bygdeliv'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-hod-belt/ku_temarapport_friluftsliv_by-og_bygdeliv.pdf
@@ -151,18 +106,21 @@
 - id: ku_temarapport_masselager_landskapsbilete
   tittel: 'KU - Temarapport Masselager: Landskapsbilete'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/ku_temarapport_masselager_landskapsbilete.pdf
-- id: ku_temarapport_masselager_naturmangfald
-  tittel: 'KU - Temarapport Masselager: Naturmangfald'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/ku_temarapport_masselager_naturmangfald.pdf
 - id: ku_temarapport_masselager_naturressursar
   tittel: 'KU - Temarapport Masselager: Naturressursar'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/ku_temarapport_masselager_naturressursar.pdf
-- id: ku_temarapport_naturmangfald
-  tittel: 'KU - Temarapport: Naturmangfald'
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-hod-belt/ku_temarapport_naturmangfald.pdf
 - id: ku_temarapport_naturressursar
   tittel: 'KU - Temarapport: Naturressursar'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-hod-belt/ku_temarapport_naturressursar.pdf
+- id: multiconsult_2020--hfast_regplan_bru_langenuen
+  tittel: E39 Stord-Os, bru over Langenuen - forprosjekt, modellbasert
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal.pdf
+- id: nvfh_etal_2026--hfast_regplan_horingsinnspill
+  tittel: Høringsuttalelse – reguleringsplan E39 Ådland–Svegatjørn
+  url: https://naturvernforbundet.no/content/uploads/2026/10/261030-NVH-NU-MVF-Uttalelse-E39_Svegatjorn_Adland.pdf
+- id: oslo_economics--2026_vestlandsvegen_e39_oppsummering
+  dokument: Vestlandsvegen E39 – en kunnskapsoppsummering
+  url: https://osloeconomics.no/publication/vestlandsvegen-e39-en-kunnskapsoppsummering/
 - id: plankart-flatraker-beltestad_d1
   tittel: Plankart Flatråker-Beltestad D1
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/plankart/plankart-flatraker-beltestad_d1.pdf
@@ -184,9 +142,6 @@
 - id: plankart_stord
   tittel: Plankart Stord
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/plankart/plankart_stord.pdf
-- id: planprogram-fastsatt-2023-09-26
-  tittel: Planprogram fastsatt 26.09.2023
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/planprogram-fastsatt-2023-09-26.pdf
 - id: registreringskart
   tittel: Registreringskart, fagnotat naturressursar
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/f.notat/registreringskart.pdf
@@ -196,40 +151,108 @@
 - id: registreringskart__ed0273ef
   tittel: Registreringskart, KU masselager
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/registreringskart.pdf
-- id: reguleringsforesegner-e39-adland-svegatjorn
-  tittel: Reguleringsføresegner for E39 Ådland-Svegatjørn
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/reguleringsforesegner-e39-adland-svegatjorn.pdf
 - id: ros-analyse
   tittel: Risiko- og sårbarheitsanalyse
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/ros-analyse.pdf
-- id: sbj-33-p1-amc-90-re-100_0-design-report(design_Bj.fj)
-  tittel: 'Fagrapport: Designrapport Bjørnafjorden bru'
-  dokument: SBJ-33-P1-AMC-90-RE-100 Design report
+- id: sunnhordland_2026--henry_damman_intervju
+  tittel: – Det er båt og jobb, slik er det med Henry
+  url: https://www.sunnhordland.no/nyhende/i/rrGJ5a/det-er-baat-og-jobb-slik-er-det-med-henry
+- id: svv_2016--hfast_kmd_planomtale
+  tittel: E39 Stord-Os, Ådland-Svegatjørn planomtale (kommundelplan med konsekvensutreiing, 2016)
+  url: https://archive.org/download/bomfast-kildedokumenter/svv_2016--kommunedelplan_hovedrapport.pdf
+- id: svv_2016--hfast_kmd_transport_nytteanalyse
+  tittel: E39 Stord Os transport og nyttekostnadsanalyse (2016 Konsekvensutgreiing)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/vedlegg/kommunedelplan-med-ku/fagrapportar---ku/e39-stord-os-ku-transport-og-nyttekostanalyse-1-0.pdf?v=499072
+- id: svv_2018--hfast_kmd_oppdatert_planomtale_2018
+  tittel: Planforslag med tilleggsutgreiing for to nye brualternativ over Bjørnafjorden E39 Stord-Os
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39stordos/vedlegg/kommunedelplan-med-ku/e39-stord-os-planomtale-alternativ-f.pdf
+- id: svv_2023--hfast_regplan_fastsatt_planprogram_visuell
+  tittel: Statens vegvesen FASTSATT PLANPROGRAM Statens vegvesen, Visuell kommunikasjon E39 Stord - Os
+    Reguleringsplan med konsekvensutgreiing
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/planprogram-fastsatt-2023-09-26.pdf
+- id: svv_2024--hfast_regplan_berekraftstrategi
+  tittel: Berekraftstrategi SVV/COWI E39 Ådland-Svegatjørn (Stord-Os)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/e39-adland-svegatjorn_berekraftstrategi.pdf
+- id: svv_2024--hfast_regplan_design_bjf_bridge
+  tittel: E39 Stord-Os, Bjørnafjorden bridge, front end engineering design (FEED)
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/sbj-33-p1-amc-90-re-100_0-design-report.pdf
-- id: sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal
-  tittel: Teknisk forprosjektrapport - Aluminiumsalternativ LA1
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/sla-10-c1-mul-22-re-001-teknisk-forprosjektrapport---reguleringsplanformal.pdf
+- id: svv_2024--hfast_regplan_fagrapport_konstruksjon
+  tittel: Fagrapport Konstruksjon
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_konstruksjon.pdf
+- id: svv_2024--hfast_regplan_fagrapport_trafikktryggleik
+  tittel: Fagrapport Konsekvensanalyse av trafikktryggleiken
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport-konsekvensanalyse-av-trafikktryggleiken.pdf
+- id: svv_2024--hfast_regplan_fagrapport_veg_dimens
+  tittel: Fagrapport veg - dimensjoneringsføresetnadar
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_veg-dimensjoneringsforesetnadar.pdf
+- id: svv_2024--hfast_regplan_formingsrettleiar
+  tittel: Formingsrettleiar E39 Ådland – Svegatjørn (Stord–Os)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/e39-adland-svegatjorn_formingsrettleiar.pdf
+- id: svv_2024--hfast_regplan_ku_masselager_naturmangfald
+  tittel: KU temarapport masselager naturmangfald E39 ÅDLAND-SVEGATJØRN (STORD–OS)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/ku_temarapport_masselager_naturmangfald.pdf
+- id: svv_2024--hfast_regplan_ku_masselager_samlerapport
+  tittel: KU Temarapport – masselager, samlerapport
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/konsekvensutgreiing-masselager_samlerapport.pdf
+- id: svv_2024--hfast_regplan_ku_samlerapport_hodnaneset_beltestad
+  tittel: Konsekvensutgreiing samlerapport (Hodnaneset-Beltestad)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/konsekvensutgreiing-hodnanes-beltestad_samlerapport.pdf
+- id: svv_2024--hfast_regplan_ku_temarapport_naturmangfold
+  tittel: KU temarapport Naturmangfald
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-hod-belt/ku_temarapport_naturmangfald.pdf
+- id: svv_2024--hfast_regplan_lokal_regional_utvikling
+  tittel: Fagrapport lokal og regional utvikling
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport_lokal-og-regional-utvikling.pdf
+- id: svv_2024--hfast_regplan_oppsummering_innspel_plan
+  tittel: Oppsummering av innspel til planoppstart
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/innspill/b11876r01_not-oppsummering-av-innspel-til-planoppstart_20240930.pdf
+- id: svv_2024--hfast_regplan_planomtale
+  tittel: Planomtale E39 Ådland–Svegatjørn
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/e39-adland-svegatjorn_planomtale_.pdf
+- id: svv_2024--hfast_regplan_prissette_konsekvenser
+  tittel: Fagrapport Prissette konsekvensar
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/fagrapport-prissette-konsekvensar.pdf
+- id: svv_2024--hfast_regplan_reguleringsforesegner
+  tittel: Reguleringsføresegner E39 Ådland-Svegatjørn
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/reguleringsforesegner-e39-adland-svegatjorn.pdf
+- id: svv_2024--hfast_regplan_utredning_redusert_standard
+  tittel: Utredning redusert standard
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/utredning-redusert-standard.pdf
+- id: svv_2024--hfast_regplan_vurdering_okologisk_kompensasjon
+  tittel: Fagrapport Utgreiing og vurdering av økologisk kompensasjon
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/b11876r01_natm_rap_okologisk-kompensasjon.pdf
+- id: svv_2024--hfats_regplan_fagnotat_naturmangfald
+  tittel: Fagnotat naturmangfald
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/f.notat/fagnotat_naturmangfald.pdf
+- id: svv_2024--innspel_utviding_ulvenvatnet
+  tittel: Oppsummering av innspel til oppstartsvarsel for utvida planområde ved Ulvenvatnet i Bjørnafjorden
+    kommune
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/innspill/vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet.pdf
+- id: svv_2025--hfast_regplan_oversending_til_sd
+  tittel: Reguleringsplan E39 Ådland-Svegatjørn (Stord-Os) - Oversending av forslag til statleg reguleringsplan
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/brev-20_9401-391-reguleringsplan-e39-adland-svegatjorn-stord-os--_oversending-av-forslag-til-st-28549879_9_0.pdf
+- id: sweco_2022--austevoll_ferge_hordfast
+  tittel: Mulighetsstudie nytt ferjesamband mellom Reksteren og Huftarøy
+  url: https://web.archive.org/web/20221222011321if_/https://www.austevoll.kommune.no/_f/p1/i4593098c-3c44-4564-b10e-2a159f8f7521/P%C3%A5kopling%20til%20E39%20ferje-rapport.pdf
 - id: tiltaksplan-syredannende-berg
   tittel: Tiltaksplan syredannende berg
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/geo/tiltaksplan-syredannende-berg.pdf
-- id: utredning-redusert-standard
-  tittel: Utredning redusert standard
-  dokument: Alternative vegstandarder E39
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/utredning-redusert-standard.pdf
-- id: vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet
-  tittel: Oppsummering av innspel til oppstartsvarsel for utvida planområde ved Ulvenvatnet i Bjørnafjorden
-    kommune
-  dokument: E39 Ådland-Svegatjørn (Stord-Os)
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/innspill/vedlegg-oppsummering_av_innspel-ved-planoppstart_utviding-ved-ulvenvatnet.pdf
 - id: verdikart
   tittel: Verdikart, KU masselager
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-mass/verdikart.pdf
 - id: verdikart__b02105cb
   tittel: Verdikart, KU Hodnanes-Beltestad
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/ku-hod-belt/verdikart.pdf
-- id: vurdering-av-samla-belastning-pa-boreonemoral-regnskog
-  tittel: Vurdering av samla belastning på boreonemoral regnskog
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/vurdering-av-samla-belastning-pa-boreonemoral-regnskog.pdf
+- id: vista_2025--samfunnsnytten_hordfast
+  tittel: Samfunnsnytten av Hordfast, bompenger og nyttevirkninger
+  url: https://www.vista-analyse.no/site/assets/files/8369/samfunnsnytten_av_hordfast-1.pdf
+- id: vista_2026--vurderingsgrunnslaget_hfast_regplan
+  tittel: Vurderingsgrunnlaget for investeringsprosjektet Hordfast - merknader til reguleringsplanen fra
+    2026
+  url: https://naturvernforbundet.no/content/uploads/2026/10/261030-Vista-Analyse-Vurderingsgrunnlaget-for-investeringsprosjektet-Hordfast.pdf
+- id: wang_etal_2023--ship_wave_wind_floatingbridge
+  tittel: Floating bridge response under combined ship collision, wind and wave loads
+  url: https://www.tandfonline.com/doi/abs/10.1080/17445302.2023.2195242
 - id: x1-01-0---x1-03-0
   tittel: 'Støykart: Vedleggskode X1-01-0 - X1-03-0'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39stordos/reguleringsplan-dokumenter/rp-25/f.rap-og-gr.dok/vlg-stoy.rap/x1-01-0---x1-03-0.pdf

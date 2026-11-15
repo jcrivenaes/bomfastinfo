@@ -1,0 +1,27 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 005_statsbudsjett_samferdsel/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: budsjett_samferdsel_2021_2022
+  tittel: For budsjettåret 2022
+  dokument: Prop. 1 S (2021–2022)
+  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20212022/id2875085/
+- id: budsjett_samferdsel_2024_2025
+  tittel: For budsjettåret 2025
+  dokument: Prop. 1 S (2024–2025)
+  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20242025/id3056778/
+- id: regjeringen_2018--statsbudsjett_sd_2018_2019
+  tittel: Prop. 1 S (2018-2019) Statsbudsjettet samferdsel
+  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20182019/id2613638/
+- id: regjeringen_2020--statsbudsjett_sd_2020_2021
+  tittel: Prop. 1 S (2020-2021) Statsbudsjettet Samferdsel
+  url: https://www.regjeringen.no/contentassets/27e7aad20ce14f48bf290af31819c55f/no/pdfs/prp202020210001_sddddpdfs.pdf
+- id: regjeringen_2021--statsbudsjett_sd_2021_2022
+  tittel: Prop. 1 S (2021-2022) Statsbudsjettet samferdsel
+  url: https://www.regjeringen.no/contentassets/23673b55781a4b29839d903e1e24411b/no/pdfs/prp202120220001_sddddpdfs.pdf
+- id: regjeringen_2024--statsbudsjett_sd_2024_2025
+  tittel: Prop. 1 S (2024-2025) Statsbudsjettet samferdsel
+  url: https://www.regjeringen.no/contentassets/d3a09b25308a48d792a1a366f3dffb22/no/pdfs/prp202420250001_sddddpdfs.pdf
+- id: regjeringen_2025--statsbudsjett_sd_2025_2026
+  tittel: Prop. 1 S (2025-2026) Statsbudsjettet samferdsel
+  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20252026/id3123501/

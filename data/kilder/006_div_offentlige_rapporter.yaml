@@ -1,0 +1,10 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 006_div_offentlige_rapporter/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: regjeringen_2015--paa_rett_vei
+  tittel: Stortingsmelding St. 25, ``På rett vei'' 2014-2015
+  url: https://www.regjeringen.no/no/dokumenter/meld.-st.-25-2014-2015/id2406847/
+- id: riksrevisjonen_2023--kvalitet_drift_vedlikehold_veier
+  tittel: Kvalitet og effektivitet i drift og vedlikehold av riks- og fylkesveier
+  url: https://www.riksrevisjonen.no/globalassets/rapporter/NO-2022-2023/drift-og-vedlikehold-av-riks--og-fylkesveier.pdf

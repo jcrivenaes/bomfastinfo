@@ -2,6 +2,9 @@
 # Offentlig kildeliste, generert av scripts/kilder.py export fra den private
 # 102_rogfast/kilder.yaml. Ikke rediger her; endringer overskrives.
 
+- id: atkins_2016--rogfast_ks2
+  tittel: Kvalitetssikring (KS 2) av E39 Rogfast
+  url: https://www.regjeringen.no/contentassets/fdc580b4c1e24dcf9fb4d44d6018d61f/kvalitetssikring-ks2-e39-rogfast.pdf
 - id: attendemelding_fra_samferdselsdepartementet
   tittel: 2008214174 00007 HOVEDDOKUMENT
   dokument: Ekstern kvalitetssikring i tidligfase (KS1) Attendemelding frå Samferdselsdepartementet mai
@@ -36,9 +39,9 @@
   url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/kvu-e39boknafj-web.pdf?v=499073
 - id: konseptvalutgreiing_vedlegg
   url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/kvu-e39boknafjvedlegg-web.pdf?v=499074
-- id: ks1_rapport_fra_konsulent
-  dokument: Rapport KS1 Boknafjordkryssingen v1.1
-  url: https://www.vegvesen.no/globalassets/vegprosjekter/avslutta-kvu/e39-boknafjordskryssinga-kvu/ks1-boknafjordkryssingen.pdf?v=499073
+- id: metier_moreforskning_2009--rogfast-ks1
+  tittel: Kvalitetssikring av konseptvalg (KS1) av E39 Kyststamvegen Boknafjordkryssingen
+  url: https://web.archive.org/web/20220126135801if_/https://www.vegvesen.no/globalassets/vegprosjekter/utbygging/e39rogfast/vedlegg/kvu/ks1-boknafjordkryssingen.pdf
 - id: plan_for_ytre_miljo_ym_plan
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-ym-plan.pdf?v=49906a
 - id: reguleringsplan_bokn_201404_planbeskrivelse_e39_rogfast_laupeland_knarholmen
@@ -129,6 +132,18 @@
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-ros-analyse-dagstrekninger.pdf?v=49906a
 - id: ros_analyse_tunnel
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/e39-rogfast-rosanalyse-tunnel.pdf?v=49906a
+- id: stortinget_2017--rogfast_vedtak_prop_105s
+  tittel: Prop. 105 S (2016-2017) Utbygging og finansiering av E39 Rogfast i Rogaland
+  url: https://www.regjeringen.no/contentassets/cd655bc03025422798fef5cb45586951/nn-no/pdfs/prp201620170105000dddpdfs.pdf
+- id: stortinget_2020--prop_54_S_auka_finansieringsbehov_etc_rogfast
+  tittel: Auka finansieringsbehov og revidert framdriftsplan for E39 Rogfast i Rogaland og justering i
+    vedtekne rammer for rv 13 Ryfast i Rogaland
+  dokument: Prop. 54 S (2020–2021)
+  url: https://www.regjeringen.no/no/dokumenter/prop.-54-s-20202021/id2786325/
+- id: stortinget_2020--rogfast_revidert_vedtak_prop_54s
+  tittel: Prop. 54 S (2020-2021) Auka finansieringsbehov og revidert framdriftsplan for E39 Rogfast i
+    Rogaland.
+  url: https://www.regjeringen.no/contentassets/8e5b283f2fd34f7b8559705ad9d2502b/nn-no/pdfs/prp202020210054000dddpdfs.pdf
 - id: stoyberegninger
   dokument: (E39 Rogfast - Vedlegg A - Generelt om støy)
   url: https://www.vegvesen.no/globalassets/vegprosjekter/europavei/e39rogfast/vedlegg/reguleringsplanar/stoyberegninger.pdf?v=49906a
