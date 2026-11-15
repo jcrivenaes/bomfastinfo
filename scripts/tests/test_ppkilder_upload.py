@@ -136,7 +136,7 @@ def test_refused_by_kilder_yaml(sources, pp, conversions, archive, results, caps
     assert archive.commands == []
 
 
-@pytest.mark.parametrize("label", ["_PRIVAT", "_ABO", "_x"])
+@pytest.mark.parametrize("label", ["_PRIVAT", "_INNSYN", "_ABO", "_x"])
 def test_refused_by_label_added_after_convert(sources, pp, conversions, archive, results, capsys, label):
     add(pp, "a")
     convert(pp)

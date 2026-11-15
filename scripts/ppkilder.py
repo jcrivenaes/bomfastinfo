@@ -64,9 +64,13 @@ How a .bib entry is read:
               - labels starting with _ are control labels, never topics (any case):
                     _PRIVAT   offentlig: nei + arkiv: skip: not in the public list
                               (export), never sent to archive.org
+                    _INNSYN   the same as _PRIVAT (documents obtained via innsyn)
                     _ABO      arkiv: skip: paywalled; in the public list with its
                               url, but never archived (a Wayback capture could
                               republish the full text)
+                    _NO_URL   there is no url on purpose (e.g. not online): check
+                              does not report NO URL. Does not set arkiv: skip,
+                              since an upload may be the only public copy.
                     _other    arkiv: skip as well, with a warning (unknown label)
                 Removing a label does NOT undo it: edit offentlig/arkiv in
                 kilder.yaml for that; check reports the mismatch (NO LABEL). Run
@@ -195,14 +199,19 @@ TOP_LABEL = re.compile(r"\d{3}_[^\s/\\]+")  # e.g. 005_statsbudsjett_samferdsel
 # which would write a nested kilder.yaml no later run finds) is skipped, not a topic.
 TOP_LABEL_LIKE = re.compile(r"\d{3}_\S+")
 COLLECTION_LABEL = "bomfast-kilder"
-# Control labels start with "_" and are never topics. Every one of them keeps the source
-# away from archive.org (arkiv: skip); _PRIVAT also keeps it out of the public list
-# (offentlig: nei). Matched without regard to case. Removing a label never undoes what it
+# Control labels start with "_" and are never topics. Every one of them except _NO_URL
+# keeps the source away from archive.org (arkiv: skip); _PRIVAT also keeps it out of the
+# public list (offentlig: nei). Matched without regard to case. Removing a label never undoes what it
 # set (that takes an edit in kilder.yaml), so a lost label cannot publish anything.
 CONTROL_PREFIX = "_"
 PRIVATE_LABEL = "_PRIVAT"  # private: not in the public list, not archived
+INNSYN_LABEL = "_INNSYN"  # obtained via innsyn: treated exactly like _PRIVAT
+PRIVATE_LABELS = (PRIVATE_LABEL, INNSYN_LABEL)
 SUBSCRIPTION_LABEL = "_ABO"  # paywalled: in the public list, but never archived
-KNOWN_CONTROL_LABELS = (PRIVATE_LABEL, SUBSCRIPTION_LABEL)
+# No url on purpose (e.g. a report that is not online): check does not report NO URL.
+# It does not keep the source from archive.org: an upload may be the only public copy.
+NO_URL_LABEL = "_NO_URL"
+KNOWN_CONTROL_LABELS = (*PRIVATE_LABELS, SUBSCRIPTION_LABEL, NO_URL_LABEL)
 MIRROR_CHECK = "All Papers"  # always in the mirror; missing = the mount is not up
 MARKER = "paperpile"  # the kilder.yaml field that marks an entry as ours
 PP_TECH_FIELDS = TECH_FIELDS | {MARKER, "vedlegg", "mappe"}
@@ -361,7 +370,8 @@ class Source:
     topics: list[str] = field(default_factory=list)
     meta: dict = field(default_factory=dict)
     private: bool = False  # has the _PRIVAT label
-    no_archive: bool = False  # has any control label (_PRIVAT, _ABO, ...)
+    no_archive: bool = False  # has a control label other than _NO_URL (_PRIVAT, _ABO, ...)
+    no_url: bool = False  # has the _NO_URL label: no url on purpose
 
     @property
     def folder(self) -> str:
@@ -378,7 +388,7 @@ class Held:
     file path, ...): they still apply to its entries in kilder.yaml."""
 
     private: bool = False  # some copy has _PRIVAT
-    no_archive: bool = False  # some copy has a control label
+    no_archive: bool = False  # some copy has a control label other than _NO_URL
 
 
 def bib_metadata(fields: dict[str, str]) -> dict:
@@ -406,6 +416,17 @@ def is_control_label(label: str) -> bool:
     return label.startswith(CONTROL_PREFIX)
 
 
+def is_private_label(label: str) -> bool:
+    """_PRIVAT or _INNSYN: offentlig: nei and arkiv: skip."""
+    return any(is_label(label, known) for known in PRIVATE_LABELS)
+
+
+def keeps_from_archive(label: str) -> bool:
+    """A control label that means arkiv: skip: all of them (also unknown ones, to be on
+    the safe side) except _NO_URL."""
+    return is_control_label(label) and not is_label(label, NO_URL_LABEL)
+
+
 def resembles_control_label(label: str) -> str | None:
     """The known control label this is a near miss of (PRIVAT, privat, _PRIVATE, ABO),
     or None. A near miss would silently leave the source public or archivable."""
@@ -417,6 +438,17 @@ def resembles_control_label(label: str) -> str | None:
         if difflib.SequenceMatcher(None, base, name).ratio() >= 0.8:
             return known
     return None
+
+
+# Paperpile separates several files with ";", but a file name can contain ";" too
+# ("Transport Scotland (j1072c-11; queensferry).pdf"). Every path in the mirror starts
+# with "All Papers/", so only a ";" followed by a new such path separates files.
+FILE_SEPARATOR = re.compile(rf";\s*(?={re.escape(MIRROR_CHECK)}/)")
+
+
+def split_files(field: str) -> list[str]:
+    """The file paths in a .bib `file` field, in order."""
+    return [f.strip() for f in FILE_SEPARATOR.split(field) if f.strip()]
 
 
 def bib_keywords(fields: dict[str, str]) -> list[str]:
@@ -472,8 +504,7 @@ def read_sources(
             skipped["IGNORED"] += 1
             say(f"IGNORED    {key}: no top folder label", detail=True)
             continue
-        files = [f.strip() for f in unlatex(fields.get("file", "")).split(";")]
-        files = [f for f in files if f]
+        files = split_files(unlatex(fields.get("file", "")))
         if not tops:
             skip(key, "no top folder label (e.g. 005_statsbudsjett_samferdsel)")
         elif len(tops) > 1:
@@ -515,8 +546,9 @@ def read_sources(
                 files[1:],
                 list(dict.fromkeys(topics)),
                 bib_metadata(fields),
-                private=any(is_label(k, PRIVATE_LABEL) for k in controls),
-                no_archive=bool(controls),
+                private=any(is_private_label(k) for k in controls),
+                no_archive=any(keeps_from_archive(k) for k in controls),
+                no_url=any(is_label(k, NO_URL_LABEL) for k in controls),
             )
     # Citekeys that gave no source (used twice, a bad label or path, ...): their control
     # labels still count for an entry already in kilder.yaml. With several copies, the
@@ -525,10 +557,10 @@ def read_sources(
     for key, fields in entries:
         if key in sources:
             continue
-        controls = [k for k in bib_keywords(fields) if is_control_label(k)]
+        controls = [k for k in bib_keywords(fields) if keeps_from_archive(k)]
         if controls:
             h = held.setdefault(key, Held())
-            h.private |= any(is_label(k, PRIVATE_LABEL) for k in controls)
+            h.private |= any(is_private_label(k) for k in controls)
             h.no_archive = True
     if not sources and need_sources:
         sys.exit(no_sources_message(bib))
@@ -1104,14 +1136,29 @@ def cmd_check(
         if meta := changed_fields(entry, wanted, ignore=TECH_FIELDS | {"mappe"}):
             report("METADATA", src.id, describe_meta(meta) + " (run convert)")
             problems += 1
-        if not wanted.get("url"):
-            report("NO URL", src.id, "no url (add it in Paperpile)", issue=False)
+        if not wanted.get("url") and src.no_url:
+            report(
+                "NO URL OK",
+                src.id,
+                f"no url, as marked with {NO_URL_LABEL}",
+                issue=False,
+                detail=True,
+            )
+        elif not wanted.get("url"):
+            report(
+                "NO URL",
+                src.id,
+                f"no url (add it in Paperpile, or the label {NO_URL_LABEL} if there "
+                "is none)",
+                issue=False,
+            )
         if not src.private and not kilder.public_status(wanted)[0]:
             report(
                 "NO LABEL",
                 src.id,
                 f"offentlig: {wanted.get('offentlig')} in kilder.yaml, but no "
-                f"{PRIVATE_LABEL} label in Paperpile; stays private (add the label, or "
+                f"{'/'.join(PRIVATE_LABELS)} label in Paperpile; stays private (add the "
+                "label, or "
                 "set offentlig: ja in kilder.yaml to make it public)",
                 issue=False,
             )
@@ -1211,6 +1258,7 @@ def cmd_check(
             ("RENAMED", "the citekey changed, convert carries the entry over"),
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
+            ("NO URL OK", f"entries without url, marked with {NO_URL_LABEL}"),
             (
                 "NO LABEL",
                 "private or arkiv: skip, but no label in Paperpile (not issues)",
@@ -1297,7 +1345,7 @@ def upload_refusal(
             return "unusable in the .bib file (see the WARNING above); never uploaded"
         return "not in the .bib file any more"
     if src.no_archive:
-        what = PRIVATE_LABEL if src.private else "a label starting with _"
+        what = "/".join(PRIVATE_LABELS) if src.private else "a label starting with _"
         return f"has {what} in Paperpile; never uploaded (run convert)"
     if not src.pdf:
         return "no PDF in Paperpile"

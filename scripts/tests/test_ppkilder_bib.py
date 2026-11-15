@@ -152,6 +152,40 @@ def bib_entry(key, keywords="", file="", **fields):
     return "\n".join(parts) + "\n}\n"
 
 
+@pytest.mark.parametrize(
+    "field, files",
+    [
+        ("", []),
+        ("All Papers/A/a.pdf", ["All Papers/A/a.pdf"]),
+        ("All Papers/A/a.pdf;All Papers/A/b.xlsx", ["All Papers/A/a.pdf", "All Papers/A/b.xlsx"]),
+        ("All Papers/A/a.pdf; All Papers/A/b.xlsx", ["All Papers/A/a.pdf", "All Papers/A/b.xlsx"]),
+        # a ";" in the file name is not a separator
+        (
+            "All Papers/Other/Transport Scotland (j1072c-11; queens... - Transport "
+            "Scotland (j1072c-11; queensferry).pdf;All Papers/Other/vedlegg; 2.docx",
+            [
+                "All Papers/Other/Transport Scotland (j1072c-11; queens... - Transport "
+                "Scotland (j1072c-11; queensferry).pdf",
+                "All Papers/Other/vedlegg; 2.docx",
+            ],
+        ),
+    ],
+)
+def test_split_files(field, files):
+    assert ppkilder.split_files(field) == files
+
+
+def test_read_sources_file_name_with_semicolon(tmp_path, capsys):
+    name = "All Papers/Other/Transport Scotland (j1072c-11; queensferry).pdf"
+    bib = tmp_path / "x.bib"
+    bib.write_text(bib_entry("ts", r"001\_ntp", name), encoding="utf-8")
+
+    [src] = ppkilder.read_sources(bib)[0]
+
+    assert (src.pdf, src.attachments) == (name, [])
+    assert "WARNING" not in capsys.readouterr().out
+
+
 def test_read_sources(tmp_path, capsys):
     bib = tmp_path / "x.bib"
     bib.write_text(
@@ -390,6 +424,13 @@ def test_default_bib(monkeypatch, tmp_path):
         ("privatisering", False, None),
         ("abonnement", False, None),
         ("NTP", False, None),
+        ("_INNSYN", True, None),
+        ("_innsyn", True, None),
+        ("INNSYN", False, "_INNSYN"),
+        ("_NO_URL", True, None),
+        ("_no_url", True, None),
+        ("_NOURL", True, "_NO_URL"),
+        ("NO_URL", False, "_NO_URL"),
     ],
 )
 def test_control_labels(label, control, resembles):

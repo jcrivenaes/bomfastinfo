@@ -1,0 +1,23 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 011_case_utland/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: finch_etal_2007--queensferry_report_lifecycle
+  tittel: 'Forth Replacement Crossing Study Report 4: Appraisal Report Volume 1: Main Report'
+  url: https://www.transport.gov.scot/media/10155/frcs-report4-mainreport.pdf
+- id: flyvbjerg_2012--why_mass_media_matters_megaprojects
+  tittel: 'Why Mass Media Matter and How to Work with Them: Phronesis and Megaprojects'
+  url: https://papers.ssrn.com/abstract=2278219
+- id: flyvbjerg_2019--treathen_by_danish_government
+  tittel: When the Danish government sent their chief planner to threaten me – How power tension points
+    trigger change
+  url: https://www.sbs.ox.ac.uk/oxford-answers/when-danish-government-sent-their-chief-planner-threaten-me-how-power-tension-points
+- id: riches_etal_2019--queensferry_crossing_maintenance
+  tittel: 'Queensferry Crossing, UK: durability, maintenance, inspection and monitoring'
+  url: http://dx.doi.org/10.1680/jbren.18.00020
+- id: transport_scotland_2008--queensferry_crossing_life_cycle
+  tittel: Transport Scotland (j1072c-11; queensferry)
+  url: https://www.transport.gov.scot/publication/forth-replacement-crossing-managed-crossing-scheme-scheme-definition-report/j10724c-11/
+- id: transportminister_dk_2022--storebaelt_svar_bla_dv
+  tittel: Svar på spørsmål om Storebælt, mars 2022
+  url: https://www.ft.dk/samling/20211/beslutningsforslag/B189/spm/1/svar/1872932/2557459.pdf

@@ -1,0 +1,11 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 111_sotrasambandet/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: dnv_etal_2018--sotrasambandet_ks2
+  tittel: Kvalitetssikring (KS2) rv. 555 Sotrasambandet
+  url: https://www.regjeringen.no/no/dokumenter/kvalitetssikring-ks2-rv.-555-sotrasambandet/id2587885/
+- id: regjeringen_2017--sotrasambandet_prop_41s
+  tittel: Prop. 41 S (2017-2018) Gjennomføring av rv 555 Sotrasambandet i Hordaland som OPS-prosjekt med
+    delvis bompengefinansiering
+  url: https://www.regjeringen.no/contentassets/70f2cd375bbf45ce8ddbb285a3212383/nn-no/pdfs/prp201720180041000dddpdfs.pdf

@@ -1,0 +1,14 @@
+# cspell:disable
+# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# 002_stortinget_diverse/kilder.yaml. Ikke rediger her; endringer overskrives.
+
+- id: eskeland_2025--spm_hfast_til_statsminister
+  tittel: Skriftlig spørsmål fra Liv Kari Eskeland (H) til statsministeren
+  url: https://www.stortinget.no/no/Saker-og-publikasjoner/Sporsmal/Skriftlige-sporsmal-og-svar/Skriftlig-sporsmal/
+- id: fageraas_2023--spm_stortinget_rogfast
+  tittel: Skriftlig spørsmål fra Mona Fagerås (SV) til samferdselsministeren
+  url: https://www.stortinget.no/no/Saker-og-publikasjoner/Sporsmal/Skriftlige-sporsmal-og-svar/Skriftlig-sporsmal/
+- id: njaastad_2026--spm_st_ny_vei_jb_2013_2026
+  tittel: Svar på spørsmål nr. 3935 til skriftlig besvarelse fra stortingsrepresentant Helge André Njåstad
+    til samferdselsminister Kamzy Gunaratnam
+  url: https://www.stortinget.no/globalassets/pdf/dokumentserien/2025-2026/dok15-202526-3935-vedlegg.pdf
