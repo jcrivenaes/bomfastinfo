@@ -2,14 +2,6 @@
 # Offentlig kildeliste, generert av scripts/kilder.py export fra den private
 # 005_statsbudsjett_samferdsel/kilder.yaml. Ikke rediger her; endringer overskrives.
 
-- id: budsjett_samferdsel_2021_2022
-  tittel: For budsjettåret 2022
-  dokument: Prop. 1 S (2021–2022)
-  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20212022/id2875085/
-- id: budsjett_samferdsel_2024_2025
-  tittel: For budsjettåret 2025
-  dokument: Prop. 1 S (2024–2025)
-  url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20242025/id3056778/
 - id: regjeringen_2018--statsbudsjett_sd_2018_2019
   tittel: Prop. 1 S (2018-2019) Statsbudsjettet samferdsel
   url: https://www.regjeringen.no/no/dokumenter/prop.-1-s-20182019/id2613638/

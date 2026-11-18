@@ -880,6 +880,19 @@ def has_drive_entries(entries: dict[str, dict]) -> bool:
     return any(e.get("fil") for e in entries.values())
 
 
+def looks_unchanged(entry: dict | None, rel: str, pdf: Path, text: Path) -> bool:
+    """Same path and size as in kilder.yaml, and the PDF is not newer than its text
+    file: taken as unchanged without hashing it. Hashing means reading the whole PDF,
+    and on a Drive mount (rclone) that is a download."""
+    return bool(
+        entry
+        and entry.get("fil") == rel
+        and entry.get("bytes") == pdf.stat().st_size
+        and text.exists()
+        and pdf.stat().st_mtime <= text.stat().st_mtime
+    )
+
+
 def cmd_convert(
     drive: Path,
     folder: str,
@@ -950,14 +963,7 @@ def cmd_convert(
 
         # Fast path: same path, same size, and the PDF is not newer than the text
         # file -> don't hash the PDF.
-        if (
-            entry
-            and entry.get("fil") == rels
-            and entry.get("bytes") == pdf.stat().st_size
-            and text.exists()
-            and pdf.stat().st_mtime <= text.stat().st_mtime
-            and eid not in force
-        ):
+        if looks_unchanged(entry, rels, pdf, text) and eid not in force:
             update_links(entry, pdf)
             meta = changed_fields(before, entry)
             if meta:
@@ -1159,7 +1165,10 @@ def cmd_check(
     prune: bool = False,
     dry_run: bool = False,
     forget: frozenset[str] = frozenset(),
+    checksum: bool = False,
 ) -> int:
+    """checksum: hash every PDF, also those that look unchanged (slow on a Drive mount).
+    Prune never depends on it: it only removes entries whose file is gone or excluded."""
     top_name, sub = split_folder(folder)
     top = drive / top_name
     target = SOURCES_DIR / top_name
@@ -1216,6 +1225,20 @@ def cmd_check(
             continue  # reported as MOVED below
         if rel not in known_files:
             report("NEW", rel, "on Drive, not in kilder.yaml (run convert)")
+        elif (
+            not checksum
+            and entry
+            and entry.get("tekst")
+            and looks_unchanged(entry, rel, pdf, target / entry["tekst"])
+        ):
+            report(
+                "IN SYNC",
+                rel,
+                "same path and size, not newer than the text file (not hashed; "
+                "--checksum to hash)",
+                issue=False,
+                detail=True,
+            )
         elif entry and entry.get("sha256") != sha256(pdf):
             report(
                 "CHANGED",
@@ -1365,7 +1388,7 @@ def cmd_check(
         f"{len(original)} entries)",
         counts,
         [
-            ("IN SYNC", "PDF on Drive matches kilder.yaml"),
+            ("IN SYNC", "PDF on Drive matches kilder.yaml (path, size and date, or checksum)"),
             ("NEW", "on Drive, not in kilder.yaml"),
             ("CHANGED", "PDF differs from the checksum in kilder.yaml"),
             ("MOVED", "moved/renamed on Drive"),
@@ -1873,6 +1896,11 @@ def main() -> int:
         "101_hordfast/hordfast_regplan/02_plankart"
     )
 
+    checksum_help = (
+        "hash every PDF, also those with the same path, size and date as in "
+        "kilder.yaml (slow: on a Drive mount it downloads them all)"
+    )
+
     c = commands.add_parser(
         "convert",
         parents=[common],
@@ -1903,6 +1931,7 @@ def main() -> int:
     )
     k.add_argument("folders", nargs="*", help=folder_help)
     k.add_argument("--all", action="store_true", help="all folders on Drive")
+    k.add_argument("--checksum", action="store_true", help=checksum_help)
 
     p = commands.add_parser(
         "prune",
@@ -1912,6 +1941,7 @@ def main() -> int:
     )
     p.add_argument("folders", nargs="*", help=folder_help)
     p.add_argument("--all", action="store_true", help="all folders on Drive")
+    p.add_argument("--checksum", action="store_true", help=checksum_help)
     p.add_argument(
         "-n",
         "--dry-run",
@@ -2065,6 +2095,7 @@ def main() -> int:
                 prune=(args.command == "prune"),
                 dry_run=getattr(args, "dry_run", False),
                 forget=frozenset(getattr(args, "forget_folder", [])),
+                checksum=args.checksum,
             )
     return rc
 

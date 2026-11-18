@@ -236,6 +236,32 @@ def test_check_reports_problems(sources, drive, top, conversions, capsys):
     assert entries(sources) == e  # check never writes
 
 
+def test_check_does_not_hash_unchanged_pdfs(sources, drive, top, conversions, monkeypatch, capsys):
+    """Hashing reads the whole PDF: on a Drive mount (rclone) that is a download."""
+    write_pdf(top / "a.pdf", "same size 1")
+    write_pdf(top / "b.pdf", "same size 2")
+    convert(drive)
+    hashed = []
+    real = kilder.sha256
+    monkeypatch.setattr(kilder, "sha256", lambda p: hashed.append(p.name) or real(p))
+
+    assert kilder.cmd_check(drive, TOP) == 0
+    assert hashed == []
+
+    # same size, but newer than its text file: hashed, and the change is found
+    (top / "b.pdf").write_text("same size 3")
+    touch_later(top / "b.pdf")
+    capsys.readouterr()
+    assert kilder.cmd_check(drive, TOP) == 1
+    assert hashed == ["b.pdf"]
+    assert "CHANGED        b.pdf" in capsys.readouterr().out
+
+    # --checksum hashes every PDF
+    hashed.clear()
+    kilder.cmd_check(drive, TOP, checksum=True)
+    assert sorted(hashed) == ["a.pdf", "b.pdf"]
+
+
 def test_prune_removes_gone_entries_and_orphans(sources, drive, top, conversions, capsys):
     write_pdf(top / "a.pdf")
     write_pdf(top / "b.pdf")
