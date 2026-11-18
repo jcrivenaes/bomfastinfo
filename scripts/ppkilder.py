@@ -48,7 +48,10 @@ Output:
 
 How a .bib entry is read:
     citekey   the id, and the name of the text file: <citekey>.md. Used in the kilde
-              shortcode, so it must be unique across all folders. A citekey used by
+              shortcode, so it must be unique across all folders. House style:
+              <who>_<year>--<what>, e.g. regjeringen_2017--ntp_2018_2029 (lowercase
+              a-z and 0-9, words joined by _, the year right before --). check and
+              convert report CITEKEY for others, as a notice only. A citekey used by
               several .bib entries is skipped in all of them, with a warning.
               Control labels always count, also on entries that are skipped (used
               twice, bad labels or file path, ...; _PRIVAT on one copy is enough),
@@ -449,6 +452,41 @@ FILE_SEPARATOR = re.compile(rf";\s*(?={re.escape(MIRROR_CHECK)}/)")
 def split_files(field: str) -> list[str]:
     """The file paths in a .bib `file` field, in order."""
     return [f.strip() for f in FILE_SEPARATOR.split(field) if f.strip()]
+
+
+# The house style for citekeys: <who>_<year>--<what>, e.g. regjeringen_2017--ntp_2018_2029
+# or riches_etal_2019--queensferry_crossing_maintenance. Lowercase a-z and 0-9, words
+# joined by _, the year right before --. Only a notice: the id is used in articles.
+CITEKEY_WORDS = r"[a-z0-9]+(?:_[a-z0-9]+)*"
+CITEKEY_STYLE = re.compile(rf"{CITEKEY_WORDS}_\d{{4}}--{CITEKEY_WORDS}")
+CITEKEY_EXAMPLE = "name_2023--short_title"
+
+
+def citekey_problem(key: str) -> str | None:
+    """What is wrong with the citekey's form, or None if it follows the house style."""
+    if CITEKEY_STYLE.fullmatch(key):
+        return None
+    who, sep, what = key.partition("--")
+    if key != key.lower():
+        why = "has capital letters"
+    elif not sep:
+        why = "has no -- between name_year and title"
+    elif "--" in what:
+        why = "has -- more than once"
+    elif not re.search(r"_\d{4}$", who):
+        why = "has no _<year> (four digits) right before --"
+    elif not re.fullmatch(CITEKEY_WORDS, what) or not re.fullmatch(
+        rf"{CITEKEY_WORDS}_\d{{4}}", who
+    ):
+        bad = sorted(set(re.sub(r"[a-z0-9_-]", "", key)))
+        why = (
+            f"has characters other than a-z, 0-9 and _ ({' '.join(map(repr, bad))})"
+            if bad
+            else "has - or empty words where only _ between words is allowed"
+        )
+    else:
+        why = "is not on the form"
+    return f"{why}; expected {CITEKEY_EXAMPLE} (rename it in Paperpile)"
 
 
 def bib_keywords(fields: dict[str, str]) -> list[str]:
@@ -1003,6 +1041,8 @@ def cmd_convert(
     try:
         restrict_all(lists, held, sources, counts, dry_run)
         for src in scope:
+            if why := citekey_problem(src.id):
+                outcome("CITEKEY", src.id, why + "; converted anyway")
             handle(src)
     finally:  # also on Ctrl-C: keep what was converted, conversions are slow
         counts["GONE"] = sum(
@@ -1024,6 +1064,7 @@ def cmd_convert(
                 ("NO PDF", "no file in the .bib entry, metadata only"),
                 ("MISSING", "the PDF is not in the mirror, metadata only"),
                 ("WARNING", "skipped, see the lines above"),
+                ("CITEKEY", f"citekey not on the form {CITEKEY_EXAMPLE} (converted)"),
                 ("IGNORED", "neither a top folder label nor bomfast-kilder"),
                 (
                     "DUPLICATE",
@@ -1040,13 +1081,29 @@ def cmd_convert(
     return 1 if counts["WARNING"] or counts["MISSING"] else 0
 
 
+def looks_unchanged(entry: dict, rel: str, pdf: Path, top: str) -> bool:
+    """Same path and size as in kilder.yaml, and not newer than the text file: taken as
+    unchanged without hashing (on the rclone mount, hashing downloads the PDF)."""
+    text = kilder.SOURCES_DIR / top / entry["tekst"] if entry.get("tekst") else None
+    return bool(
+        text
+        and entry.get(MARKER) == rel
+        and entry.get("bytes") == pdf.stat().st_size
+        and text.exists()
+        and pdf.stat().st_mtime <= text.stat().st_mtime
+    )
+
+
 def cmd_check(
     paperpile: Path,
     bib: Path,
     folders: list[str],
     prune: bool = False,
     dry_run: bool = False,
+    checksum: bool = False,
 ) -> int:
+    """checksum: hash every PDF, also those with the same path, size and date as in
+    kilder.yaml (slow: the mirror is an rclone mount, hashing downloads the PDF)."""
     check_mirror(paperpile)
     say(
         f"{disp(bib)}: {'prune' if prune else 'check'}"
@@ -1071,6 +1128,8 @@ def cmd_check(
         say(f"{kind:<14} {ref}: {msg}", detail=detail)
 
     for src in scope:
+        if why := citekey_problem(src.id):
+            report("CITEKEY", src.id, why, issue=False)
         if src.id in foreign:
             report(
                 "ID CONFLICT",
@@ -1109,7 +1168,11 @@ def cmd_check(
         if src.pdf and not pdf.is_file():
             report("MISSING", src.id, f"{src.pdf} is not in the mirror")
             problems += 1
-        elif src.pdf and entry.get("sha256") != sha256(pdf):
+        elif (
+            src.pdf
+            and (checksum or not looks_unchanged(entry, src.pdf, pdf, top))
+            and entry.get("sha256") != sha256(pdf)
+        ):
             report(
                 "CHANGED",
                 src.id,
@@ -1259,6 +1322,7 @@ def cmd_check(
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
             ("NO URL OK", f"entries without url, marked with {NO_URL_LABEL}"),
+            ("CITEKEY", f"citekey not on the form {CITEKEY_EXAMPLE} (not issues)"),
             (
                 "NO LABEL",
                 "private or arkiv: skip, but no label in Paperpile (not issues)",
@@ -1620,11 +1684,16 @@ def main() -> int:
         help="show what would be done, without writing anything",
     )
 
-    commands.add_parser(
+    checksum_help = (
+        "hash every PDF, also those with the same path, size and date as in "
+        "kilder.yaml (slow: on the rclone mount it downloads them all)"
+    )
+    k = commands.add_parser(
         "check",
         parents=[common],
         help="compare the .bib file and the mirror with kilder.yaml (never writes)",
     )
+    k.add_argument("--checksum", action="store_true", help=checksum_help)
 
     p = commands.add_parser(
         "prune",
@@ -1638,6 +1707,7 @@ def main() -> int:
         action="store_true",
         help="show what would be removed, without writing anything",
     )
+    p.add_argument("--checksum", action="store_true", help=checksum_help)
 
     u = commands.add_parser(
         "upload",
@@ -1682,6 +1752,7 @@ def main() -> int:
         args.folders,
         prune=(args.command == "prune"),
         dry_run=getattr(args, "dry_run", False),
+        checksum=args.checksum,
     )
 
 

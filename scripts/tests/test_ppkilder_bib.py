@@ -153,6 +153,33 @@ def bib_entry(key, keywords="", file="", **fields):
 
 
 @pytest.mark.parametrize(
+    "key, problem",
+    [
+        ("regjeringen_2017--ntp_2018_2029", None),
+        ("riches_etal_2019--queensferry_crossing_maintenance", None),
+        ("some_2012--some", None),
+        ("Some_2012--some", "has capital letters"),
+        ("some_2012_some", "has no -- between name_year and title"),
+        ("some--2012--x", "has -- more than once"),
+        ("some--x", "has no _<year> (four digits) right before --"),
+        ("some_12--x", "has no _<year> (four digits) right before --"),
+        ("some_2012_x--y", "has no _<year> (four digits) right before --"),
+        ("metier_2009--rogfast-ks1", "has - or empty words"),
+        ("some__x_2012--y", "has - or empty words"),
+        ("some_2012--y_", "has - or empty words"),
+        ("søk_2012--y", "has characters other than a-z, 0-9 and _ ('ø')"),
+        ("some_2012--a.b", "has characters other than a-z, 0-9 and _ ('.')"),
+    ],
+)
+def test_citekey_problem(key, problem):
+    found = ppkilder.citekey_problem(key)
+    if problem is None:
+        assert found is None
+    else:
+        assert found.startswith(problem) and "name_2023--short_title" in found
+
+
+@pytest.mark.parametrize(
     "field, files",
     [
         ("", []),

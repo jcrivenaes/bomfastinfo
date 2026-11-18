@@ -5,6 +5,8 @@ PDF conversion is stubbed (see conftest.conversions).
 
 from __future__ import annotations
 
+import os
+
 import pytest
 
 import kilder
@@ -267,6 +269,32 @@ def test_check_in_sync(sources, pp, conversions, capsys):
     capsys.readouterr()
     assert check(pp) == 0
     assert capsys.readouterr().out.rstrip().endswith("OK")
+
+
+def test_check_does_not_hash_unchanged_pdfs(sources, pp, conversions, monkeypatch, capsys):
+    """The mirror is an rclone mount: hashing a PDF downloads it."""
+    pp.add("a_2020--x")
+    pp.add("b_2020--y")
+    convert(pp)
+    hashed = []
+    real = ppkilder.sha256
+    monkeypatch.setattr(ppkilder, "sha256", lambda p: hashed.append(p.name) or real(p))
+
+    assert check(pp) == 0
+    assert hashed == []
+
+    pdf = pp.root / "All Papers" / "b_2020--y.pdf"
+    pdf.write_text("%PDF b_2020--z")  # same size, newer than its text file
+    st = pdf.stat()
+    os.utime(pdf, ns=(st.st_atime_ns, st.st_mtime_ns + 10_000_000_000))
+    capsys.readouterr()
+    assert check(pp) == 1
+    assert hashed == ["b_2020--y.pdf"]
+    assert "CHANGED        b_2020--y: checksum in the mirror" in capsys.readouterr().out
+
+    hashed.clear()
+    ppkilder.cmd_check(pp.root, pp.bib, [], checksum=True)
+    assert sorted(hashed) == ["a_2020--x.pdf", "b_2020--y.pdf"]
 
 
 def test_check_reports_problems(sources, pp, conversions, capsys):
@@ -555,18 +583,18 @@ def test_removing_labels_changes_nothing(sources, pp, conversions, capsys):
 
 
 def test_no_url_label_silences_no_url(sources, pp, conversions, capsys):
-    pp.add("intern", labels=["_NO_URL"])
-    pp.add("mangler")
+    pp.add("vv_2020--intern", labels=["_NO_URL"])
+    pp.add("vv_2021--mangler")
     convert(pp)
     capsys.readouterr()
 
     assert check(pp) == 0
 
     out = capsys.readouterr().out
-    assert "NO URL         mangler: no url (add it in Paperpile, or the label _NO_URL" in out
-    assert "intern" not in out.split("Summary")[0]  # no line for it without -v
+    assert "NO URL         vv_2021--mangler: no url (add it in Paperpile, or the label _NO_URL" in out
+    assert "vv_2020--intern" not in out.split("Summary")[0]  # no line for it without -v
     assert "NO URL OK        1   entries without url, marked with _NO_URL" in out
-    intern = entries(sources)["intern"]
+    intern = entries(sources)["vv_2020--intern"]
     # not kept from archive.org, and not a topic
     assert "arkiv" not in intern and "offentlig" not in intern
     assert "emneord" not in intern
@@ -580,6 +608,27 @@ def test_no_url_label_with_other_labels(sources, pp, conversions):
     # on an unusable entry, _NO_URL alone restricts nothing
     pp.add("two", top="001_ntp", labels=[r"002\_x", "_NO_URL"])
     assert "two" not in ppkilder.read_sources(pp.bib)[4]
+
+
+def test_citekey_style_is_a_notice(sources, pp, conversions, capsys):
+    pp.add("doe_2024--rapport")
+    pp.add("metier_moreforskning_2009--rogfast-ks1")
+    pp.add("Doe_2024--Rapport")
+
+    assert convert(pp) == 0  # converted anyway
+
+    out = capsys.readouterr().out
+    assert set(entries(sources)) == {
+        "doe_2024--rapport", "metier_moreforskning_2009--rogfast-ks1", "Doe_2024--Rapport"
+    }
+    assert "CITEKEY    metier_moreforskning_2009--rogfast-ks1: has - or empty" in out
+    assert "converted anyway" in out
+    assert "CITEKEY    doe_2024--rapport" not in out
+
+    assert check(pp) == 0  # a notice, not an issue
+    out = capsys.readouterr().out
+    assert "CITEKEY        Doe_2024--Rapport: has capital letters" in out
+    assert "CITEKEY          2   citekey not on the form" in out
 
 
 def test_unknown_and_near_miss_labels_warn(sources, pp, conversions, capsys):
