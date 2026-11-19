@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 
 import pytest
+import yaml
 
 import ppkilder
 from conftest import write_pdf
@@ -64,6 +65,11 @@ def check(pp, folders=(), prune=False, dry_run=False):
 
 def entries(sources, top="001_ntp"):
     return ppkilder.read_yaml(sources / top / "kilder.yaml")
+
+
+def exported(out_dir, top="001_ntp"):
+    """{id: entry} of the public list."""
+    return {e["id"]: e for e in yaml.safe_load((out_dir / f"{top}.yaml").read_text())}
 
 
 # --------------------------------------------------------------------------- convert
@@ -370,7 +376,12 @@ def test_prune_never_touches_entries_not_from_paperpile(sources, pp, conversions
 
 
 def test_private_label(sources, pp, conversions):
-    pp.add("artikkel", labels=[r"\_PRIVAT", "NTP"], url="https://avis.example/betalingsmur")
+    pp.add(
+        "artikkel",
+        labels=[r"\_PRIVAT", "NTP"],
+        url="https://avis.example/betalingsmur",
+        title="Betalingsmur",
+    )
     pp.add("rapport", labels=["NTP"], url="https://example.no/r")
 
     convert(pp)
@@ -385,7 +396,9 @@ def test_private_label(sources, pp, conversions):
     out_dir = sources.parent / "data"
     ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
     public = (out_dir / "001_ntp.yaml").read_text()
-    assert "rapport" in public and "artikkel" not in public and "avis.example" not in public
+    assert "avis.example" not in public
+    assert exported(out_dir)["artikkel"] == {"id": "artikkel", "tittel": "Betalingsmur"}
+    assert exported(out_dir)["rapport"]["url"] == "https://example.no/r"
 
 
 @pytest.mark.parametrize("private_first", [True, False])
@@ -413,7 +426,8 @@ def test_private_label_on_a_duplicate_citekey_still_counts(
     assert "METADATA   artikkel: skipped in the .bib file, but its control labels" in out
     out_dir = sources.parent / "data"
     ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
-    assert not (out_dir / "001_ntp.yaml").exists()  # nothing public left
+    assert set(exported(out_dir)["artikkel"]) <= {"id", "tittel"}  # no link left
+    assert "avis.example" not in (out_dir / "001_ntp.yaml").read_text()
 
 
 def test_private_label_counts_when_the_only_source_is_a_duplicate(
@@ -500,8 +514,9 @@ def test_innsyn_label_is_private(sources, pp, conversions, capsys):
     assert "unknown label" not in capsys.readouterr().out
     out_dir = sources.parent / "data"
     ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
-    public = (out_dir / "001_ntp.yaml").read_text()
-    assert "rapport" in public and "innsyn" not in public
+    public = exported(out_dir)
+    assert "url" in public["rapport"]
+    assert set(public["innsyn"]) <= {"id", "tittel"}  # citable, but no link
 
 
 def test_subscription_label_exports_without_archive(sources, pp, conversions):
