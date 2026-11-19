@@ -1,5 +1,5 @@
 # cspell:disable
-# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 005_statsbudsjett_samferdsel/kilder.yaml. Ikke rediger her; endringer overskrives.
 
 - id: regjeringen_2018--statsbudsjett_sd_2018_2019

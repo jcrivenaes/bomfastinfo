@@ -1,5 +1,5 @@
 # cspell:disable
-# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 006_div_offentlige_rapporter/kilder.yaml. Ikke rediger her; endringer overskrives.
 
 - id: regjeringen_2015--paa_rett_vei

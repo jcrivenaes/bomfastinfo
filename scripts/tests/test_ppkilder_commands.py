@@ -9,7 +9,6 @@ import os
 
 import pytest
 
-import kilder
 import ppkilder
 from conftest import write_pdf
 
@@ -64,7 +63,7 @@ def check(pp, folders=(), prune=False, dry_run=False):
 
 
 def entries(sources, top="001_ntp"):
-    return kilder.read_yaml(sources / top / "kilder.yaml")
+    return ppkilder.read_yaml(sources / top / "kilder.yaml")
 
 
 # --------------------------------------------------------------------------- convert
@@ -124,7 +123,7 @@ def test_metadata_change_updates_entry_and_header_only(sources, pp, conversions,
     convert(pp)
     e = entries(sources)
     e["k"]["merknad"] = "my note"
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     pp.items["k"]["title"] = "New title"
     pp.write()
     capsys.readouterr()
@@ -163,7 +162,7 @@ def test_label_change_moves_entry_and_text(sources, pp, conversions, capsys):
     convert(pp)
     e = entries(sources)
     e["k"]["merknad"] = "my note"
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     pp.items["k"]["keywords"] = r"bomfast-kilder; 005\_budsjett; NTP"
     pp.write()
     capsys.readouterr()
@@ -184,7 +183,7 @@ def test_citekey_change_is_a_rename(sources, pp, conversions, capsys):
     convert(pp)
     e = entries(sources)
     e["old_key"]["merknad"] = "my note"
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     pp.rename("old_key", "new_key")
     capsys.readouterr()
 
@@ -234,15 +233,15 @@ def test_conversion_failure_does_not_stop_the_run(sources, pp, monkeypatch, caps
     assert "failed: RuntimeError: broken PDF" in capsys.readouterr().out
 
 
-def test_id_used_by_kilder_py_is_skipped(sources, pp, conversions, capsys):
+def test_id_used_by_an_entry_not_from_paperpile_is_skipped(sources, pp, conversions, capsys):
     theirs = {"id": "k", "fil": "k.pdf", "sha256": "s"}
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", {"k": theirs})
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", {"k": theirs})
     pp.add("k")
 
     assert convert(pp) == 1
     assert entries(sources) == {"k": theirs}
     assert conversions == []
-    assert "id already used in 001_ntp by kilder.py; skipped" in capsys.readouterr().out
+    assert "id already used in 001_ntp by an entry not from Paperpile; skipped" in capsys.readouterr().out
     assert check(pp) == 1
     assert "ID CONFLICT" in capsys.readouterr().out
 
@@ -358,29 +357,13 @@ def test_prune_keeps_unusable_entries(sources, pp, conversions):
     assert "k" in entries(sources)
 
 
-def test_prune_never_touches_kilder_py_entries(sources, pp, conversions):
-    theirs = {"id": "drive_doc", "fil": "d.pdf"}
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", {"drive_doc": theirs})
+def test_prune_never_touches_entries_not_from_paperpile(sources, pp, conversions):
+    theirs = {"id": "drive_doc", "fil": "d.pdf"}  # e.g. left from the old kilder.py
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", {"drive_doc": theirs})
     pp.add("k", url="https://x")
     convert(pp)
     assert check(pp, prune=True) == 0
     assert entries(sources)["drive_doc"] == theirs
-
-
-def test_kilder_py_leaves_paperpile_entries_alone(sources, drive, pp, conversions):
-    pp.add("k", url="https://x")
-    convert(pp)
-    write_pdf(drive / "001_ntp" / "d.pdf")
-    before = entries(sources)["k"]
-
-    kilder.cmd_convert(drive, "001_ntp", set(), False)
-    assert kilder.cmd_check(drive, "001_ntp", prune=True) == 0
-
-    e = entries(sources)
-    assert set(e) == {"k", "d"}
-    assert e["k"] == before
-    assert check(pp) == 0
-
 
 
 # --------------------------------------------------------------------------- control labels
@@ -400,7 +383,7 @@ def test_private_label(sources, pp, conversions):
     assert "_privat" not in text.lower()
 
     out_dir = sources.parent / "data"
-    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
     public = (out_dir / "001_ntp.yaml").read_text()
     assert "rapport" in public and "artikkel" not in public and "avis.example" not in public
 
@@ -429,7 +412,7 @@ def test_private_label_on_a_duplicate_citekey_still_counts(
     assert "WARNING    artikkel: the citekey is used 2 times" in out
     assert "METADATA   artikkel: skipped in the .bib file, but its control labels" in out
     out_dir = sources.parent / "data"
-    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
     assert not (out_dir / "001_ntp.yaml").exists()  # nothing public left
 
 
@@ -479,7 +462,7 @@ def test_private_label_reaches_every_copy_of_an_id(sources, pp, conversions, cap
     pp.add("artikkel", url="https://avis.example/sak")
     convert(pp)
     copy = dict(entries(sources)["artikkel"])
-    kilder.write_yaml(sources / "000_copy" / "kilder.yaml", {"artikkel": copy})
+    ppkilder.write_yaml(sources / "000_copy" / "kilder.yaml", {"artikkel": copy})
     pp.items["artikkel"]["keywords"] += r"; \_ABO"
     pp.write()
     capsys.readouterr()
@@ -516,7 +499,7 @@ def test_innsyn_label_is_private(sources, pp, conversions, capsys):
     assert e["emneord"] == ["Rogfast"]
     assert "unknown label" not in capsys.readouterr().out
     out_dir = sources.parent / "data"
-    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
     public = (out_dir / "001_ntp.yaml").read_text()
     assert "rapport" in public and "innsyn" not in public
 
@@ -529,7 +512,7 @@ def test_subscription_label_exports_without_archive(sources, pp, conversions):
     abo = entries(sources)["abo"]
     assert abo["arkiv"] == "skip" and "offentlig" not in abo
     out_dir = sources.parent / "data"
-    kilder.cmd_export("001_ntp", out_dir, dry_run=False)
+    ppkilder.cmd_export("001_ntp", out_dir, dry_run=False)
     assert "https://avis.example/sak" in (out_dir / "001_ntp.yaml").read_text()
     assert "skip" not in (out_dir / "001_ntp.yaml").read_text()
 
@@ -539,7 +522,7 @@ def test_label_overrides_kilder_yaml(sources, pp, conversions, capsys):
     convert(pp)
     e = entries(sources)
     e["k"].update(offentlig="ja", arkiv="https://web.archive.org/web/2020/https://x")
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     pp.items["k"]["keywords"] += "; _PRIVAT"
     pp.write()
     capsys.readouterr()
@@ -574,7 +557,7 @@ def test_removing_labels_changes_nothing(sources, pp, conversions, capsys):
 
     e["p"]["offentlig"] = "ja"  # making it public is a deliberate edit in kilder.yaml
     del e["a"]["arkiv"]
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     convert(pp)
     e = entries(sources)
     assert e["p"]["offentlig"] == "ja" and "arkiv" not in e["a"]

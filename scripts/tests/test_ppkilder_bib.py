@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 
-import kilder
 import ppkilder
 from conftest import write_pdf
 
@@ -378,7 +377,7 @@ def test_find_renames(tmp_path):
     by_sha = write_pdf(mirror / "All Papers" / "moved.pdf", "same bytes")
     owned = {
         "old_path": ("001_a", {"id": "old_path", "paperpile": "All Papers/p.pdf"}),
-        "old_sha": ("001_a", {"id": "old_sha", "paperpile": "x", "sha256": kilder.sha256(by_sha)}),
+        "old_sha": ("001_a", {"id": "old_sha", "paperpile": "x", "sha256": ppkilder.sha256(by_sha)}),
         "still": ("001_a", {"id": "still", "paperpile": "All Papers/s.pdf"}),
     }
     sources = [
@@ -410,11 +409,11 @@ def test_copy_bib(sources, tmp_path):
 
 
 def test_lists_owned_and_foreign(sources, capsys):
-    kilder.write_yaml(
+    ppkilder.write_yaml(
         sources / "001_a" / "kilder.yaml",
         {"pp": {"id": "pp", "paperpile": "x"}, "drive": {"id": "drive", "fil": "d.pdf"}},
     )
-    kilder.write_yaml(sources / "002_b" / "kilder.yaml", {"pp": {"id": "pp", "paperpile": "y"}})
+    ppkilder.write_yaml(sources / "002_b" / "kilder.yaml", {"pp": {"id": "pp", "paperpile": "y"}})
     lists = ppkilder.Lists()
     assert {k: top for k, (top, _) in lists.owned().items()} == {"pp": "001_a"}
     assert "in both 001_a and 002_b" in capsys.readouterr().out

@@ -1,5 +1,5 @@
 {{- /*
-  kilde: lenke til en kilde i data/kilder/*.yaml (generert av scripts/kilder.py export).
+  kilde: lenke til en kilde i data/kilder/*.yaml (generert av scripts/ppkilder.py export).
 
   Bruk:
     {{< kilde "fagrapport_stoy" >}}                      lenketekst = tittel, dokument eller id
@@ -46,7 +46,7 @@
 {{- if not $id -}}
   {{- /* already reported above */ -}}
 {{- else if eq (len $hits) 0 -}}
-  {{- errorf "kilde: fant ikke id %q%s i data/kilder (kjør scripts/kilder.py export?) (%s)" $id (cond (ne $project "") (printf " i prosjekt %s" $project) "") .Position -}}
+  {{- errorf "kilde: fant ikke id %q%s i data/kilder (kjør scripts/ppkilder.py export?) (%s)" $id (cond (ne $project "") (printf " i prosjekt %s" $project) "") .Position -}}
 {{- else if gt (len $hits) 1 -}}
   {{- $names := slice -}}
   {{- range $hits -}}{{- $names = $names | append .prosjekt -}}{{- end -}}

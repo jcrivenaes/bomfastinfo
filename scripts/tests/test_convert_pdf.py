@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-import kilder
+import ppkilder
 
 pymupdf = pytest.importorskip("pymupdf")
 pytest.importorskip("pymupdf4llm")
@@ -27,12 +27,12 @@ def make_pdf(path: Path) -> None:
 
 
 def test_convert_pdf(tmp_path, monkeypatch):
-    monkeypatch.setattr(kilder, "has_norwegian_tesseract", lambda: False)
+    monkeypatch.setattr(ppkilder, "has_norwegian_tesseract", lambda: False)
     pdf = tmp_path / "rapport.pdf"
     make_pdf(pdf)
     out = tmp_path / "tekst" / "sub" / "rapport.md"
 
-    info = kilder.convert_pdf(pdf, out, "abc123", Path("sub/rapport.pdf"))
+    info = ppkilder.convert_pdf(pdf, out, "abc123", Path("sub/rapport.pdf"))
 
     assert info["pages"] == 4
     assert info["ocr"] is False
