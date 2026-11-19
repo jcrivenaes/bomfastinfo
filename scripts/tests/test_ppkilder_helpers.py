@@ -259,6 +259,21 @@ def test_export_entry():
     assert ppkilder.export_entry(entry) == {"id": "a", "tittel": "T", "hentet": "2026-03-04"}
 
 
+def test_private_entry():
+    entry = {
+        "id": "a",
+        "tittel": "T",
+        "dokument": "D",
+        "url": "https://secret",
+        "arkiv": "skip",
+        "lenker": [{"tittel": "", "url": "https://secret/l"}],
+        "hentet": dt.date(2026, 3, 4),
+        "offentlig": "nei",
+    }
+    assert ppkilder.private_entry(entry) == {"id": "a", "tittel": "T", "dokument": "D"}
+    assert ppkilder.private_entry({"id": "b", "tittel": ""}) == {"id": "b"}
+
+
 def test_export(sources, tmp_path):
     ppkilder.write_yaml(
         sources / TOP / "kilder.yaml",
@@ -271,8 +286,16 @@ def test_export(sources, tmp_path):
                 "forfatter": "AUTHOR-X",
                 "sha256": "s",
             },
-            "priv": {"id": "priv", "url": "https://secret.example", "offentlig": "nei"},
-            "unclear": {"id": "unclear", "url": "https://u", "offentlig": "?"},
+            "priv": {
+                "id": "priv",
+                "tittel": "Innsyn",
+                "url": "https://secret.example",
+                "arkiv": "https://web.archive.org/secret.example",
+                "lenker": [{"tittel": "", "url": "https://secret.example/l"}],
+                "hentet": "2026-01-01",
+                "offentlig": "nei",
+            },
+            "unclear": {"id": "unclear", "url": "https://u.example", "offentlig": "?"},
             "nolink": {"id": "nolink", "tittel": "T"},
             "skip": {"id": "skip", "url": "https://s", "arkiv": "skip"},
         },
@@ -286,27 +309,34 @@ def test_export(sources, tmp_path):
     text = (out / f"{TOP}.yaml").read_text(encoding="utf-8")
     assert "generert av scripts/ppkilder.py export" in text
     assert yaml.safe_load(text) == [
+        {"id": "nolink", "tittel": "T"},  # no link: exported, cited as plain text
+        {"id": "priv", "tittel": "Innsyn"},  # private: title only
         {"id": "pub", "url": "https://p"},
         {"id": "skip", "url": "https://s"},
+        {"id": "unclear"},  # unclear offentlig counts as private
     ]
-    for secret in ("secret.example", "NOTE-X", "AUTHOR-X", "p.pdf"):
+    for secret in ("secret.example", "u.example", "NOTE-X", "AUTHOR-X", "p.pdf", "2026-01-01"):
         assert secret not in text
 
 
-def test_export_empties_stale_public_file(sources, tmp_path):
+def test_export_removes_the_link_when_an_entry_becomes_private(sources, tmp_path):
     out = tmp_path / "data"
     yaml_file = sources / TOP / "kilder.yaml"
-    ppkilder.write_yaml(yaml_file, {"a": {"id": "a", "url": "https://a"}})
+    ppkilder.write_yaml(yaml_file, {"a": {"id": "a", "tittel": "A", "url": "https://a"}})
     ppkilder.cmd_export(TOP, out, dry_run=False)
-    ppkilder.write_yaml(yaml_file, {"a": {"id": "a", "url": "https://a", "offentlig": "nei"}})
+    ppkilder.write_yaml(
+        yaml_file, {"a": {"id": "a", "tittel": "A", "url": "https://a", "offentlig": "nei"}}
+    )
 
     ppkilder.cmd_export(TOP, out, dry_run=False)
 
-    assert yaml.safe_load((out / f"{TOP}.yaml").read_text(encoding="utf-8")) == []
+    assert yaml.safe_load((out / f"{TOP}.yaml").read_text(encoding="utf-8")) == [
+        {"id": "a", "tittel": "A"}
+    ]
 
 
-def test_export_nothing_public_creates_no_file(sources, tmp_path):
-    ppkilder.write_yaml(sources / TOP / "kilder.yaml", {"a": {"id": "a", "offentlig": "nei"}})
+def test_export_empty_list_creates_no_file(sources, tmp_path):
+    ppkilder.write_yaml(sources / TOP / "kilder.yaml", {})
     assert ppkilder.cmd_export(TOP, tmp_path / "data", dry_run=False) == 0
     assert not (tmp_path / "data").exists()
 

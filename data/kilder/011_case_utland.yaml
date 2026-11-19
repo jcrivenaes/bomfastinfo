@@ -2,6 +2,8 @@
 # Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 011_case_utland/kilder.yaml. Ikke rediger her; endringer overskrives.
 
+- id: chatgpt_2026--queensferry_sammendag_dv
+  tittel: Queensferry Crossing Livsløpskostnader og byggekostnad CHATGPT 2026-11-10
 - id: finch_etal_2007--queensferry_report_lifecycle
   tittel: 'Forth Replacement Crossing Study Report 4: Appraisal Report Volume 1: Main Report'
   url: https://www.transport.gov.scot/media/10155/frcs-report4-mainreport.pdf
