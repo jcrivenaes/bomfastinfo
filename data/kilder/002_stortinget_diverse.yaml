@@ -1,5 +1,5 @@
 # cspell:disable
-# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 002_stortinget_diverse/kilder.yaml. Ikke rediger her; endringer overskrives.
 
 - id: eskeland_2025--spm_hfast_til_statsminister

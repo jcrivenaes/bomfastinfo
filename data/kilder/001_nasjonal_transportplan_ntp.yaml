@@ -1,5 +1,5 @@
 # cspell:disable
-# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 001_nasjonal_transportplan_ntp/kilder.yaml. Ikke rediger her; endringer overskrives.
 
 - id: regjeringen_2001--ntp_2002_2011

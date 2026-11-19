@@ -1,5 +1,5 @@
 # cspell:disable
-# Offentlig kildeliste, generert av scripts/kilder.py export fra den private
+# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 011_case_utland/kilder.yaml. Ikke rediger her; endringer overskrives.
 
 - id: finch_etal_2007--queensferry_report_lifecycle

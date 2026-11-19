@@ -2,8 +2,8 @@
 # cspell:disable
 """Convert the sources in a Paperpile BibTeX export to text and maintain kilder.yaml.
 
-The alternative to kilder.py for sources kept in Paperpile instead of in our own Drive
-folder. Paperpile has no API, so two things are read:
+Paperpile is the only place source documents are kept. Paperpile has no API, so two
+things are read:
   - the .bib file from Paperpile's BibTeX workflow (profile picture -> Workflows and
     Integrations -> BibTeX export), auto-exporting only the bomfast-kilder label to Google
     Drive. Paperpile names it bomfast-kilder.bib and puts it at the top of the account that
@@ -11,9 +11,10 @@ folder. Paperpile has no API, so two things are read:
     shared and mounted together with the PDFs
   - the PDFs in Paperpile's mirror on Google Drive, through a local rclone mount
 
-The text versions and kilder.yaml go to the same private repo and the same place as those
-from kilder.py: <sources>/<top folder>/kilder.yaml and tekst/. The PDF conversion is the
-one in kilder.py, so text files look the same.
+The text versions and kilder.yaml go into a separate PRIVATE repo (default
+~/work/git/bomfast-kilder): <sources>/<top folder>/kilder.yaml and tekst/. They may hold
+paywalled articles or documents obtained via innsyn, so they never go into bomfastinfo.
+`export` writes a public list (only open fields of public entries) into bomfastinfo.
 
 Usage:
     # Convert everything in the .bib file (only new or changed PDFs):
@@ -38,13 +39,25 @@ Usage:
     python3 scripts/ppkilder.py upload regjeringen_2017--ntp_2018_2029
     python3 scripts/ppkilder.py upload regjeringen_2017--ntp_2018_2029 --upload
 
-    # archive and export read kilder.yaml only, so use kilder.py for those:
-    python3 scripts/kilder.py archive 001_nasjonal_transportplan_ntp
-    python3 scripts/kilder.py export --all
+    # Fill in empty `arkiv` fields with Wayback Machine snapshots of each `url`
+    # (reads kilder.yaml only, needs neither the mirror nor the .bib file):
+    python3 scripts/ppkilder.py archive 001_nasjonal_transportplan_ntp
+    python3 scripts/ppkilder.py archive -n
+    # Also ask Wayback to capture URLs that have no snapshot yet (slow, rate-limited):
+    python3 scripts/ppkilder.py archive 101_hordfast --save
+
+    # Write the public source list for the website (data/kilder/<folder>.yaml):
+    python3 scripts/ppkilder.py export
+    python3 scripts/ppkilder.py export 101_hordfast -n
+
+    Without folders, every command works on all top folders (convert/check/prune: all
+    in the .bib file; archive/export: all that have a kilder.yaml).
 
 Output:
-    Same style as kilder.py: one line with a status tag per changed source, and a summary.
+    One line with a status tag per changed source (NEW, UPDATED, REBUILT, MOVED,
+    RENAMED, METADATA, WARNING, ...), and a summary with counts at the end.
     -v/--verbose also lists unchanged sources, --log FILE appends the full output to FILE.
+    With --dry-run the same lines describe what *would* happen; nothing is written.
 
 How a .bib entry is read:
     citekey   the id, and the name of the text file: <citekey>.md. Used in the kilde
@@ -91,19 +104,53 @@ kilder.yaml:
     alone, except emneord, which always follows the labels.
     Technical fields: paperpile (path in the mirror), mappe (the top folder), vedlegg,
     bytes, sha256, sider, tekst, konvertert, ocr. Other fields (dokument, arkiv, lenker,
-    hentet, offentlig, merknad, ...) are yours and are kept, see kilder.py for what they
-    mean.
+    hentet, offentlig, merknad, ...) are yours and are kept on every run. Comments in
+    the YAML file are not kept.
+        offentlig: nei   never exported to the public list, and never archived.
+                         Accepted "private" values: nei / no / false. Any other value
+                         than ja / yes / true is also treated as private, with a
+                         warning. Entries without the field are public.
+        arkiv: skip      archive never looks up or captures the url (e.g. paywalled
+                         pages, where a Wayback capture could republish the full text),
+                         upload never sends the PDF, and export leaves arkiv out.
+        hentet: <date>   when you retrieved the document/article (exported).
 
-Living next to kilder.py:
-    Entries from this script have the field `paperpile` and never `fil`. kilder.py leaves
-    entries without `fil` alone in convert, check and prune, and this script only touches
-    entries with `paperpile`. Both can therefore use the same kilder.yaml. An id already
-    used by an entry from kilder.py gives a warning, and that source is skipped.
+Entries not from Paperpile:
+    This script only touches entries with the field `paperpile`. Entries without it
+    (written by hand, or left from the old Drive-based kilder.py) are kept as they are,
+    exported like the others, and counted in duplicate checks. A citekey already used
+    by such an entry gives a warning, and that source is skipped.
 
 Duplicates:
-    The same PDF (same sha256) in several entries is reported as DUPLICATE by check,
-    prune and convert, also against entries from kilder.py, just like in kilder.py (see
-    `Duplicates` there). A notice, not an issue; nothing is merged or removed.
+    The same PDF (same sha256) in several entries, across all top folders, is reported
+    as DUPLICATE by check, prune and convert. A notice, not an issue (a report can be
+    filed under two topics on purpose); nothing is merged or removed. To get rid of a
+    copy, remove the bomfast-kilder label from it in Paperpile (or delete the paper),
+    so it leaves the .bib export, and run prune. Removing only the top folder label is
+    not enough: the entry is then unusable but still in the .bib file, and prune keeps
+    it.
+
+Public export (export):
+    Writes <out>/<folder>.yaml (default <bomfastinfo>/data/kilder) with only these
+    fields per entry: id, tittel, dokument, url, arkiv, lenker, hentet. Technical
+    fields, merknad, file paths and your own extra fields are never exported. Entries
+    are left out if they have offentlig: nei or have neither url, arkiv nor lenker. The
+    file is only rewritten when its content changes, and not created at all if nothing
+    is public (an existing file is then emptied, so no stale public entries are left
+    behind). The public file is generated: correct things in the private kilder.yaml or
+    in Paperpile. Run convert first, so new control labels have been applied.
+
+Archive links (archive):
+    Looks up the closest existing Wayback snapshot of each entry's url and writes it to
+    `arkiv`, but only if `arkiv` is empty: a value you wrote yourself is never
+    overwritten. Entries without a url are skipped, and so are urls that already point
+    to web.archive.org. With --save, urls that have no snapshot are captured with Save
+    Page Now (about one request per --delay seconds; stops if archive.org answers 429).
+    The lookup reuses find_wayback() from check_links_wayback.py, which also tries URL
+    variants (http/https, with/without www, ...) and rejects truncated PDF captures.
+    kilder.yaml is saved after every filled-in entry, so an interrupted run loses
+    nothing. Entries with arkiv: skip or offentlig: nei are skipped. For PDFs that are
+    gone from the web, use upload instead.
 
 Uploading to archive.org (upload):
     For PDFs that are gone or may disappear from the publisher. Refused, per source, for:
@@ -132,6 +179,9 @@ Locations:
     Paperpile mirror: --paperpile or BOMFAST_PAPERPILE (default: ~/GoogleDrive/Paperpile)
     .bib file:        --bib or BOMFAST_BIB             (default: <mirror>/bomfast-kilder.bib)
     Private repo:     --sources or BOMFAST_SOURCES     (default: ~/work/git/bomfast-kilder)
+    Public export:    --out (export only)              (default: <bomfastinfo>/data/kilder)
+    The script refuses to use a sources folder inside the bomfastinfo repo, so the private
+    texts cannot end up in the public repo by mistake.
 
 Mounting the mirror:
     The Paperpile folder is under "Shared with me", so gdrive:bomfast does not include it:
@@ -140,7 +190,17 @@ Mounting the mirror:
             --read-only --vfs-cache-mode=full --dir-cache-time=1h --poll-interval=15s
 
 Dependencies:
-    The same as kilder.py (which is imported, so it must be in the same folder).
+    pip install pymupdf pymupdf4llm pyyaml
+    # Only for scanned PDFs without a text layer:
+    sudo apt install tesseract-ocr tesseract-ocr-nor
+    # upload: python3 -m pip install --user internetarchive; ia configure
+    # Tests: pip install pytest; python3 -m pytest scripts
+    archive_org_upload.py (upload) and check_links_wayback.py (archive) must be in the
+    same folder as this script.
+
+The field names, the folder names (tekst/) and the page markers in the text files are
+Norwegian on purpose: they are data that sits next to the Norwegian documents and
+articles.
 """
 
 from __future__ import annotations
@@ -149,6 +209,7 @@ import argparse
 import copy
 import datetime as dt
 import difflib
+import functools
 import hashlib
 import json
 import os
@@ -164,23 +225,504 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import archive_org_upload as ia
-import kilder
-from kilder import (
-    TECH_FIELDS,
-    changed_fields,
-    check_sources_dir,
-    convert_pdf,
-    describe,
-    disp,
-    human_size,
-    in_scope,
-    move_text,
-    print_summary,
-    read_yaml,
-    save_yaml,
-    say,
-    sha256,
-)
+import yaml
+
+REPO = Path(__file__).resolve().parent.parent  # bomfastinfo (public)
+DEFAULT_SOURCES = Path(
+    os.environ.get("BOMFAST_SOURCES", "~/work/git/bomfast-kilder")
+).expanduser()
+DEFAULT_EXPORT = REPO / "data" / "kilder"
+# The private source repo (kilder.yaml + tekst/ per top folder). Set in main().
+SOURCES_DIR = DEFAULT_SOURCES
+SAVE_API = "https://web.archive.org/save/"  # Wayback "Save Page Now"
+WAYBACK_HOST = "web.archive.org"
+
+# Below this average (characters per page) the PDF is treated as scanned without text.
+MIN_CHARS_PER_PAGE = 200
+
+# Order of fields in kilder.yaml. Unknown fields (forfatter, emneord, ...) follow.
+FIELD_ORDER = [
+    "id",
+    "tittel",
+    "dokument",
+    "url",
+    "arkiv",
+    "lenker",
+    "hentet",
+    "offentlig",
+    "merknad",
+    "sider",
+    "bytes",
+    "sha256",
+    "tekst",
+    "konvertert",
+    "ocr",
+]
+
+# Fields that may go into the public export. Everything else stays private.
+EXPORT_FIELDS = ["id", "tittel", "dokument", "url", "arkiv", "lenker", "hentet"]
+ARCHIVE_SKIP = "skip"
+PRIVATE_VALUES = {"nei", "no", "false"}
+PUBLIC_VALUES = {"ja", "yes", "true"}
+TECH_FIELDS = {"id", "bytes", "sha256", "sider", "tekst", "konvertert", "ocr"}
+
+
+# --------------------------------------------------------------------------- helpers
+
+
+class Log:
+    """Console output. detail=True lines only show with -v; a log file gets everything."""
+
+    def __init__(self, verbose: bool = False, path: Path | None = None) -> None:
+        self.verbose = verbose
+        self.file = path.open("a", encoding="utf-8") if path else None
+        self.partial = False  # a line without newline is open
+
+    def say(
+        self, msg: str = "", detail: bool = False, end: str = "\n", cont: bool = False
+    ) -> None:
+        """cont=True continues the open (end="") line instead of starting a new one."""
+        shown = not detail or self.verbose
+        if self.partial and not cont:  # finish an open progress line first
+            if self.file:
+                self.file.write("\n")
+            print(flush=True)
+            self.partial = False
+        if self.file:
+            self.file.write(msg + end)
+            self.file.flush()
+        if shown:
+            print(msg, end=end, flush=True)
+        self.partial = end != "\n"
+
+
+LOG = Log()
+
+
+def say(
+    msg: str = "", detail: bool = False, end: str = "\n", cont: bool = False
+) -> None:
+    LOG.say(msg, detail, end, cont)
+
+
+def disp(path: Path) -> str:
+    """Path for log lines: relative to the sources repo or bomfastinfo if possible."""
+    for base in (SOURCES_DIR, REPO):
+        try:
+            return path.relative_to(base).as_posix()
+        except ValueError:
+            pass
+    return str(path)
+
+
+def public_status(entry: dict) -> tuple[bool, str]:
+    """(is public, warning). Missing `offentlig` = public. Unknown values = private."""
+    if "offentlig" not in entry:
+        return True, ""
+    value = entry["offentlig"]
+    if value is True:
+        return True, ""
+    if value is False:
+        return False, ""
+    text = str(value).strip().lower()
+    if text in PUBLIC_VALUES:
+        return True, ""
+    if text in PRIVATE_VALUES:
+        return False, ""
+    return False, f"offentlig: {value!r} not understood; treated as private (use ja/nei)"
+
+
+def archive_skipped(entry: dict) -> bool:
+    return str(entry.get("arkiv") or "").strip().lower() == ARCHIVE_SKIP
+
+
+def human_size(n: int | None) -> str:
+    if n is None:
+        return "?"
+    size = float(n)
+    for unit in ("B", "kB", "MB", "GB"):
+        if size < 1000 or unit == "GB":
+            return f"{size:.0f} {unit}" if unit == "B" else f"{size:.1f} {unit}"
+        size /= 1000
+    return str(n)
+
+
+def show(value, limit: int = 70) -> str:
+    """Short, readable form of a kilder.yaml value for log lines."""
+    if value in (None, "", [], False):
+        return "(empty)"
+    if isinstance(value, list):
+        return f"{len(value)} link{'s' if len(value) != 1 else ''}"
+    text = str(value)
+    return text if len(text) <= limit else text[: limit - 1] + "…"
+
+
+def changed_fields(before: dict | None, after: dict, ignore=()) -> dict:
+    """{field: (old, new)} for fields that differ between two versions of an entry."""
+    before = before or {}
+    empty = (None, "", [])
+    return {
+        k: (before.get(k), after.get(k))
+        for k in {*before, *after}
+        if k not in ignore
+        and before.get(k) != after.get(k)
+        and not (before.get(k) in empty and after.get(k) in empty)
+    }
+
+
+def describe(changes: dict) -> str:
+    parts = []
+    for k, (old, new) in sorted(changes.items()):
+        parts.append(
+            f"{k} = {show(new)}"
+            if old in (None, "", [])
+            else f"{k}: {show(old)} -> {show(new)}"
+        )
+    return "; ".join(parts)
+
+
+@functools.cache
+def _sha256_cached(path: Path, size: int, mtime: int) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def sha256(path: Path) -> str:
+    """SHA-256 of the file, cached per (path, size, mtime) so mid-run changes miss."""
+    st = path.stat()
+    return _sha256_cached(path, st.st_size, st.st_mtime_ns)
+
+
+def in_scope(file: str, sub: str) -> bool:
+    return not sub or file == sub or file.startswith(sub.rstrip("/") + "/")
+
+
+def check_sources_dir(sources: Path) -> None:
+    """Refuse a sources folder inside the public repo; it must exist."""
+    resolved = sources.resolve()
+    if resolved == REPO or REPO in resolved.parents:
+        sys.exit(
+            f"Refusing to use {sources} as the sources folder: it is inside the public "
+            f"repo {REPO}. Set --sources or BOMFAST_SOURCES to the private repo "
+            "(e.g. ~/work/git/bomfast-kilder)."
+        )
+    if not resolved.is_dir():
+        sys.exit(
+            f"Sources folder not found: {sources}. Clone the private repo there, or set "
+            "--sources / BOMFAST_SOURCES."
+        )
+
+
+def print_summary(
+    title: str, counts: Counter, rows: list[tuple[str, str]], hint_verbose: str = ""
+) -> None:
+    """rows = [(key, explanation)]. Rows with a zero count are left out, except the first
+    unchanged-like row, which is always shown so you can see that things were checked."""
+    say()
+    say(f"Summary for {title}:")
+    always = rows[0][0] if rows and rows[0][0] in ("UNCHANGED", "IN SYNC") else None
+    width = max((len(k) for k, _ in rows), default=0)
+    for key, why in rows:
+        if counts[key] or key == always:
+            say(f"  {key:<{width}}  {counts[key]:>4}   {why}")
+    if hint_verbose and not LOG.verbose and counts[hint_verbose]:
+        say(
+            f"  (use -v to list the {counts[hint_verbose]} {hint_verbose.lower()} entries one by one)"
+        )
+
+
+# --------------------------------------------------------------------------- conversion
+
+
+def clean_text(s: str) -> str:
+    s = unicodedata.normalize("NFC", s)
+    s = s.replace("­", "")  # soft hyphens
+    s = s.replace(" ", " ")  # non-breaking spaces
+    s = "\n".join(line.rstrip() for line in s.splitlines())
+    s = re.sub(r"\n{3,}", "\n\n", s)
+    return s.strip() + "\n"
+
+
+def printed_page_numbers(doc) -> list[str]:
+    """Find the page number printed on each page (header/footer).
+
+    PDF page index and printed page number are often offset (cover, table of contents),
+    and articles should cite the printed page number. Numbers at the top/bottom of each
+    page are collected as candidates, and the most common offset (printed - pdf) in the
+    document decides which candidates are accepted. This avoids picking up numbers from
+    tables of contents and tables. Uses the PDF's own page labels if present.
+    """
+    n = len(doc)
+    if any(doc[i].get_label() for i in range(n)):
+        return [doc[i].get_label() for i in range(n)]
+
+    candidates: list[set[int]] = []
+    for i in range(n):
+        lines = [
+            line.strip() for line in doc[i].get_text().splitlines() if line.strip()
+        ]
+        candidates.append(
+            {int(x) for x in lines[:5] + lines[-5:] if re.fullmatch(r"\d{1,4}", x)}
+        )
+
+    offsets = Counter(c - (i + 1) for i, cs in enumerate(candidates) for c in cs)
+    if not offsets:
+        return [""] * n
+    best, count = offsets.most_common(1)[0]
+    if count < max(2, n // 3):  # no clear page numbering
+        return [""] * n
+    return [
+        str(i + 1 + best) if (i + 1 + best) in cs else ""
+        for i, cs in enumerate(candidates)
+    ]
+
+
+def has_norwegian_tesseract() -> bool:
+    if not shutil.which("tesseract"):
+        return False
+    out = subprocess.run(
+        ["tesseract", "--list-langs"], capture_output=True, text=True, check=False
+    )
+    return "nor" in out.stdout.split()
+
+
+def convert_pdf(pdf: Path, out: Path, checksum: str, rel: Path) -> dict:
+    """Convert pdf to Markdown in out, with a page marker per page. The header written
+    here is replaced by render_header() right after (sync_header)."""
+    import pymupdf
+    import pymupdf4llm
+
+    with pymupdf.open(pdf) as doc:
+        n_pages = len(doc)
+        n_chars = sum(len(page.get_text()) for page in doc)
+        scanned = n_pages > 0 and n_chars / n_pages < MIN_CHARS_PER_PAGE
+
+        ocr = False
+        kw = {"page_chunks": True, "header": False, "footer": False, "use_ocr": False}
+        if scanned:
+            if has_norwegian_tesseract():
+                kw.update(
+                    use_ocr=True, force_ocr=True, ocr_language="nor+eng", ocr_dpi=300
+                )
+                ocr = True
+            else:
+                say(
+                    f"WARNING    {rel}: looks scanned, but tesseract with the Norwegian language "
+                    "pack is missing (apt install tesseract-ocr-nor). The text will be incomplete."
+                )
+
+        tool = f"pymupdf4llm {pymupdf4llm.__version__}"
+        try:
+            pages = [c["text"] for c in pymupdf4llm.to_markdown(doc, **kw)]
+            if len(pages) != n_pages:
+                raise RuntimeError(f"got {len(pages)} pages, expected {n_pages}")
+        except Exception as e:  # noqa: BLE001 – fall back to plain text extraction
+            say(
+                f"WARNING    {rel}: pymupdf4llm failed ({e}); using plain text extraction."
+            )
+            pages = [page.get_text(sort=True) for page in doc]
+            tool = f"pymupdf {pymupdf.__version__} (get_text)"
+
+        printed = printed_page_numbers(doc)
+        meta = doc.metadata or {}
+
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()
+    # The header and page markers are data read alongside Norwegian documents, so they
+    # stay in Norwegian.
+    parts = [
+        (
+            "<!--\n"
+            f"kilde: {rel.as_posix()}\n"
+            f"sha256: {checksum}\n"
+            f"sider: {n_pages}\n"
+            f"konvertert: {tool}{' + OCR (tesseract nor+eng)' if ocr else ''}, {today}\n"
+            "Generert av scripts/ppkilder.py. Ikke rediger for hånd; endringer overskrives.\n"
+            "Sidemarkører: pdf = sidenummer i PDF-fila, trykt = sidetallet som står på siden.\n"
+            "-->\n"
+        )
+    ]
+    for i, text in enumerate(pages):
+        marker = (
+            f"<!-- side pdf={i + 1}"
+            + (f" trykt={printed[i]}" if printed[i] else "")
+            + " -->"
+        )
+        parts.append(f"\n{marker}\n\n{clean_text(text)}")
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("".join(parts), encoding="utf-8")
+
+    return {
+        "pages": n_pages,
+        "converted": f"{tool}{' + OCR' if ocr else ''}, {today}",
+        "ocr": ocr,
+        "pdf_title": (meta.get("title") or "").strip(),
+        "pdf_subject": (meta.get("subject") or "").strip(),
+    }
+
+
+def move_text(target: Path, old: str, new: Path, new_file: str) -> None:
+    """Move a text file (the source moved or was renamed), and fix its source line."""
+    src = target / old
+    if not src.exists():
+        return
+    new.parent.mkdir(parents=True, exist_ok=True)
+    content = re.sub(
+        r"^kilde: .*$",
+        f"kilde: {new_file}",
+        src.read_text(encoding="utf-8"),
+        count=1,
+        flags=re.MULTILINE,
+    )
+    new.write_text(content, encoding="utf-8")
+    if src != new:
+        remove_text(target, src)
+
+
+def remove_text(target: Path, text: Path) -> None:
+    """Delete a text file, and the folders under tekst/ that it leaves empty."""
+    text.unlink()
+    for d in text.parents:
+        if d == target / "tekst" or d == target or any(d.iterdir()):
+            break
+        d.rmdir()
+
+
+# --------------------------------------------------------------------------- kilder.yaml I/O
+
+
+def read_yaml(path: Path) -> dict[str, dict]:
+    if not path.exists():
+        return {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or []
+    return {e["id"]: e for e in data if isinstance(e, dict) and "id" in e}
+
+
+def render_yaml(entries: dict[str, dict]) -> str:
+    def ordered(e: dict) -> dict:
+        known = {k: e[k] for k in FIELD_ORDER if k in e}
+        rest = {k: v for k, v in e.items() if k not in FIELD_ORDER}
+        return {**known, **rest}
+
+    items = [ordered(entries[k]) for k in sorted(entries)]
+    header = (
+        "# cspell:disable\n"
+        "# Kildeliste, vedlikeholdt av scripts/ppkilder.py fra Paperpile. tittel, forfatter,\n"
+        "# aar, url og emneord kommer fra Paperpile; rett dem der. Tekniske felt (paperpile,\n"
+        "# mappe, vedlegg, sider, bytes, sha256, tekst, konvertert, ocr) oppdateres av\n"
+        "# skriptet. Øvrige felt (dokument, arkiv, lenker, hentet, merknad, ...) redigeres\n"
+        "# her og beholdes.\n"
+        "# offentlig: nei = aldri med i den offentlige lista (export).\n"
+        "# arkiv: skip = archive slår aldri opp eller arkiverer url-en.\n\n"
+    )
+    return header + yaml.safe_dump(
+        items, sort_keys=False, allow_unicode=True, width=100
+    )
+
+
+def write_yaml(path: Path, entries: dict[str, dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(render_yaml(entries), encoding="utf-8")
+
+
+def save_yaml(
+    path: Path, entries: dict[str, dict], original: dict[str, dict], dry_run: bool
+) -> None:
+    """Write kilder.yaml only if its content changes, and say what happened."""
+    new_text = render_yaml(entries)
+    old_text = path.read_text(encoding="utf-8") if path.exists() else None
+    rel = disp(path)
+    if new_text == old_text:
+        say(f"kilder.yaml: no changes, file not rewritten ({rel})")
+        return
+    if old_text is None and not entries:
+        # Nothing to record should not leave an empty kilder.yaml (and folder) behind.
+        say(f"kilder.yaml: nothing to record, file not created ({rel})")
+        return
+    added = len(set(entries) - set(original))
+    removed = len(set(original) - set(entries))
+    changed = sum(1 for k in set(entries) & set(original) if entries[k] != original[k])
+    what = ", ".join(
+        f"{n} {label}"
+        for n, label in (
+            (added, "entries added"),
+            (changed, "changed"),
+            (removed, "removed"),
+        )
+        if n
+    )
+    if dry_run:
+        say(f"kilder.yaml: would be written ({what or 'formatting only'}) ({rel})")
+    else:
+        write_yaml(path, entries)
+        say(f"kilder.yaml: written ({what or 'formatting only'}) ({rel})")
+
+
+def yaml_tops() -> list[str]:
+    """The top folders in the sources repo that have a kilder.yaml."""
+    return sorted(p.parent.name for p in SOURCES_DIR.glob("*/kilder.yaml"))
+
+
+def top_only(folder: str, command: str) -> str:
+    """archive and export work on whole top folders (one kilder.yaml each)."""
+    top = folder.strip("/")
+    if not top or "/" in top:
+        sys.exit(f"{command} works on top folders only (got {folder})")
+    return top
+
+
+# --------------------------------------------------------------------------- duplicates
+
+Member = tuple[str, dict]  # (top folder, entry)
+
+
+def checksum_index(
+    current: dict[str, dict[str, dict]] | None = None,
+) -> dict[str, list[Member]]:
+    """{sha256: [(top folder, entry), ...]} over every kilder.yaml in the sources repo.
+    `current` ({top: entries}) replaces what is on disk for those top folders, e.g. the
+    entries a command is working on."""
+    lists = {p.parent.name: read_yaml(p) for p in SOURCES_DIR.glob("*/kilder.yaml")}
+    lists.update(current or {})
+    index: dict[str, list[Member]] = {}
+    for top in sorted(lists):
+        for eid in sorted(lists[top]):
+            entry = lists[top][eid]
+            if entry.get("sha256"):
+                index.setdefault(entry["sha256"], []).append((top, entry))
+    return index
+
+
+def duplicate_groups(index: dict[str, list[Member]]) -> list[list[Member]]:
+    """The groups of entries that have the same PDF (two or more per group)."""
+    return [group for _sha, group in sorted(index.items()) if len(group) > 1]
+
+
+def other_copies(
+    index: dict[str, list[Member]], checksum: str, top: str, entry: dict
+) -> list[Member]:
+    """The entries other than `entry` that currently have this checksum."""
+    return [
+        (t, e)
+        for t, e in index.get(checksum, [])
+        if e is not entry
+        and (t, e.get("id")) != (top, entry.get("id"))
+        and e.get("sha256") == checksum  # the index may hold entries updated since
+    ]
+
+
+def dup_label(member: Member) -> str:
+    top, entry = member
+    origin = "" if MARKER in entry else ", not from Paperpile"
+    return f"{entry.get('id')} ({top}{origin})"
+
+
+def same_pdf_as(members: list[Member]) -> str:
+    return "same PDF as " + ", ".join(dup_label(m) for m in members)
+
 
 DEFAULT_PAPERPILE = Path(
     os.environ.get("BOMFAST_PAPERPILE", "~/GoogleDrive/Paperpile")
@@ -616,7 +1158,7 @@ def copy_bib(bib: Path, raw: bytes, write: bool) -> None:
     raw is the content read_sources() parsed, so a file Paperpile rewrites in the
     meantime cannot slip in unchecked.
     """
-    target = kilder.SOURCES_DIR / BIB_COPY
+    target = SOURCES_DIR / BIB_COPY
     if bib.resolve() == target.resolve():
         return
     if target.exists() and target.read_bytes() == raw:
@@ -638,12 +1180,12 @@ class Lists:
     def __init__(self) -> None:
         self.entries: dict[str, dict[str, dict]] = {}
         self.original: dict[str, dict[str, dict]] = {}
-        for path in sorted(kilder.SOURCES_DIR.glob("*/kilder.yaml")):
+        for path in sorted(SOURCES_DIR.glob("*/kilder.yaml")):
             self.top(path.parent.name)
 
     def top(self, name: str) -> dict[str, dict]:
         if name not in self.entries:
-            path = kilder.SOURCES_DIR / name / "kilder.yaml"
+            path = SOURCES_DIR / name / "kilder.yaml"
             self.entries[name] = read_yaml(path)
             self.original[name] = copy.deepcopy(self.entries[name])
         return self.entries[name]
@@ -673,7 +1215,7 @@ class Lists:
         ]
 
     def foreign(self) -> dict[str, str]:
-        """{id: top folder} for the entries that are not ours (from kilder.py)."""
+        """{id: top folder} for the entries that are not ours (no `paperpile` field)."""
         return {
             eid: top
             for top, entries in self.entries.items()
@@ -684,7 +1226,7 @@ class Lists:
     def save(self, dry_run: bool) -> None:
         for top, entries in self.entries.items():
             if entries != self.original[top]:
-                path = kilder.SOURCES_DIR / top / "kilder.yaml"
+                path = SOURCES_DIR / top / "kilder.yaml"
                 save_yaml(path, entries, self.original[top], dry_run)
 
 
@@ -716,7 +1258,7 @@ def apply_controls(entry: dict, private: bool, no_archive: bool) -> None:
     if private:
         entry["offentlig"] = "nei"
     if no_archive:
-        entry["arkiv"] = kilder.ARCHIVE_SKIP
+        entry["arkiv"] = ARCHIVE_SKIP
 
 
 def restrict_all(
@@ -750,7 +1292,7 @@ def restrict_all(
 
 
 def describe_meta(changes: dict) -> str:
-    """describe() from kilder.py, but with emneord/vedlegg as text instead of "N links"."""
+    """describe(), but with emneord/vedlegg as text instead of "N links"."""
 
     def plain(value):
         if isinstance(value, list) and all(isinstance(x, str) for x in value):
@@ -761,7 +1303,7 @@ def describe_meta(changes: dict) -> str:
 
 
 def render_header(entry: dict) -> str:
-    """The comment at the top of the text file, in Norwegian like the one from kilder.py."""
+    """The comment at the top of the text file (in Norwegian: it is data, like the text)."""
     lines = ["<!--", f"kilde: Paperpile, {entry[MARKER]}", f"id: {entry['id']}"]
     for key in ("tittel", "forfatter", "aar", "url", "emneord"):
         value = entry.get(key)
@@ -875,7 +1417,7 @@ def cmd_convert(
     unknown = force - {s.id for s in scope}
     if unknown:
         say(f"WARNING    --force: no such id in scope: {', '.join(sorted(unknown))}")
-    index = kilder.checksum_index(lists.entries)
+    index = checksum_index(lists.entries)
 
     def outcome(kind: str, eid: str, msg: str = "", detail: bool = False) -> None:
         counts[kind] += 1
@@ -883,10 +1425,10 @@ def cmd_convert(
 
     def relocate(old_top: str, old_id: str, entry: dict, src: Source) -> None:
         """Move the entry and its text file to where src says they belong."""
-        new_text = kilder.SOURCES_DIR / src.top / src.tekst
+        new_text = SOURCES_DIR / src.top / src.tekst
         old_text = entry.get("tekst")
         if old_text and not dry_run:
-            move_text(kilder.SOURCES_DIR / old_top, old_text, new_text, src.pdf)
+            move_text(SOURCES_DIR / old_top, old_text, new_text, src.pdf)
         lists.top(old_top).pop(old_id)
         lists.top(src.top)[src.id] = entry
         entry["id"] = src.id
@@ -894,12 +1436,12 @@ def cmd_convert(
             entry["tekst"] = src.tekst
 
     def handle(src: Source) -> None:
-        text = kilder.SOURCES_DIR / src.top / src.tekst
+        text = SOURCES_DIR / src.top / src.tekst
         if src.id in foreign:
             outcome(
                 "WARNING",
                 src.id,
-                f"id already used in {foreign[src.id]} by kilder.py; skipped",
+                f"id already used in {foreign[src.id]} by an entry not from Paperpile; skipped",
             )
             return
 
@@ -925,7 +1467,7 @@ def cmd_convert(
             if moved:
                 have_text = (
                     bool(old_text)
-                    and (kilder.SOURCES_DIR / old_top / old_text).exists()
+                    and (SOURCES_DIR / old_top / old_text).exists()
                 )
                 relocate(old_top, old_id, entry, src)
 
@@ -994,11 +1536,11 @@ def cmd_convert(
 
         entry = entry or lists.top(src.top).setdefault(src.id, {"id": src.id})
         if kind in ("NEW", "UPDATED"):
-            if dups := kilder.other_copies(index, checksum, src.top, entry):
+            if dups := other_copies(index, checksum, src.top, entry):
                 outcome(
                     "DUPLICATE",
                     src.id,
-                    kilder.same_pdf_as(dups) + "; kept as its own entry",
+                    same_pdf_as(dups) + "; kept as its own entry",
                 )
             # so that a second copy converted later in this run is noticed too
             index.setdefault(checksum, []).append(
@@ -1084,7 +1626,7 @@ def cmd_convert(
 def looks_unchanged(entry: dict, rel: str, pdf: Path, top: str) -> bool:
     """Same path and size as in kilder.yaml, and not newer than the text file: taken as
     unchanged without hashing (on the rclone mount, hashing downloads the PDF)."""
-    text = kilder.SOURCES_DIR / top / entry["tekst"] if entry.get("tekst") else None
+    text = SOURCES_DIR / top / entry["tekst"] if entry.get("tekst") else None
     return bool(
         text
         and entry.get(MARKER) == rel
@@ -1134,7 +1676,7 @@ def cmd_check(
             report(
                 "ID CONFLICT",
                 src.id,
-                f"id already used in {foreign[src.id]} by kilder.py",
+                f"id already used in {foreign[src.id]} by an entry not from Paperpile",
             )
             continue
         if src.id in renames:
@@ -1186,7 +1728,7 @@ def cmd_check(
             problems += 1
         elif (
             entry.get("tekst")
-            and not (kilder.SOURCES_DIR / top / entry["tekst"]).exists()
+            and not (SOURCES_DIR / top / entry["tekst"]).exists()
         ):
             report(
                 "TEXT MISSING",
@@ -1215,7 +1757,7 @@ def cmd_check(
                 "is none)",
                 issue=False,
             )
-        if not src.private and not kilder.public_status(wanted)[0]:
+        if not src.private and not public_status(wanted)[0]:
             report(
                 "NO LABEL",
                 src.id,
@@ -1225,7 +1767,7 @@ def cmd_check(
                 "set offentlig: ja in kilder.yaml to make it public)",
                 issue=False,
             )
-        elif not src.no_archive and kilder.archive_skipped(wanted):
+        elif not src.no_archive and archive_skipped(wanted):
             report(
                 "NO LABEL",
                 src.id,
@@ -1267,7 +1809,7 @@ def cmd_check(
         )
         if prune:
             text = (
-                kilder.SOURCES_DIR / top / entry["tekst"]
+                SOURCES_DIR / top / entry["tekst"]
                 if entry.get("tekst")
                 else None
             )
@@ -1283,9 +1825,9 @@ def cmd_check(
             if has_text and not dry_run:
                 text.unlink()
 
-    # The same PDF in several entries, in any kilder.yaml (also from kilder.py). A
-    # notice, not an issue. Entries that are gone from the .bib file are left out:
-    # prune removes them, so they are not copies anyone has to deal with.
+    # The same PDF in several entries, in any kilder.yaml (also entries not from
+    # Paperpile). A notice, not an issue. Entries that are gone from the .bib file are
+    # left out: prune removes them, so they are not copies anyone has to deal with.
     current = {
         top: {
             eid: e
@@ -1294,7 +1836,7 @@ def cmd_check(
         }
         for top, entries in lists.entries.items()
     }
-    for group in kilder.duplicate_groups(kilder.checksum_index(current)):
+    for group in duplicate_groups(checksum_index(current)):
         mine = [
             (t, e)
             for t, e in group
@@ -1303,7 +1845,7 @@ def cmd_check(
         if mine:
             others = [m for m in group if m[1] is not mine[0][1]]
             report(
-                "DUPLICATE", mine[0][1]["id"], kilder.same_pdf_as(others), issue=False
+                "DUPLICATE", mine[0][1]["id"], same_pdf_as(others), issue=False
             )
 
     print_summary(
@@ -1317,7 +1859,7 @@ def cmd_check(
             ("METADATA", "kilder.yaml differs from the .bib file"),
             ("MISSING", "the PDF is not in the mirror"),
             ("TEXT MISSING", "text file missing in the repo"),
-            ("ID CONFLICT", "the citekey is used by an entry from kilder.py"),
+            ("ID CONFLICT", "the citekey is used by an entry not from Paperpile"),
             ("RENAMED", "the citekey changed, convert carries the entry over"),
             ("GONE", "in kilder.yaml, not in the .bib file"),
             ("NO URL", "entries without url (not counted as issues)"),
@@ -1344,7 +1886,7 @@ def cmd_check(
 # --------------------------------------------------------------------------- upload
 
 UPLOAD_RESULTS = (
-    kilder.REPO / ia.DEFAULT_RESULTS_PATH
+    REPO / ia.DEFAULT_RESULTS_PATH
 )  # also written by archive_org_upload.py
 
 
@@ -1394,13 +1936,13 @@ def upload_refusal(
     if entry is None:
         return "not in kilder.yaml (run convert first)" if src else "no such id"
     if "paperpile" not in entry:
-        return "not from Paperpile (a kilder.py entry); upload only handles Paperpile"
-    public, _warning = kilder.public_status(entry)
+        return "not from Paperpile (no paperpile field); upload only handles Paperpile"
+    public, _warning = public_status(entry)
     if not public:
         return (
             f"offentlig: {entry.get('offentlig')}; private sources are never uploaded"
         )
-    if kilder.archive_skipped(entry):
+    if archive_skipped(entry):
         return "arkiv: skip in kilder.yaml; never uploaded"
     if entry.get("arkiv"):
         return f"arkiv already set ({entry['arkiv']}); never overwritten"
@@ -1510,7 +2052,7 @@ def cmd_upload(
     sources = {s.id: s for s in found}
     lists = {
         p.parent.name: (p, read_yaml(p))
-        for p in sorted(kilder.SOURCES_DIR.glob("*/kilder.yaml"))
+        for p in sorted(SOURCES_DIR.glob("*/kilder.yaml"))
     }
     # Every top folder that has the id: an id in several kilder.yaml files is
     # ambiguous, and picking one by folder order could judge or update the wrong entry.
@@ -1524,7 +2066,7 @@ def cmd_upload(
     def record_arkiv(top: str, eid: str, url: str) -> None:
         path, entries = lists[top]
         entries[eid]["arkiv"] = url
-        kilder.write_yaml(path, entries)  # after every source: safe to interrupt
+        write_yaml(path, entries)  # after every source: safe to interrupt
 
     for eid in dict.fromkeys(ids):
         tops = where.get(eid, [])
@@ -1621,6 +2163,287 @@ def cmd_upload(
     return 1 if bad else 0
 
 
+# --------------------------------------------------------------------------- archive
+
+
+def load_wayback_helpers():
+    """Import check_links_wayback.py from the same folder (find_wayback etc.)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        import check_links_wayback as helpers
+    except ImportError as e:
+        sys.exit(f"Cannot import scripts/check_links_wayback.py: {e}")
+    return helpers
+
+
+def request_capture(url: str, timeout: int, user_agent: str, context) -> str:
+    """Ask Wayback to capture `url` (Save Page Now) and return the snapshot URL.
+
+    Raises urllib.error.HTTPError (e.g. 429 when rate-limited) or RuntimeError.
+    """
+    import urllib.request
+
+    req = urllib.request.Request(SAVE_API + url, headers={"User-Agent": user_agent})
+    with urllib.request.urlopen(req, timeout=timeout, context=context) as resp:
+        location = resp.headers.get("Content-Location") or ""
+        final = resp.geturl()
+    if location.startswith("/web/"):
+        snapshot = "https://" + WAYBACK_HOST + location
+    elif "/web/" in final and "/save/" not in final:
+        snapshot = final
+    else:
+        raise RuntimeError("archive.org did not return a snapshot location")
+    m = re.search(r"/web/(\d{14})", snapshot)
+    if m and url.lower().split("?")[0].endswith(".pdf"):
+        snapshot = snapshot.replace(f"/web/{m.group(1)}/", f"/web/{m.group(1)}id_/", 1)
+    return snapshot
+
+
+def cmd_archive(
+    folder: str, save: bool, dry_run: bool, delay: float, timeout: int
+) -> int:
+    """Fill empty `arkiv` fields from Wayback. Reads/writes kilder.yaml only."""
+    import ssl
+    import urllib.error
+
+    top = top_only(folder, "archive")
+    helpers = load_wayback_helpers()
+    yaml_file = SOURCES_DIR / top / "kilder.yaml"
+    entries = read_yaml(yaml_file)
+    if not entries:
+        sys.exit(f"No entries: {yaml_file} is missing or empty (run convert first)")
+    original = copy.deepcopy(entries)
+    context = ssl.create_default_context()
+    ua = helpers.DEFAULT_USER_AGENT
+
+    counts: Counter = Counter()
+    todo = []
+    skipped_lines = []
+    for e in entries.values():
+        label = e["id"]
+        public, _warning = public_status(e)
+        if archive_skipped(e):
+            counts["SKIP"] += 1
+            skipped_lines.append(f"SKIP       {label}: arkiv: skip in kilder.yaml")
+        elif not public:
+            counts["PRIVATE"] += 1
+            skipped_lines.append(
+                f"PRIVATE    {label}: offentlig: {e.get('offentlig')} (never archived)"
+            )
+        elif e.get("arkiv"):
+            counts["KEPT"] += 1
+            skipped_lines.append(
+                f"KEPT       {label}: arkiv already set "
+                f"({show(e['arkiv'])}); never overwritten"
+            )
+        elif not e.get("url"):
+            counts["NO URL"] += 1
+            skipped_lines.append(
+                f"NO URL     {label}: nothing to archive (no url in kilder.yaml)"
+            )
+        elif WAYBACK_HOST in e["url"]:
+            counts["SKIPPED"] += 1
+            skipped_lines.append(
+                f"SKIPPED    {label}: url already points to {WAYBACK_HOST}"
+            )
+        else:
+            todo.append(e)
+
+    say(
+        f"{top}: {len(entries)} entries, {len(todo)} to look up"
+        + ("   [DRY RUN: nothing will be written]" if dry_run else "")
+    )
+    for line in skipped_lines:
+        say(line, detail=True)
+
+    last_save = 0.0
+    for i, e in enumerate(todo):
+        eid, url = e["id"], e["url"]
+        archive_url, _timestamp, _status, source = helpers.find_wayback(
+            url, timeout, ua, context
+        )
+        if archive_url:
+            counts["FOUND"] += 1
+            say(f"FOUND      {eid}: {archive_url}  [{source}]")
+        elif save:
+            if dry_run:
+                counts["WOULD CAPTURE"] += 1
+                say(
+                    f"WOULD CAPTURE {eid}: no snapshot yet; would request one for {url}"
+                )
+                continue
+            wait = delay - (time.monotonic() - last_save)
+            if last_save and wait > 0:
+                time.sleep(wait)
+            last_save = time.monotonic()
+            try:
+                archive_url = request_capture(url, max(timeout, 120), ua, context)
+            except urllib.error.HTTPError as err:
+                counts["FAILED"] += 1
+                say(
+                    f"FAILED     {eid}: HTTP {err.code} from archive.org"
+                    + (
+                        " (rate-limited; stopping, try again later)"
+                        if err.code == 429
+                        else ""
+                    )
+                )
+                if err.code == 429:
+                    counts["NOT TRIED"] += len(todo) - i - 1
+                    break
+                continue
+            except Exception as err:  # noqa: BLE001
+                counts["FAILED"] += 1
+                say(f"FAILED     {eid}: {type(err).__name__}: {err}")
+                continue
+            counts["CAPTURED"] += 1
+            say(f"CAPTURED   {eid}: {archive_url}")
+        else:
+            counts["NO SNAPSHOT"] += 1
+            say(f"NO SNAPSHOT {eid}: none found for {url} (use --save to capture it)")
+            continue
+        if not dry_run:
+            entries[eid]["arkiv"] = archive_url
+            write_yaml(yaml_file, entries)  # after every entry: safe to interrupt
+
+    left = (
+        counts["NO SNAPSHOT"]
+        + counts["FAILED"]
+        + counts["NOT TRIED"]
+        + counts["WOULD CAPTURE"]
+    )
+    print_summary(
+        f"{top} ({len(entries)} entries)",
+        counts,
+        [
+            ("KEPT", "arkiv already set, left alone"),
+            (
+                "FOUND",
+                "existing Wayback snapshot "
+                + ("would be " if dry_run else "")
+                + "written to arkiv",
+            ),
+            ("CAPTURED", "new capture requested and written to arkiv"),
+            ("WOULD CAPTURE", "no snapshot; --save would request a capture"),
+            ("NO SNAPSHOT", "no snapshot found (use --save)"),
+            ("FAILED", "capture request failed"),
+            ("NOT TRIED", "not tried because archive.org rate-limited the run"),
+            ("SKIPPED", f"url already points to {WAYBACK_HOST}"),
+            ("SKIP", "arkiv: skip, never archived"),
+            ("PRIVATE", "offentlig: nei, never archived"),
+            ("NO URL", "no url in kilder.yaml"),
+        ],
+        hint_verbose="KEPT",
+    )
+    if dry_run:
+        say("kilder.yaml: not written (dry run)")
+    elif entries == original:
+        say(f"kilder.yaml: no changes, file not rewritten ({disp(yaml_file)})")
+    else:
+        n = sum(
+            1 for k in entries if entries[k].get("arkiv") != original[k].get("arkiv")
+        )
+        say(
+            f"kilder.yaml: written, {n} arkiv field{'s' if n != 1 else ''} filled in "
+            f"({disp(yaml_file)})"
+        )
+    return 1 if left else 0
+
+
+# --------------------------------------------------------------------------- export
+
+
+def export_entry(e: dict) -> dict:
+    """The public part of one entry: only EXPORT_FIELDS, never arkiv: skip."""
+    out = {}
+    for k in EXPORT_FIELDS:
+        v = e.get(k)
+        if v in (None, "", []) or (k == "arkiv" and archive_skipped(e)):
+            continue
+        if k == "hentet" and isinstance(v, (dt.date, dt.datetime)):
+            v = v.isoformat()
+        out[k] = v
+    return out
+
+
+def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
+    """Write the public source list <out_dir>/<top folder>.yaml from the private kilder.yaml."""
+    top = top_only(folder, "export")
+    yaml_file = SOURCES_DIR / top / "kilder.yaml"
+    if not yaml_file.exists():
+        sys.exit(f"Source list not found: {yaml_file} (run convert first)")
+    entries = read_yaml(yaml_file)
+    out_file = out_dir / f"{top}.yaml"
+    counts: Counter = Counter()
+    public: dict[str, dict] = {}
+    warnings = 0
+    say(
+        f"{top}: export {len(entries)} entries -> {disp(out_file)}"
+        + ("   [DRY RUN: nothing will be written]" if dry_run else "")
+    )
+    for eid in sorted(entries):
+        e = entries[eid]
+        is_public, warning = public_status(e)
+        if warning:
+            warnings += 1
+            say(f"WARNING    {eid}: {warning}")
+        if not is_public:
+            counts["PRIVATE"] += 1
+            say(f"PRIVATE    {eid}: offentlig: {e.get('offentlig')}", detail=True)
+            continue
+        item = export_entry(e)
+        if not ({"url", "arkiv", "lenker"} & set(item)):
+            counts["NO LINK"] += 1
+            say(f"NO LINK    {eid}: no url, arkiv or lenker; left out", detail=True)
+            continue
+        public[eid] = item
+        counts["EXPORTED"] += 1
+        if archive_skipped(e):
+            counts["ARKIV SKIP"] += 1
+        say(f"EXPORTED   {eid}", detail=True)
+
+    header = (
+        "# cspell:disable\n"
+        "# Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private\n"
+        f"# {top}/kilder.yaml. Ikke rediger her; endringer overskrives.\n\n"
+    )
+    text = header + yaml.safe_dump(
+        [public[k] for k in sorted(public)],
+        sort_keys=False,
+        allow_unicode=True,
+        width=100,
+    )
+    old = out_file.read_text(encoding="utf-8") if out_file.exists() else None
+
+    print_summary(
+        f"{top} ({len(entries)} entries in kilder.yaml)",
+        counts,
+        [
+            (
+                "EXPORTED",
+                "public entries "
+                + ("that would be written" if dry_run else "written")
+                + " to the public list",
+            ),
+            ("PRIVATE", "offentlig: nei, left out"),
+            ("NO LINK", "no url, arkiv or lenker, left out"),
+            ("ARKIV SKIP", "exported, but arkiv left out (arkiv: skip)"),
+        ],
+        hint_verbose="EXPORTED",
+    )
+    if not public and old is None:
+        say(f"{disp(out_file)}: nothing to export, file not created")
+    elif text == old:
+        say(f"{disp(out_file)}: no changes, file not rewritten")
+    elif dry_run:
+        say(f"{disp(out_file)}: would be {'written' if old is None else 'updated'}")
+    else:
+        out_file.parent.mkdir(parents=True, exist_ok=True)
+        out_file.write_text(text, encoding="utf-8")
+        say(f"{disp(out_file)}: {'written' if old is None else 'updated'}")
+    return 1 if warnings else 0
+
+
 # --------------------------------------------------------------------------- main
 
 
@@ -1644,9 +2467,9 @@ def main() -> int:
     ap.add_argument(
         "--sources",
         type=Path,
-        default=kilder.DEFAULT_SOURCES,
+        default=DEFAULT_SOURCES,
         help="private repo with kilder.yaml and tekst/ per folder "
-        f"(default: {kilder.DEFAULT_SOURCES}; env BOMFAST_SOURCES)",
+        f"(default: {DEFAULT_SOURCES}; env BOMFAST_SOURCES)",
     )
     commands = ap.add_subparsers(dest="command", required=True)
     common = argparse.ArgumentParser(add_help=False)
@@ -1728,17 +2551,87 @@ def main() -> int:
     u.add_argument("-v", "--verbose", action="store_true", help=argparse.SUPPRESS)
     u.add_argument("--log", type=Path, metavar="FILE", help="append the output to FILE")
 
+    a = commands.add_parser(
+        "archive",
+        parents=[common],
+        help="fill empty `arkiv` fields with Wayback snapshots of each url "
+        "(reads kilder.yaml only)",
+    )
+    a.add_argument(
+        "--save",
+        action="store_true",
+        help="request a new capture (Save Page Now) when no snapshot exists",
+    )
+    a.add_argument(
+        "--delay",
+        type=float,
+        default=15.0,
+        metavar="SECONDS",
+        help="minimum seconds between capture requests (default: 15)",
+    )
+    a.add_argument(
+        "--timeout",
+        type=int,
+        default=15,
+        metavar="SECONDS",
+        help="timeout for lookups (default: 15; captures wait at least 120)",
+    )
+    a.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="look up snapshots and show what would be filled in, without "
+        "writing anything or requesting captures",
+    )
+
+    e = commands.add_parser(
+        "export",
+        parents=[common],
+        help="write the public source list (public entries, open fields only) "
+        "into bomfastinfo",
+    )
+    e.add_argument(
+        "--out",
+        type=Path,
+        default=DEFAULT_EXPORT,
+        metavar="DIR",
+        help=f"folder for <folder>.yaml (default: {DEFAULT_EXPORT})",
+    )
+    e.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="show what would be exported, without writing anything",
+    )
+
     args = ap.parse_args()
-    kilder.SOURCES_DIR = args.sources.expanduser().resolve()
-    check_sources_dir(kilder.SOURCES_DIR)
+    global LOG, SOURCES_DIR
+    SOURCES_DIR = args.sources.expanduser().resolve()
+    check_sources_dir(SOURCES_DIR)
     if args.log:
         args.log.parent.mkdir(parents=True, exist_ok=True)
-    kilder.LOG = kilder.Log(verbose=args.verbose, path=args.log)
+    LOG = Log(verbose=args.verbose, path=args.log)
     if args.log:
-        kilder.LOG.file.write(
+        LOG.file.write(
             f"\n=== {dt.datetime.now(dt.timezone.utc):%Y-%m-%d %H:%M:%S} UTC  ppkilder.py "
             f"{' '.join(sys.argv[1:])} ===\n"
         )
+
+    if args.command in ("archive", "export"):
+        # kilder.yaml only: neither the mirror nor the .bib file is needed.
+        folders = args.folders or yaml_tops()
+        if not folders:
+            sys.exit(f"No kilder.yaml in {SOURCES_DIR} (run convert first)")
+        rc = 0
+        for folder in folders:
+            if args.command == "export":
+                rc |= cmd_export(folder, args.out.expanduser(), args.dry_run)
+            else:
+                rc |= cmd_archive(
+                    folder, args.save, args.dry_run, args.delay, args.timeout
+                )
+        return rc
+
     paperpile = args.paperpile.expanduser()
     bib = args.bib.expanduser() if args.bib else default_bib(paperpile)
 

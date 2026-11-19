@@ -9,7 +9,6 @@ import urllib.error
 from pathlib import Path
 
 import archive_org_upload as ia
-import kilder
 import ppkilder
 import pytest
 from test_ppkilder_commands import Paperpile, convert, entries
@@ -127,7 +126,7 @@ def test_refused_by_kilder_yaml(sources, pp, conversions, archive, results, caps
     convert(pp)
     e = entries(sources)
     setup(e["a"])
-    kilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
+    ppkilder.write_yaml(sources / "001_ntp" / "kilder.yaml", e)
     capsys.readouterr()
 
     assert upload(pp, ["a"], results) == 1
@@ -156,7 +155,7 @@ def test_refused_other_cases(sources, pp, conversions, archive, results, capsys)
     add(pp, "changed")
     add(pp, "web", pdf=False, url="https://example.no")
     add(pp, "gone")
-    kilder.write_yaml(sources / "002_drive" / "kilder.yaml",
+    ppkilder.write_yaml(sources / "002_drive" / "kilder.yaml",
                       {"drive": {"id": "drive", "fil": "x.pdf", "sha256": "s"}})
     convert(pp)
     (pp.root / "All Papers" / "changed.pdf").write_text("%PDF-1.4 new content")
@@ -442,7 +441,7 @@ def test_refused_when_citekey_is_used_twice(sources, pp, conversions, archive, r
 @pytest.mark.parametrize(
     "other_top, other",
     [
-        # a kilder.py entry sorted after the Paperpile one
+        # an entry not from Paperpile, sorted after the Paperpile one
         ("009_drive", {"id": "a", "fil": "a.pdf", "sha256": "s"}),
         # a copy of the Paperpile entry in another folder
         ("000_copy", None),
@@ -455,7 +454,7 @@ def test_refused_when_id_is_in_several_lists(
     add(pp, "b")
     convert(pp)
     second = sources / other_top / "kilder.yaml"
-    kilder.write_yaml(second, {"a": other or dict(entries(sources)["a"])})
+    ppkilder.write_yaml(second, {"a": other or dict(entries(sources)["a"])})
     before = second.read_text()
     capsys.readouterr()
 
