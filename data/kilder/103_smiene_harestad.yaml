@@ -2,6 +2,15 @@
 # Offentlig kildeliste, generert av scripts/ppkilder.py export fra den private
 # 103_smiene_harestad/kilder.yaml. Ikke rediger her; endringer overskrives.
 
+- id: holde_menon_2026--smiha_ks2_notat1
+  tittel: Notat 1 - KS2 av SSD E39 Smiene Harestad
+- id: holte_2026--smiha_ks2_brev_oversendelse
+  tittel: KS2 E39 Smiene - Harestad, oversendelse endelig rapport F086b
+- id: holte_menon_2026--ks2_smiene_harestad
+  tittel: Kvalitetssikringsrapport KS2 E39 Smiene - Harestad
+- id: menon_etal_2026--smiha_vedlegg_ks2_bypakke_jaeren
+  tittel: Tilpasset KS2 av finansieringsgrunnlag for Bypakke Nord-Jæren (vedlegg til KS Smiene-Harestad
+    og KS2 Figgjo-Ålgård)
 - id: svv_2024--smiene_harestad_detaljregulering
   tittel: Detaljregulering E39 Smiene - Harestad
   url: https://api.arealplaner.no/api/kunder/stavanger1103/dokumenter/20773/download/2551%20planbeskrivelse.PDF

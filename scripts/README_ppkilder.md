@@ -71,10 +71,14 @@ Example: `regjeringen_2017--ntp_2018_2029`. Set the URL in Paperpile too.
 
 | Label | Effect |
 |---|---|
-| `_PRIVAT` | Not in the public list, never archived (`offentlig: nei`, `arkiv: skip`) |
+| `_PRIVAT` | Only id and title in the public list, no link; never archived (`offentlig: nei`, `arkiv: skip`) |
 | `_INNSYN` | Same as `_PRIVAT` (documents obtained via innsyn) |
 | `_ABO` | Paywalled: in the public list with its URL, but never archived |
 | `_NO_URL` | No URL on purpose. `check` stops reporting it |
+
+Sources with `_PRIVAT`, `_INNSYN` or `_NO_URL` can still be cited in articles: the
+`kilde` shortcode shows their title as plain text, without a link. **The title of a
+private source is public**, so give it a title in Paperpile that is fine to publish.
 
 **Removing a label does not undo its effect.** To make a source public again, edit
 `offentlig` / `arkiv` in the private `kilder.yaml` by hand.
@@ -129,7 +133,8 @@ python3 scripts/ppkilder.py upload <citekey> --upload
 {{< kilde id="regjeringen_2017--ntp_2018_2029" side="112" >}}
 ```
 
-If the id is unknown, the Hugo build stops. Run `export`, or check the citekey.
+A source without a link (private, or without a URL) is shown as plain text. If the id
+is unknown, the Hugo build stops. Run `export`, or check the citekey.
 
 ## What the messages mean
 

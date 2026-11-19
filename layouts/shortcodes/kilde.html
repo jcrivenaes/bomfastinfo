@@ -8,6 +8,7 @@
     {{< kilde id="verdikart" prosjekt="101_hordfast" >}} når samme id finnes i flere prosjekt
     {{< kilde id="fagrapport_stoy" arkiv="nei" >}}       uten «(arkivert)»-lenken
 
+  Kilder uten lenke (private kilder, eller kilder uten nettadresse) vises som ren tekst.
   Ukjent id eller tvetydig id stopper bygget, så brutte kildehenvisninger aldri publiseres.
   Vanlige Markdown-lenker virker som før; denne shortcoden er et tillegg.
 */ -}}
@@ -70,6 +71,7 @@
   {{- else if $archive -}}
     <a class="kilde" href="{{ printf "%s%s" $archive (cond (strings.Contains (lower $archive) ".pdf") $anchor "") | safeURL }}">{{ $label }}</a> (arkivert)
   {{- else -}}
-    {{- errorf "kilde: id %q har verken url, arkiv eller lenker (%s)" $id .Position -}}
+    {{- /* Private kilde (_PRIVAT/_INNSYN) eller uten nettadresse (_NO_URL): bare tekst. */ -}}
+    <span class="kilde kilde-uten-lenke"{{ with $title }} title="{{ . }}"{{ end }}>{{ $label }}</span>
   {{- end -}}
 {{- end -}}

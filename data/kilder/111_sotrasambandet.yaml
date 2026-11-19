@@ -12,9 +12,17 @@
   tittel: Prop. 41 S (2017-2018) Gjennomføring av rv 555 Sotrasambandet i Hordaland som OPS-prosjekt med
     delvis bompengefinansiering
   url: https://www.regjeringen.no/contentassets/70f2cd375bbf45ce8ddbb285a3212383/nn-no/pdfs/prp201720180041000dddpdfs.pdf
-- id: svv_2008--sotrasambandet_kvu_2008-08-26_med_rettet_samfunnsmaal
+- id: svv_2008--sotrasambandet_kvu_2008_08_26_med_rettet_samfunnsmaal
   tittel: 'Konseptvalutgreiing (KVU) for: Sotrasambandet'
   url: https://www.vegvesen.no/globalassets/vegprosjekter/riksvei/sotrabergen/vedlegg/sotrasambandet-kvu-2008-08-26-med-rettet-samfunnsmaal.pdf?v=49918e
+- id: svv_2011--sotrasambandet_kmd_ku_kolltveit_liavatnet
+  tittel: Fastlandssambandet Sotra – Bergen Kommunedelplan med KU. Kolltveit - Liavatnet (høyringsframlegg)
+- id: svv_2011--sotrasambandet_kmd_ku_planprogram_kolltveit_liavatnet
+  tittel: Fastlandssambandet Sotra – Bergen Kommunedelplan med KU. Kolltveit - Liavatnet (planprogram)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/riksvei/sotrabergen/vedlegg/endelig-planprogr-12-09-11.pdf
+- id: svv_2011--sotrasambandet_oppsummering_planprogram
+  tittel: Fastlandssambandet Sotra-Bergen, kommunedelplan med KU for Kolltveit - Liavatnet (bilag 1, oppsummering)
+  url: https://www.vegvesen.no/globalassets/vegprosjekter/riksvei/sotrabergen/vedlegg/bilag1-tidlegare-planprosess-rammer-og-foeringar-mm.pdf
 - id: svv_2012--sotrasambandet_kommunedelplan_ku_planprogram_parsell_kolltveit_storavatnet
   tittel: Sotrasambandet Rv 555 Fastlandssambandet Sotra-Bergen (parsell Kolltveit-Storavatnet), kommunedelplan
     med KU

@@ -106,7 +106,8 @@ kilder.yaml:
     bytes, sha256, sider, tekst, konvertert, ocr. Other fields (dokument, arkiv, lenker,
     hentet, offentlig, merknad, ...) are yours and are kept on every run. Comments in
     the YAML file are not kept.
-        offentlig: nei   never exported to the public list, and never archived.
+        offentlig: nei   only id and title in the public list (no link), and never
+                         archived.
                          Accepted "private" values: nei / no / false. Any other value
                          than ja / yes / true is also treated as private, with a
                          warning. Entries without the field are public.
@@ -133,10 +134,14 @@ Duplicates:
 Public export (export):
     Writes <out>/<folder>.yaml (default <bomfastinfo>/data/kilder) with only these
     fields per entry: id, tittel, dokument, url, arkiv, lenker, hentet. Technical
-    fields, merknad, file paths and your own extra fields are never exported. Entries
-    are left out if they have offentlig: nei or have neither url, arkiv nor lenker. The
-    file is only rewritten when its content changes, and not created at all if nothing
-    is public (an existing file is then emptied, so no stale public entries are left
+    fields, merknad, file paths and your own extra fields are never exported. Every
+    entry is exported, so articles can cite any source with the kilde shortcode:
+      - offentlig: nei (_PRIVAT, _INNSYN): only id, tittel and dokument. The title is
+        public, but never a url, arkiv or lenker. The shortcode shows it as plain text.
+      - no url, arkiv or lenker (e.g. _NO_URL): exported as usual, and the shortcode
+        shows the title as plain text.
+    The file is only rewritten when its content changes, and not created at all if the
+    kilder.yaml is empty (an existing file is then emptied, so no stale entries are left
     behind). The public file is generated: correct things in the private kilder.yaml or
     in Paperpile. Run convert first, so new control labels have been applied.
 
@@ -261,6 +266,8 @@ FIELD_ORDER = [
 
 # Fields that may go into the public export. Everything else stays private.
 EXPORT_FIELDS = ["id", "tittel", "dokument", "url", "arkiv", "lenker", "hentet"]
+# For private entries (offentlig: nei): citable by id, with the title as plain text.
+PRIVATE_EXPORT_FIELDS = ["id", "tittel", "dokument"]
 ARCHIVE_SKIP = "skip"
 PRIVATE_VALUES = {"nei", "no", "false"}
 PUBLIC_VALUES = {"ja", "yes", "true"}
@@ -2353,6 +2360,12 @@ def cmd_archive(
 # --------------------------------------------------------------------------- export
 
 
+def private_entry(e: dict) -> dict:
+    """What a private entry (offentlig: nei) shows in the public list: id and title,
+    so articles can cite it, but no url, arkiv, lenker or anything else."""
+    return {k: e[k] for k in PRIVATE_EXPORT_FIELDS if e.get(k) not in (None, "", [])}
+
+
 def export_entry(e: dict) -> dict:
     """The public part of one entry: only EXPORT_FIELDS, never arkiv: skip."""
     out = {}
@@ -2388,15 +2401,20 @@ def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
             warnings += 1
             say(f"WARNING    {eid}: {warning}")
         if not is_public:
+            # Citable by id, but only the title: never a link or anything else.
+            public[eid] = private_entry(e)
             counts["PRIVATE"] += 1
-            say(f"PRIVATE    {eid}: offentlig: {e.get('offentlig')}", detail=True)
+            say(
+                f"PRIVATE    {eid}: offentlig: {e.get('offentlig')}; title only",
+                detail=True,
+            )
             continue
         item = export_entry(e)
+        public[eid] = item
         if not ({"url", "arkiv", "lenker"} & set(item)):
             counts["NO LINK"] += 1
-            say(f"NO LINK    {eid}: no url, arkiv or lenker; left out", detail=True)
+            say(f"NO LINK    {eid}: no url, arkiv or lenker; without a link", detail=True)
             continue
-        public[eid] = item
         counts["EXPORTED"] += 1
         if archive_skipped(e):
             counts["ARKIV SKIP"] += 1
@@ -2425,8 +2443,8 @@ def cmd_export(folder: str, out_dir: Path, dry_run: bool) -> int:
                 + ("that would be written" if dry_run else "written")
                 + " to the public list",
             ),
-            ("PRIVATE", "offentlig: nei, left out"),
-            ("NO LINK", "no url, arkiv or lenker, left out"),
+            ("PRIVATE", "offentlig: nei, exported with the title only (no link)"),
+            ("NO LINK", "no url, arkiv or lenker, exported without a link"),
             ("ARKIV SKIP", "exported, but arkiv left out (arkiv: skip)"),
         ],
         hint_verbose="EXPORTED",
